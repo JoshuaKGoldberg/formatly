@@ -158,6 +158,23 @@ Formatters are detected based on the first match from, in order:
 > Please [file a feature request GitHub issue](https://github.com/JoshuaKGoldberg/formatly/issues/new?assignees=&labels=type%3A+feature&projects=&template=03-feature.yml&title=%F0%9F%9A%80+Feature%3A+%3Cshort+description+of+the+feature%3E).
 > 🙏
 
+## Why?
+
+Formatly is a tool for any developer tool that creates files for users.
+If your tool creates, say, a config file that users are meant to check into their repository, you probably want that file to be formatted per the user's preference.
+But there are several popular formatters in use today: it's not enough to just call to `prettier.format`.
+
+Formatly takes away the burden of
+
+- Detecting which formatter -if any- a userland project is using
+- Calling to that formatter's API(s) to format the file
+
+### Does Formatly replace Prettier, etc.?
+
+No.
+Formatly is a detection + wrapping layer around formatters such as Prettier.
+Userland projects still need to configure a formatter themselves.
+
 ## Development
 
 See [`.github/CONTRIBUTING.md`](./.github/CONTRIBUTING.md), then [`.github/DEVELOPMENT.md`](./.github/DEVELOPMENT.md).
