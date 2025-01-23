@@ -46,7 +46,7 @@
 		"@release-it/conventional-changelog": "10.0.0",
 		"@types/eslint-plugin-markdown": "2.0.2",
 		"@types/node": "22.10.2",
-		"@vitest/coverage-v8": "2.1.8",
+		"@vitest/coverage-v8": "3.0.0",
 		"@vitest/eslint-plugin": "1.1.20",
 		"console-fail-test": "0.5.0",
 		"cspell": "8.17.1",
@@ -73,7 +73,7 @@
 		"tsup": "8.3.5",
 		"typescript": "5.7.2",
 		"typescript-eslint": "8.20.0",
-		"vitest": "2.1.8"
+		"vitest": "3.0.0"
 	},
 	"engines": {
 		"node": ">=18.3.0"
