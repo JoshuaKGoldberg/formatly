@@ -4,7 +4,10 @@ import { formatly } from "./formatly.js";
 import { formatters } from "./formatters.js";
 
 const mockSpawn = vi.fn(() => ({
-	on: (name: string, cb: Function) => {
+	on: (
+		name: string,
+		cb: (code: null | number, signal: NodeJS.Signals | null) => void,
+	) => {
 		if (name === "exit") {
 			cb(0, null);
 		}

@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+
 import { Formatter } from "./formatters.js";
 import { resolveFormatter } from "./resolveFormatter.js";
 
@@ -17,7 +18,7 @@ export interface FormatlyReportResult {
 	formatter: Formatter;
 	ran: true;
 	result: {
-		code: number | null;
+		code: null | number;
 		signal: NodeJS.Signals | null;
 	};
 }
