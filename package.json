@@ -37,8 +37,7 @@
 		"*": "prettier --ignore-unknown --write"
 	},
 	"dependencies": {
-		"execa": "^9.5.2",
-		"read-package-up": "^11.0.0"
+		"execa": "^9.5.2"
 	},
 	"devDependencies": {
 		"@eslint-community/eslint-plugin-eslint-comments": "4.4.1",
