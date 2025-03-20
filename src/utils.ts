@@ -3,10 +3,11 @@ import path from "node:path";
 
 export async function findNearestPackageJson(
 	cwd = ".",
-): Promise<Record<string, any> | undefined> {
+): Promise<Record<string, unknown> | undefined> {
 	const packageJsonPath = await findUp(cwd, "package.json");
 	if (packageJsonPath) {
-		return JSON.parse(await fs.readFile(packageJsonPath, "utf8"));
+		const content = await fs.readFile(packageJsonPath, "utf8");
+		return JSON.parse(content) as Record<string, unknown>;
 	}
 }
 
@@ -20,7 +21,9 @@ async function findUp(dir: string, file: string): Promise<string | undefined> {
 			if (stat.isFile()) {
 				return filePath;
 			}
-		} catch {}
+		} catch {
+			// Ignore stat error, assuming file does not exist
+		}
 		const nextDir = path.dirname(dir);
 		if (nextDir === dir) {
 			break;

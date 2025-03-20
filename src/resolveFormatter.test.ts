@@ -14,7 +14,7 @@ vi.mock("node:fs/promises", () => ({
 const mockFindNearestPackageJson = vi.hoisted(() => vi.fn());
 
 vi.mock("./utils.js", async (importOriginal) => {
-	const original: any = await importOriginal();
+	const original: Record<string, unknown> = await importOriginal();
 	return {
 		...original,
 		findNearestPackageJson: mockFindNearestPackageJson,
