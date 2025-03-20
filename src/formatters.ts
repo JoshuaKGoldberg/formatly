@@ -1,5 +1,7 @@
+export type FormatterName = "Biome" | "deno fmt" | "dprint" | "Prettier";
+
 export interface Formatter {
-	name: string;
+	name: FormatterName;
 	runner: string;
 	testers: {
 		configFile: RegExp;

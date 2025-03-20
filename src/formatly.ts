@@ -1,10 +1,14 @@
 import { execa, Result } from "execa";
 
-import { Formatter } from "./formatters.js";
+import { Formatter, FormatterName, formatters } from "./formatters.js";
 import { resolveFormatter } from "./resolveFormatter.js";
 
 export interface FormatlyOptions {
 	cwd?: string;
+	/**
+	 * Pass an explicitly formatter to use instead of automatically detecting
+	 */
+	formatter?: FormatterName;
 }
 
 export type FormatlyReport = FormatlyReportError | FormatlyReportResult;
@@ -22,7 +26,7 @@ export interface FormatlyReportResult {
 
 export async function formatly(
 	patterns: string[],
-	{ cwd }: FormatlyOptions = {},
+	options: FormatlyOptions = {},
 ): Promise<FormatlyReport> {
 	if (!patterns.join("").trim()) {
 		return {
@@ -31,7 +35,9 @@ export async function formatly(
 		};
 	}
 
-	const formatter = await resolveFormatter(cwd);
+	const formatter = options.formatter
+		? formatters.find((f) => f.name === options.formatter)
+		: await resolveFormatter(options.cwd);
 
 	if (!formatter) {
 		return { message: "Could not detect a reporter.", ran: false };
