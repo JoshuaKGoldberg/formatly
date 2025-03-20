@@ -1,5 +1,3 @@
-export type FormatterName = "Biome" | "deno fmt" | "dprint" | "Prettier";
-
 export interface Formatter {
 	name: FormatterName;
 	runner: string;
@@ -9,6 +7,8 @@ export interface Formatter {
 		script: RegExp;
 	};
 }
+
+export type FormatterName = "Biome" | "deno fmt" | "dprint" | "Prettier";
 
 export const formatters = [
 	{

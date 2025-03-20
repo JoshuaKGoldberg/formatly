@@ -5,6 +5,7 @@ import { resolveFormatter } from "./resolveFormatter.js";
 
 export interface FormatlyOptions {
 	cwd?: string;
+
 	/**
 	 * Pass an explicitly formatter to use instead of automatically detecting
 	 */
