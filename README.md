@@ -76,7 +76,7 @@ Parameters:
 1. `patterns: string[]` _(required)_: any number of glob patterns
 2. `options: FormatlyOptions` _(optional)_:
    - `cwd: string` _(optional)_: working directory, if not `"."`
-   - `formatter: FormatterName` _(optional)_: explicit formatter to use instead of detecting one, supports `"Biome"`, `"deno fmt"`, `"dprint"`, and `"Prettier"`
+   - `formatter: FormatterName` _(optional)_: explicit formatter to use instead of detecting one, supports `"biome"`, `"deno"`, `"dprint"`, and `"prettier"`
 
 Resolves with a `FormatlyReport`, which is either:
 
