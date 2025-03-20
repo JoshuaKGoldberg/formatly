@@ -11,13 +11,15 @@ vi.mock("node:fs/promises", () => ({
 	},
 }));
 
-const mockReadPackageUp = vi.fn();
+const mockFindNearestPackageJson = vi.hoisted(() => vi.fn());
 
-vi.mock("read-package-up", () => ({
-	get readPackageUp() {
-		return mockReadPackageUp;
-	},
-}));
+vi.mock("./utils.js", async (importOriginal) => {
+	const original: any = await importOriginal();
+	return {
+		...original,
+		findNearestPackageJson: mockFindNearestPackageJson,
+	};
+});
 
 describe("resolveFormatter", () => {
 	describe("from config file", () => {
@@ -44,7 +46,7 @@ describe("resolveFormatter", () => {
 	describe("from package.json", () => {
 		it("resolves with undefined when no config file matches and a package.json cannot be found", async () => {
 			mockReaddir.mockResolvedValueOnce(["totally", "unrelated"]);
-			mockReadPackageUp.mockResolvedValueOnce(undefined);
+			mockFindNearestPackageJson.mockResolvedValueOnce(undefined);
 
 			const formatter = await resolveFormatter();
 
@@ -60,11 +62,9 @@ describe("resolveFormatter", () => {
 			"resolves with %s when %s exists in a script",
 			async (formatterName, scriptValue) => {
 				mockReaddir.mockResolvedValueOnce([]);
-				mockReadPackageUp.mockResolvedValueOnce({
-					packageJson: {
-						scripts: {
-							script: scriptValue,
-						},
+				mockFindNearestPackageJson.mockResolvedValueOnce({
+					scripts: {
+						script: scriptValue,
 					},
 				});
 
@@ -80,10 +80,8 @@ describe("resolveFormatter", () => {
 			"resolves with %s when %s exists as a key",
 			async (formatterName, key) => {
 				mockReaddir.mockResolvedValueOnce([]);
-				mockReadPackageUp.mockResolvedValueOnce({
-					packageJson: {
-						[key]: {},
-					},
+				mockFindNearestPackageJson.mockResolvedValueOnce({
+					[key]: {},
 				});
 
 				const formatter = await resolveFormatter();
@@ -97,11 +95,9 @@ describe("resolveFormatter", () => {
 
 	it("resolves with undefined when no config file, scripts, or package keys matched", async () => {
 		mockReaddir.mockResolvedValueOnce(["totally", "unrelated"]);
-		mockReadPackageUp.mockResolvedValueOnce({
-			packageJson: {
-				otherKey: true,
-				scripts: { totally: "unrelated" },
-			},
+		mockFindNearestPackageJson.mockResolvedValueOnce({
+			otherKey: true,
+			scripts: { totally: "unrelated" },
 		});
 
 		const formatter = await resolveFormatter();

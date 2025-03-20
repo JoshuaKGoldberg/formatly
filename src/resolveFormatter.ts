@@ -1,7 +1,7 @@
 import * as fs from "node:fs/promises";
-import { readPackageUp } from "read-package-up";
 
 import { Formatter, formatters } from "./formatters.js";
+import { findNearestPackageJson } from "./utils.js";
 
 export async function resolveFormatter(
 	cwd = ".",
@@ -16,16 +16,14 @@ export async function resolveFormatter(
 		}
 	}
 
-	const packageData = await readPackageUp({ cwd });
-	if (!packageData) {
+	const packageJson = await findNearestPackageJson(cwd);
+	if (!packageJson) {
 		return undefined;
 	}
 
-	const { scripts = {}, ...otherKeys } = packageData.packageJson;
-
-	for (const script of Object.values(scripts)) {
+	for (const script of Object.values(packageJson.scripts ?? {})) {
 		for (const formatter of formatters) {
-			if (formatter.testers.script.test(script)) {
+			if (formatter.testers.script.test(script as string)) {
 				return formatter;
 			}
 		}
@@ -34,7 +32,7 @@ export async function resolveFormatter(
 	for (const formatter of formatters) {
 		if (
 			"packageKey" in formatter.testers &&
-			formatter.testers.packageKey in otherKeys
+			formatter.testers.packageKey in packageJson
 		) {
 			return formatter;
 		}
