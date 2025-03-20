@@ -9,6 +9,11 @@ export interface FormatlyOptions {
 
 export type FormatlyReport = FormatlyReportError | FormatlyReportResult;
 
+export interface FormatlyReportChildProcessResult {
+	code: null | number;
+	signal: NodeJS.Signals | null;
+}
+
 export interface FormatlyReportError {
 	message: string;
 	ran: false;
@@ -17,10 +22,7 @@ export interface FormatlyReportError {
 export interface FormatlyReportResult {
 	formatter: Formatter;
 	ran: true;
-	result: {
-		code: null | number;
-		signal: NodeJS.Signals | null;
-	};
+	result: FormatlyReportChildProcessResult;
 }
 
 export async function formatly(
@@ -46,7 +48,9 @@ export async function formatly(
 		formatter,
 		ran: true,
 		result: await new Promise((resolve, reject) => {
-			const child = spawn(baseCommand, [...args, ...patterns]);
+			const child = spawn(baseCommand, [...args, ...patterns], {
+				cwd,
+			});
 
 			child.on("error", reject);
 			child.on("exit", (code, signal) => {
