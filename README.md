@@ -84,7 +84,7 @@ Resolves with a `FormatlyReport`, which is either:
 - `FormatlyReportResult` if a formatter could be determined, which is an object containing:
   - `formatter: Formatter`: as resolved by [`resolveFormatter`](#resolveformatter)
   - `ran: true`
-  - `result: Result`, the [`Result`](https://github.com/sindresorhus/execa/blob/main/docs/api.md#result) from running the formatter with [`execa`](https://github.com/sindresorhus/execa)
+  - `result: { code: number | null; signal: NodeJS.Signals | null; }`: The exit code and signal returned by the child process
 
 For example, to run formatting on TypeScript source files in a child directory and check the result:
 
