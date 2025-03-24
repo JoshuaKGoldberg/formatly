@@ -1,5 +1,5 @@
 export interface Formatter {
-	name: string;
+	name: FormatterName;
 	runner: string;
 	testers: {
 		configFile: RegExp;
@@ -8,9 +8,11 @@ export interface Formatter {
 	};
 }
 
+export type FormatterName = "biome" | "deno" | "dprint" | "prettier";
+
 export const formatters = [
 	{
-		name: "Biome",
+		name: "biome",
 		runner: "npx @biomejs/biome format --write",
 		testers: {
 			configFile: /biome\.json/,
@@ -18,7 +20,7 @@ export const formatters = [
 		},
 	},
 	{
-		name: "deno fmt",
+		name: "deno",
 		runner: "deno fmt",
 		testers: {
 			configFile: /deno\.json/,
@@ -34,7 +36,7 @@ export const formatters = [
 		},
 	},
 	{
-		name: "Prettier",
+		name: "prettier",
 		runner: "npx prettier --write",
 		testers: {
 			configFile: /prettier(?:rc|\.)/,

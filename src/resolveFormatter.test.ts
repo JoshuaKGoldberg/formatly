@@ -22,11 +22,11 @@ vi.mock("read-package-up", () => ({
 describe("resolveFormatter", () => {
 	describe("from config file", () => {
 		it.each([
-			["Biome", "biome.json", [".git", "biome.json", "src"]],
-			["deno fmt", "deno.json", [".git", "deno.json", "src"]],
+			["biome", "biome.json", [".git", "biome.json", "src"]],
+			["deno", "deno.json", [".git", "deno.json", "src"]],
 			["dprint", "dprint.json", [".git", "dprint.json", "src"]],
-			["Prettier", ".prettierrc", [".git", ".prettierrc", "src"]],
-			["Prettier", "prettier.config.js", [".git", ".prettierrc", "src"]],
+			["prettier", ".prettierrc", [".git", ".prettierrc", "src"]],
+			["prettier", "prettier.config.js", [".git", ".prettierrc", "src"]],
 		])(
 			"resolves with %s when %s exist(s)",
 			async (formatterName, _, children) => {
@@ -52,10 +52,10 @@ describe("resolveFormatter", () => {
 		});
 
 		it.each([
-			["Biome", "biome format"],
-			["deno fmt", "deno fmt"],
+			["biome", "biome format"],
+			["deno", "deno fmt"],
 			["dprint", "dprint"],
-			["Prettier", "prettier"],
+			["prettier", "prettier"],
 		])(
 			"resolves with %s when %s exists in a script",
 			async (formatterName, scriptValue) => {
@@ -76,7 +76,7 @@ describe("resolveFormatter", () => {
 			},
 		);
 
-		it.each([["Prettier", "prettier"]])(
+		it.each([["prettier", "prettier"]])(
 			"resolves with %s when %s exists as a key",
 			async (formatterName, key) => {
 				mockReaddir.mockResolvedValueOnce([]);
