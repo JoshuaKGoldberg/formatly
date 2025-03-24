@@ -22,18 +22,14 @@
       "name": "Alec Larson",
       "avatar_url": "https://avatars.githubusercontent.com/u/1925840?v=4",
       "profile": "https://github.com/aleclarson",
-      "contributions": [
-        "ideas"
-      ]
+      "contributions": ["ideas", "code"]
     },
     {
       "login": "bluwy",
       "name": "Bjorn Lu",
       "avatar_url": "https://avatars.githubusercontent.com/u/34116392?v=4",
       "profile": "https://bjornlu.com",
-      "contributions": [
-        "ideas"
-      ]
+      "contributions": ["ideas", "code"]
     }
   ],
   "contributorsSortAlphabetically": true,
@@ -41,9 +37,8 @@
   "projectOwner": "JoshuaKGoldberg",
   "repoType": "github",
   "commitConvention": "angular",
-  "files": [
-    "README.md"
-  ],
+  "files": ["README.md"],
   "commitType": "docs",
   "contributorsPerLine": 7
 }
+
