@@ -3,11 +3,20 @@ import { describe, expect, it, vi } from "vitest";
 import { formatly } from "./formatly.js";
 import { formatters } from "./formatters.js";
 
-const mockExeca = vi.fn();
+const mockSpawn = vi.fn(() => ({
+	on: (
+		name: string,
+		cb: (code: null | number, signal: NodeJS.Signals | null) => void,
+	) => {
+		if (name === "exit") {
+			cb(0, null);
+		}
+	},
+}));
 
-vi.mock("execa", () => ({
-	get execa() {
-		return mockExeca;
+vi.mock("node:child_process", () => ({
+	get spawn() {
+		return mockSpawn;
 	},
 }));
 
@@ -29,7 +38,7 @@ describe("formatly", () => {
 			message: "No file patterns were provided to formatly.",
 			ran: false,
 		});
-		expect(mockExeca).not.toHaveBeenCalled();
+		expect(mockSpawn).not.toHaveBeenCalled();
 	});
 
 	it("resolves with a report error when a formatter cannot be found", async () => {
@@ -41,21 +50,19 @@ describe("formatly", () => {
 			message: "Could not detect a reporter.",
 			ran: false,
 		});
-		expect(mockExeca).not.toHaveBeenCalled();
+		expect(mockSpawn).not.toHaveBeenCalled();
 	});
 
-	it("resolves with the result from calling execa when a formatter can be found", async () => {
-		const mockResult = { code: 0, stderr: "", stdout: "🧹" };
+	it("resolves with a result when a formatter can be found", async () => {
 		const mockFormatter = formatters[0];
 		mockResolveFormatter.mockResolvedValueOnce(mockFormatter);
-		mockExeca.mockResolvedValueOnce(mockResult);
 
 		const report = await formatly(patterns);
 
 		expect(report).toEqual({
 			formatter: mockFormatter,
 			ran: true,
-			result: mockResult,
+			result: { code: 0, signal: null },
 		});
 	});
 

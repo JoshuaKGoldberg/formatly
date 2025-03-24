@@ -1,4 +1,4 @@
-import { execa, Result } from "execa";
+import { spawn } from "node:child_process";
 
 import { Formatter, FormatterName, formatters } from "./formatters.js";
 import { resolveFormatter } from "./resolveFormatter.js";
@@ -14,6 +14,11 @@ export interface FormatlyOptions {
 
 export type FormatlyReport = FormatlyReportError | FormatlyReportResult;
 
+export interface FormatlyReportChildProcessResult {
+	code: null | number;
+	signal: NodeJS.Signals | null;
+}
+
 export interface FormatlyReportError {
 	message: string;
 	ran: false;
@@ -22,7 +27,7 @@ export interface FormatlyReportError {
 export interface FormatlyReportResult {
 	formatter: Formatter;
 	ran: true;
-	result: Result;
+	result: FormatlyReportChildProcessResult;
 }
 
 export async function formatly(
@@ -49,6 +54,15 @@ export async function formatly(
 	return {
 		formatter,
 		ran: true,
-		result: await execa(baseCommand, [...args, ...patterns]),
+		result: await new Promise((resolve, reject) => {
+			const child = spawn(baseCommand, [...args, ...patterns], {
+				cwd,
+			});
+
+			child.on("error", reject);
+			child.on("exit", (code, signal) => {
+				resolve({ code, signal });
+			});
+		}),
 	};
 }
