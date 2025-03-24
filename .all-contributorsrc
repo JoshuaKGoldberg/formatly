@@ -26,6 +26,15 @@
         "ideas",
         "code"
       ]
+    },
+    {
+      "login": "bluwy",
+      "name": "Bjorn Lu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/34116392?v=4",
+      "profile": "https://bjornlu.com",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsSortAlphabetically": true,
