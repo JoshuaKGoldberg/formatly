@@ -1,3 +1,17 @@
+# Changelog
+
+# [0.2.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.1.0...0.2.0) (2025-03-31)
+
+### Bug Fixes
+
+- bump to create-typescript-app@2 with transitions action ([#81](https://github.com/JoshuaKGoldberg/formatly/issues/81)) ([e8622e7](https://github.com/JoshuaKGoldberg/formatly/commit/e8622e711cb2033ad653838693721671b99743b6)), closes [#74](https://github.com/JoshuaKGoldberg/formatly/issues/74)
+
+### Features
+
+- empty commit to trigger CI release ([d96f6a1](https://github.com/JoshuaKGoldberg/formatly/commit/d96f6a1e8b1e3150da5a73ae8c590bd84de27c4e))
+- remove execa dependency ([#69](https://github.com/JoshuaKGoldberg/formatly/issues/69)) ([664b6d4](https://github.com/JoshuaKGoldberg/formatly/commit/664b6d499031769f0abf6f93d3a5fdd564f8c379)), closes [#55](https://github.com/JoshuaKGoldberg/formatly/issues/55)
+- support explicit formatter ([#71](https://github.com/JoshuaKGoldberg/formatly/issues/71)) ([c96058b](https://github.com/JoshuaKGoldberg/formatly/commit/c96058bff91e47e39e851451f23905c2d116d20d)), closes [#73](https://github.com/JoshuaKGoldberg/formatly/issues/73)
+
 # 0.1.0 (2025-01-08)
 
 ### Features
