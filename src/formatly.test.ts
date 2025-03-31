@@ -66,17 +66,15 @@ describe("formatly", () => {
 		});
 	});
 
-	it("resolves with the result from calling execa when an explicit formatter is passed", async () => {
-		const mockResult = { code: 0, stderr: "", stdout: "🧹" };
+	it("resolves with the result code when an explicit formatter is passed", async () => {
 		const mockFormatter = formatters[0];
-		mockExeca.mockResolvedValueOnce(mockResult);
 
 		const report = await formatly(patterns, { formatter: mockFormatter.name });
 
 		expect(report).toEqual({
 			formatter: mockFormatter,
 			ran: true,
-			result: mockResult,
+			result: { code: 0, signal: null },
 		});
 	});
 });
