@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.1](https://github.com/JoshuaKGoldberg/formatly/compare/0.2.0...0.2.1) (2025-04-14)
+
+### Bug Fixes
+
+- switch from read-package-up to fd-package-json ([#99](https://github.com/JoshuaKGoldberg/formatly/issues/99)) ([7b8cddb](https://github.com/JoshuaKGoldberg/formatly/commit/7b8cddbadc78b9fb1c6c0b353bac6679f95c1b98)), closes [#98](https://github.com/JoshuaKGoldberg/formatly/issues/98)
+
 # [0.2.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.1.0...0.2.0) (2025-03-31)
 
 ### Bug Fixes
