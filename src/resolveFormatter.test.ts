@@ -11,11 +11,11 @@ vi.mock("node:fs/promises", () => ({
 	},
 }));
 
-const mockReadPackageUp = vi.fn();
+const mockFindPackage = vi.fn();
 
-vi.mock("read-package-up", () => ({
-	get readPackageUp() {
-		return mockReadPackageUp;
+vi.mock("fd-package-json", () => ({
+	get findPackage() {
+		return mockFindPackage;
 	},
 }));
 
@@ -44,7 +44,7 @@ describe("resolveFormatter", () => {
 	describe("from package.json", () => {
 		it("resolves with undefined when no config file matches and a package.json cannot be found", async () => {
 			mockReaddir.mockResolvedValueOnce(["totally", "unrelated"]);
-			mockReadPackageUp.mockResolvedValueOnce(undefined);
+			mockFindPackage.mockResolvedValueOnce(undefined);
 
 			const formatter = await resolveFormatter();
 
@@ -60,11 +60,9 @@ describe("resolveFormatter", () => {
 			"resolves with %s when %s exists in a script",
 			async (formatterName, scriptValue) => {
 				mockReaddir.mockResolvedValueOnce([]);
-				mockReadPackageUp.mockResolvedValueOnce({
-					packageJson: {
-						scripts: {
-							script: scriptValue,
-						},
+				mockFindPackage.mockResolvedValueOnce({
+					scripts: {
+						script: scriptValue,
 					},
 				});
 
@@ -80,10 +78,8 @@ describe("resolveFormatter", () => {
 			"resolves with %s when %s exists as a key",
 			async (formatterName, key) => {
 				mockReaddir.mockResolvedValueOnce([]);
-				mockReadPackageUp.mockResolvedValueOnce({
-					packageJson: {
-						[key]: {},
-					},
+				mockFindPackage.mockResolvedValueOnce({
+					[key]: {},
 				});
 
 				const formatter = await resolveFormatter();
@@ -97,11 +93,9 @@ describe("resolveFormatter", () => {
 
 	it("resolves with undefined when no config file, scripts, or package keys matched", async () => {
 		mockReaddir.mockResolvedValueOnce(["totally", "unrelated"]);
-		mockReadPackageUp.mockResolvedValueOnce({
-			packageJson: {
-				otherKey: true,
-				scripts: { totally: "unrelated" },
-			},
+		mockFindPackage.mockResolvedValueOnce({
+			otherKey: true,
+			scripts: { totally: "unrelated" },
 		});
 
 		const formatter = await resolveFormatter();
