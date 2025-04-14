@@ -1,5 +1,5 @@
+import { findPackage } from "fd-package-json";
 import * as fs from "node:fs/promises";
-import { readPackageUp } from "read-package-up";
 
 import { Formatter, formatters } from "./formatters.js";
 
@@ -16,16 +16,16 @@ export async function resolveFormatter(
 		}
 	}
 
-	const packageData = await readPackageUp({ cwd });
+	const packageData = await findPackage(cwd);
 	if (!packageData) {
 		return undefined;
 	}
 
-	const { scripts = {}, ...otherKeys } = packageData.packageJson;
+	const { scripts = {}, ...otherKeys } = packageData;
 
-	for (const script of Object.values(scripts)) {
+	for (const script of Object.values(scripts as object)) {
 		for (const formatter of formatters) {
-			if (formatter.testers.script.test(script)) {
+			if (formatter.testers.script.test(script as string)) {
 				return formatter;
 			}
 		}
