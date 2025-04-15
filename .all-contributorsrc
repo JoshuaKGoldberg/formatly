@@ -1,41 +1,47 @@
 {
-	"badgeTemplate": "\t<a href=\"#contributors\" target=\"_blank\"><img alt=\"👪 All Contributors: <%= contributors.length %>\" src=\"https://img.shields.io/badge/%F0%9F%91%AA_all_contributors-<%= contributors.length %>-21bb42.svg\" /></a>",
-	"contributors": [
-		{
-			"login": "JoshuaKGoldberg",
-			"name": "Josh Goldberg ✨",
-			"avatar_url": "https://avatars.githubusercontent.com/u/3335181?v=4",
-			"profile": "http://www.joshuakgoldberg.com/",
-			"contributions": [
-				"code",
-				"content",
-				"ideas",
-				"infra",
-				"maintenance",
-				"projectManagement",
-				"tool",
-				"doc"
-			]
-		},
-		{
-			"login": "aleclarson",
-			"name": "Alec Larson",
-			"avatar_url": "https://avatars.githubusercontent.com/u/1925840?v=4",
-			"profile": "https://github.com/aleclarson",
-			"contributions": ["ideas", "code"]
-		},
-		{
-			"login": "bluwy",
-			"name": "Bjorn Lu",
-			"avatar_url": "https://avatars.githubusercontent.com/u/34116392?v=4",
-			"profile": "https://bjornlu.com",
-			"contributions": ["ideas", "code", "bug"]
-		}
-	],
-	"contributorsSortAlphabetically": true,
-	"projectName": "formatly",
-	"projectOwner": "JoshuaKGoldberg",
-	"repoType": "github",
-	"commitConvention": "angular"
+  "badgeTemplate": "\t<a href=\"#contributors\" target=\"_blank\"><img alt=\"👪 All Contributors: <%= contributors.length %>\" src=\"https://img.shields.io/badge/%F0%9F%91%AA_all_contributors-<%= contributors.length %>-21bb42.svg\" /></a>",
+  "contributors": [
+    {
+      "login": "JoshuaKGoldberg",
+      "name": "Josh Goldberg ✨",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3335181?v=4",
+      "profile": "http://www.joshuakgoldberg.com/",
+      "contributions": [
+        "code",
+        "content",
+        "ideas",
+        "infra",
+        "maintenance",
+        "projectManagement",
+        "tool",
+        "doc"
+      ]
+    },
+    {
+      "login": "aleclarson",
+      "name": "Alec Larson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1925840?v=4",
+      "profile": "https://github.com/aleclarson",
+      "contributions": [
+        "ideas",
+        "code"
+      ]
+    },
+    {
+      "login": "bluwy",
+      "name": "Bjorn Lu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/34116392?v=4",
+      "profile": "https://bjornlu.com",
+      "contributions": [
+        "ideas",
+        "code",
+        "bug"
+      ]
+    }
+  ],
+  "contributorsSortAlphabetically": true,
+  "projectName": "formatly",
+  "projectOwner": "JoshuaKGoldberg",
+  "repoType": "github",
+  "commitConvention": "angular"
 }
-
