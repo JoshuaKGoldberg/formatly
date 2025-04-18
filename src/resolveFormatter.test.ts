@@ -102,4 +102,39 @@ describe("resolveFormatter", () => {
 
 		expect(formatter).toBeUndefined();
 	});
+
+	it("resolves with a default order", async () => {
+		mockReaddir.mockResolvedValueOnce([
+			".git",
+			"biome.json",
+			".prettierrc",
+			"src",
+		]);
+
+		const formatter = await resolveFormatter();
+
+		// default prefers biome over prettier
+		expect(formatter).toBe(
+			formatters.find((formatter) => formatter.name === "biome"),
+		);
+	});
+
+	it("resolves with a custom order", async () => {
+		mockReaddir.mockResolvedValueOnce([
+			".git",
+			"biome.json",
+			".prettierrc",
+			"src",
+		]);
+
+		const formatter = await resolveFormatter(undefined, [
+			"deno",
+			"prettier",
+			"biome",
+		]);
+
+		expect(formatter).toBe(
+			formatters.find((formatter) => formatter.name === "prettier"),
+		);
+	});
 });
