@@ -21,14 +21,15 @@ vi.mock("node:child_process", () => ({
 }));
 
 vi.mock("package-manager-detector", async (importOriginal) => {
-	const original: any = await importOriginal();
+	const original: Record<string, unknown> = await importOriginal();
 	return {
 		...original,
 		get detect() {
-			return async () => ({
-				name: "npm",
-				agent: "npm",
-			});
+			return () =>
+				Promise.resolve({
+					agent: "npm",
+					name: "npm",
+				});
 		},
 	};
 });
@@ -103,6 +104,7 @@ describe("formatly", () => {
 			result: { code: 0, signal: null },
 		});
 		expect(mockSpawn).toHaveBeenCalled();
+		// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 		expect(mockSpawn.mock.lastCall?.at(0)).toEqual("npx");
 	});
 
@@ -118,6 +120,7 @@ describe("formatly", () => {
 			result: { code: 0, signal: null },
 		});
 		expect(mockSpawn).toHaveBeenCalled();
+		// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 		expect(mockSpawn.mock.lastCall?.at(0)).toEqual("pnpm");
 	});
 });

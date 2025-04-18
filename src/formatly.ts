@@ -42,28 +42,6 @@ export interface FormatlyReportResult {
 	result: FormatlyReportChildProcessResult;
 }
 
-async function resolveNpxCommand(
-	runner: string,
-	cwd?: string,
-	packageManager?: Agent,
-): Promise<ResolvedCommand | void> {
-	const agent = packageManager ?? (await detect({ cwd }))?.agent;
-	if (!agent) {
-		return;
-	}
-
-	const command = resolveCommand(
-		agent,
-		"execute-local",
-		runner.split(" ").slice(1),
-	);
-	if (!command) {
-		return;
-	}
-
-	return command;
-}
-
 export async function formatly(
 	patterns: string[],
 	options: FormatlyOptions = {},
@@ -114,4 +92,26 @@ export async function formatly(
 			});
 		}),
 	};
+}
+
+async function resolveNpxCommand(
+	runner: string,
+	cwd?: string,
+	packageManager?: Agent,
+): Promise<ResolvedCommand | undefined> {
+	const agent = packageManager ?? (await detect({ cwd }))?.agent;
+	if (!agent) {
+		return;
+	}
+
+	const command = resolveCommand(
+		agent,
+		"execute-local",
+		runner.split(" ").slice(1),
+	);
+	if (!command) {
+		return;
+	}
+
+	return command;
 }
