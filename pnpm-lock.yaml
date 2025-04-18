@@ -11,6 +11,9 @@ importers:
       fd-package-json:
         specifier: ^1.2.0
         version: 1.2.0
+      package-manager-detector:
+        specifier: ^1.2.0
+        version: 1.2.0
     devDependencies:
       '@eslint-community/eslint-plugin-eslint-comments':
         specifier: 4.4.1
@@ -3104,6 +3107,9 @@ packages:
   package-json@10.0.1:
     resolution: {integrity: sha512-ua1L4OgXSBdsu1FPb7F3tYH0F48a6kxvod4pLUlGY9COeJAJQNX/sNH2IiEmsxw7lqYiAwrdHMjz1FctOsyDQg==}
     engines: {node: '>=18'}
+
+  package-manager-detector@1.2.0:
+    resolution: {integrity: sha512-PutJepsOtsqVfUsxCzgTTpyXmiAgvKptIgY4th5eq5UXXFhj5PxfQ9hnGkypMeovpAvVshFRItoFHYO18TCOqA==}
 
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
@@ -7294,6 +7300,8 @@ snapshots:
       registry-auth-token: 5.0.3
       registry-url: 6.0.1
       semver: 7.7.1
+
+  package-manager-detector@1.2.0: {}
 
   parent-module@1.0.1:
     dependencies:

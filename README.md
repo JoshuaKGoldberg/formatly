@@ -77,6 +77,7 @@ Parameters:
 2. `options: FormatlyOptions` _(optional)_:
    - `cwd: string` _(optional)_: working directory, if not `"."`
    - `formatter: FormatterName` _(optional)_: explicit formatter to use instead of detecting one, supports `"biome"`, `"deno"`, `"dprint"`, and `"prettier"`
+   - `packageManager: Agent` _(optional)_: explicit formatter to use instead of detecting one, see [package-manager-detector](https://github.com/antfu-collective/package-manager-detector) for more details
 
 Resolves with a `FormatlyReport`, which is either:
 

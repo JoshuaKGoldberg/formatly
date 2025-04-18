@@ -20,6 +20,20 @@ vi.mock("node:child_process", () => ({
 	},
 }));
 
+vi.mock("package-manager-detector", async (importOriginal) => {
+	const original: Record<string, unknown> = await importOriginal();
+	return {
+		...original,
+		get detect() {
+			return () =>
+				Promise.resolve({
+					agent: "npm",
+					name: "npm",
+				});
+		},
+	};
+});
+
 const mockResolveFormatter = vi.fn();
 
 vi.mock("./resolveFormatter.js", () => ({
@@ -76,5 +90,37 @@ describe("formatly", () => {
 			ran: true,
 			result: { code: 0, signal: null },
 		});
+	});
+
+	it("uses the preferred package manager", async () => {
+		const mockFormatter = formatters[0];
+		mockResolveFormatter.mockResolvedValueOnce(mockFormatter);
+
+		const report = await formatly(patterns);
+
+		expect(report).toEqual({
+			formatter: mockFormatter,
+			ran: true,
+			result: { code: 0, signal: null },
+		});
+		expect(mockSpawn).toHaveBeenCalled();
+		// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+		expect(mockSpawn.mock.lastCall?.at(0)).toEqual("npx");
+	});
+
+	it("uses the explicitly passed package manager", async () => {
+		const mockFormatter = formatters[0];
+		mockResolveFormatter.mockResolvedValueOnce(mockFormatter);
+
+		const report = await formatly(patterns, { packageManager: "pnpm" });
+
+		expect(report).toEqual({
+			formatter: mockFormatter,
+			ran: true,
+			result: { code: 0, signal: null },
+		});
+		expect(mockSpawn).toHaveBeenCalled();
+		// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+		expect(mockSpawn.mock.lastCall?.at(0)).toEqual("pnpm");
 	});
 });
