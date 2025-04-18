@@ -130,7 +130,8 @@ console.log(formatter);
 Parameters:
 
 1. `cwd: string` _(optional)_: working directory, if not `"."`
-2. `order: FormatterName[]` _(optional)_: explicit order of formatters to check, defaults to `["biome", "deno", "dprint", "prettier"]`. This can be set to prefer a specific formatter over others, or to skip a formatter entirely.
+2. `order: FormatterName[]` _(optional)_: explicit order of formatters to check, defaults to `["biome", "deno", "dprint", "prettier"]`.
+   This can be set to prefer a specific formatter over others, or to skip a formatter entirely.
 
 Resolves with either:
 

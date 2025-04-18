@@ -7,7 +7,7 @@ export async function resolveFormatter(
 	cwd = ".",
 	order?: FormatterName[],
 ): Promise<Formatter | undefined> {
-	const orderredFormatters =
+	const orderedFormatters =
 		order == null
 			? formatters
 			: (order
@@ -16,7 +16,7 @@ export async function resolveFormatter(
 
 	const children = await fs.readdir(cwd);
 
-	for (const formatter of orderredFormatters) {
+	for (const formatter of orderedFormatters) {
 		if (children.some((child) => formatter.testers.configFile.test(child))) {
 			return formatter;
 		}
@@ -30,13 +30,13 @@ export async function resolveFormatter(
 	const { scripts = {}, ...otherKeys } = packageData;
 	const scriptValues = Object.values(scripts as Record<string, string>);
 
-	for (const formatter of orderredFormatters) {
+	for (const formatter of orderedFormatters) {
 		if (scriptValues.some((script) => formatter.testers.script.test(script))) {
 			return formatter;
 		}
 	}
 
-	for (const formatter of orderredFormatters) {
+	for (const formatter of orderedFormatters) {
 		if (
 			"packageKey" in formatter.testers &&
 			formatter.testers.packageKey in otherKeys
