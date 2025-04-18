@@ -1,4 +1,10 @@
 import { spawn } from "node:child_process";
+import {
+	Agent,
+	detect,
+	resolveCommand,
+	ResolvedCommand,
+} from "package-manager-detector";
 
 import { Formatter, FormatterName, formatters } from "./formatters.js";
 import { resolveFormatter } from "./resolveFormatter.js";
@@ -7,9 +13,15 @@ export interface FormatlyOptions {
 	cwd?: string;
 
 	/**
-	 * Pass an explicitly formatter to use instead of automatically detecting
+	 * Pass an explicit formatter to use instead of automatically detecting
 	 */
 	formatter?: FormatterName;
+
+	/**
+	 * Pass an explicit package manager to use for executing formatting commands
+	 * instead of automatically detecting
+	 */
+	packageManager?: Agent;
 }
 
 export type FormatlyReport = FormatlyReportError | FormatlyReportResult;
@@ -28,6 +40,28 @@ export interface FormatlyReportResult {
 	formatter: Formatter;
 	ran: true;
 	result: FormatlyReportChildProcessResult;
+}
+
+async function resolveNpxCommand(
+	runner: string,
+	cwd?: string,
+	packageManager?: Agent,
+): Promise<ResolvedCommand | void> {
+	const agent = packageManager ?? (await detect({ cwd }))?.agent;
+	if (!agent) {
+		return;
+	}
+
+	const command = resolveCommand(
+		agent,
+		"execute-local",
+		runner.split(" ").slice(1),
+	);
+	if (!command) {
+		return;
+	}
+
+	return command;
 }
 
 export async function formatly(
@@ -49,7 +83,22 @@ export async function formatly(
 		return { message: "Could not detect a reporter.", ran: false };
 	}
 
-	const [baseCommand, ...args] = formatter.runner.split(" ");
+	let baseCommand: string | undefined;
+	let args: string[] | undefined;
+	if (formatter.runner.startsWith("npx ")) {
+		const resolved = await resolveNpxCommand(
+			formatter.runner,
+			options.cwd,
+			options.packageManager,
+		);
+		if (resolved) {
+			baseCommand = resolved.command;
+			args = resolved.args;
+		}
+	}
+	if (baseCommand == null || args == null) {
+		[baseCommand, ...args] = formatter.runner.split(" ");
+	}
 
 	return {
 		formatter,
