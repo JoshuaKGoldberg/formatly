@@ -130,6 +130,7 @@ console.log(formatter);
 Parameters:
 
 1. `cwd: string` _(optional)_: working directory, if not `"."`
+2. `order: FormatterName[]` _(optional)_: explicit order of formatters to check, defaults to `["biome", "deno", "dprint", "prettier"]`. This can be set to prefer a specific formatter over others, or to skip a formatter entirely.
 
 Resolves with either:
 
@@ -144,7 +145,7 @@ Resolves with either:
 Formatters are detected based on the first match from, in order:
 
 1. Existence of the formatter's default supported config file name
-2. The formatter's name in a `package.json` `fmt` or `format` script
+2. The formatter's name in a `package.json` `"scripts"` value
 3. Well-known root-level `package.json` key
 
 ### Supported Formatters

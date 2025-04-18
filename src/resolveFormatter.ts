@@ -1,18 +1,24 @@
 import { findPackage } from "fd-package-json";
 import * as fs from "node:fs/promises";
 
-import { Formatter, formatters } from "./formatters.js";
+import { Formatter, FormatterName, formatters } from "./formatters.js";
 
 export async function resolveFormatter(
 	cwd = ".",
+	order?: FormatterName[],
 ): Promise<Formatter | undefined> {
+	const orderredFormatters =
+		order == null
+			? formatters
+			: (order
+					.map((name) => formatters.find((f) => f.name === name))
+					.filter(Boolean) as typeof formatters);
+
 	const children = await fs.readdir(cwd);
 
-	for (const child of children) {
-		for (const formatter of formatters) {
-			if (formatter.testers.configFile.test(child)) {
-				return formatter;
-			}
+	for (const formatter of orderredFormatters) {
+		if (children.some((child) => formatter.testers.configFile.test(child))) {
+			return formatter;
 		}
 	}
 
@@ -22,16 +28,15 @@ export async function resolveFormatter(
 	}
 
 	const { scripts = {}, ...otherKeys } = packageData;
+	const scriptValues = Object.values(scripts as Record<string, string>);
 
-	for (const script of Object.values(scripts as object)) {
-		for (const formatter of formatters) {
-			if (formatter.testers.script.test(script as string)) {
-				return formatter;
-			}
+	for (const formatter of orderredFormatters) {
+		if (scriptValues.some((script) => formatter.testers.script.test(script))) {
+			return formatter;
 		}
 	}
 
-	for (const formatter of formatters) {
+	for (const formatter of orderredFormatters) {
 		if (
 			"packageKey" in formatter.testers &&
 			formatter.testers.packageKey in otherKeys
