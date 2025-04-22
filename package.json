@@ -40,7 +40,7 @@
 		"fd-package-json": "^1.2.0"
 	},
 	"devDependencies": {
-		"@eslint-community/eslint-plugin-eslint-comments": "4.4.1",
+		"@eslint-community/eslint-plugin-eslint-comments": "4.5.0",
 		"@eslint/js": "9.24.0",
 		"@release-it/conventional-changelog": "10.0.0",
 		"@types/eslint-plugin-markdown": "2.0.2",
@@ -48,7 +48,7 @@
 		"@vitest/coverage-v8": "3.1.1",
 		"@vitest/eslint-plugin": "1.1.38",
 		"console-fail-test": "0.5.0",
-		"create-typescript-app": "2.40.0",
+		"create-typescript-app": "2.41.0",
 		"cspell": "8.18.0",
 		"eslint": "9.24.0",
 		"eslint-plugin-jsdoc": "50.6.8",
@@ -72,7 +72,7 @@
 		"sentences-per-line": "0.3.0",
 		"tsup": "8.4.0",
 		"typescript": "5.8.2",
-		"typescript-eslint": "8.29.0",
+		"typescript-eslint": "8.30.0",
 		"vitest": "3.1.1"
 	},
 	"packageManager": "pnpm@10.8.0",
