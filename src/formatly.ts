@@ -56,7 +56,7 @@ export async function formatly(
 		ran: true,
 		result: await new Promise((resolve, reject) => {
 			const child = spawn(baseCommand, [...args, ...patterns], {
-				cwd: process.cwd(),
+				cwd: options.cwd ?? process.cwd(),
 			});
 
 			child.on("error", reject);
