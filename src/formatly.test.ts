@@ -77,4 +77,20 @@ describe("formatly", () => {
 			result: { code: 0, signal: null },
 		});
 	});
+
+	it("uses provided cwd to resolve formatter and spawn process", async () => {
+		const cwd = "custom";
+		const mockFormatter = formatters[0];
+		mockResolveFormatter.mockResolvedValueOnce(mockFormatter);
+
+		await formatly(patterns, { cwd });
+
+		expect(mockResolveFormatter).toHaveBeenCalledWith(cwd);
+
+		expect(mockSpawn).toHaveBeenCalledWith(
+			"npx",
+			["@biomejs/biome", "format", "--write", ...patterns],
+			{ cwd },
+		);
+	});
 });
