@@ -32,7 +32,7 @@ describe("resolveFormatter", () => {
 			async (formatterName, _, children) => {
 				mockReaddir.mockResolvedValueOnce(children);
 
-				const formatter = await resolveFormatter();
+				const formatter = await resolveFormatter(".");
 
 				expect(formatter).toBe(
 					formatters.find((formatter) => formatter.name === formatterName),
@@ -46,7 +46,7 @@ describe("resolveFormatter", () => {
 			mockReaddir.mockResolvedValueOnce(["totally", "unrelated"]);
 			mockFindPackage.mockResolvedValueOnce(undefined);
 
-			const formatter = await resolveFormatter();
+			const formatter = await resolveFormatter(".");
 
 			expect(formatter).toBeUndefined();
 		});
@@ -66,7 +66,7 @@ describe("resolveFormatter", () => {
 					},
 				});
 
-				const formatter = await resolveFormatter();
+				const formatter = await resolveFormatter(".");
 
 				expect(formatter).toBe(
 					formatters.find((formatter) => formatter.name === formatterName),
@@ -82,7 +82,7 @@ describe("resolveFormatter", () => {
 					[key]: {},
 				});
 
-				const formatter = await resolveFormatter();
+				const formatter = await resolveFormatter(".");
 
 				expect(formatter).toBe(
 					formatters.find((formatter) => formatter.name === formatterName),
@@ -98,7 +98,7 @@ describe("resolveFormatter", () => {
 			scripts: { totally: "unrelated" },
 		});
 
-		const formatter = await resolveFormatter();
+		const formatter = await resolveFormatter(".");
 
 		expect(formatter).toBeUndefined();
 	});
