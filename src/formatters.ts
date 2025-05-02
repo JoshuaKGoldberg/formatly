@@ -29,7 +29,7 @@ export const formatters = [
 	},
 	{
 		name: "dprint",
-		runner: "npx dprint",
+		runner: "npx dprint fmt",
 		testers: {
 			configFile: /dprint\.json/,
 			script: /dprint/,

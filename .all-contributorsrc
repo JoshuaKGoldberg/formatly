@@ -1,5 +1,6 @@
 {
   "badgeTemplate": "\t<a href=\"#contributors\" target=\"_blank\"><img alt=\"👪 All Contributors: <%= contributors.length %>\" src=\"https://img.shields.io/badge/%F0%9F%91%AA_all_contributors-<%= contributors.length %>-21bb42.svg\" /></a>",
+  "commitType": "docs",
   "contributors": [
     {
       "login": "JoshuaKGoldberg",
@@ -35,18 +36,34 @@
       "profile": "https://bjornlu.com",
       "contributions": [
         "ideas",
-        "code"
+        "code",
+        "bug"
       ]
+    },
+    {
+      "login": "rubiesonthesky",
+      "name": "rubiesonthesky",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2591240?v=4",
+      "profile": "https://github.com/rubiesonthesky",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "webpro",
+      "name": "Lars Kappert",
+      "avatar_url": "https://avatars.githubusercontent.com/u/456426?v=4",
+      "profile": "https://webpro.nl/",
+      "contributions": ["bug"]
     }
   ],
+  "contributorsPerLine": 7,
   "contributorsSortAlphabetically": true,
-  "projectName": "formatly",
-  "projectOwner": "JoshuaKGoldberg",
-  "repoType": "github",
-  "commitConvention": "angular",
   "files": [
     "README.md"
   ],
-  "commitType": "docs",
-  "contributorsPerLine": 7
+  "projectName": "formatly",
+  "projectOwner": "JoshuaKGoldberg",
+  "repoType": "github",
+  "commitConvention": "angular"
 }
