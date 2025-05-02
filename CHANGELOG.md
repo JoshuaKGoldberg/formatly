@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.3](https://github.com/JoshuaKGoldberg/formatly/compare/0.2.2...0.2.3) (2025-05-02)
+
+### Bug Fixes
+
+- respect `options.cwd` when running formatter ([#131](https://github.com/JoshuaKGoldberg/formatly/issues/131)) ([ca02868](https://github.com/JoshuaKGoldberg/formatly/commit/ca0286817eadc10c689d7848160fbc7940bb58fb)), closes [#130](https://github.com/JoshuaKGoldberg/formatly/issues/130)
+
 ## [0.2.2](https://github.com/JoshuaKGoldberg/formatly/compare/0.2.1...0.2.2) (2025-04-23)
 
 ### Bug Fixes
