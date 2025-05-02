@@ -42,6 +42,8 @@ export default tseslint.config(
 			},
 		},
 		rules: {
+			"n/no-unsupported-features/node-builtins": "off",
+
 			// Stylistic concerns that don't interfere with Prettier
 			"logical-assignment-operators": [
 				"error",
