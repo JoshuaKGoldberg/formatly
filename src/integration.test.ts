@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { formatly } from "./formatly.js";
-import { formatters } from "./formatters.js";
+import { formatters } from "./formatters/all.js";
 
 const mockSpawn = vi.fn(() => ({
 	on: (
@@ -41,7 +41,7 @@ describe("formatly + resolveFormatter", () => {
 		expect(report).toEqual({
 			formatter: formatters[1],
 			ran: true,
-			result: { code: 0, signal: null },
+			result: { code: 0, runner: "child_process", signal: null },
 		});
 
 		expect(mockSpawn).toHaveBeenCalledWith("deno", ["fmt", ...patterns], {

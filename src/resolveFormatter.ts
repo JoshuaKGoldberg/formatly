@@ -1,7 +1,8 @@
 import { findPackage } from "fd-package-json";
 import * as fs from "node:fs/promises";
 
-import { Formatter, formatters } from "./formatters.js";
+import { formatters } from "./formatters/all.js";
+import { Formatter } from "./types.js";
 
 export async function resolveFormatter(
 	cwd = ".",
