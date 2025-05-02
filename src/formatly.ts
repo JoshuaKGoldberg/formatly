@@ -41,9 +41,11 @@ export async function formatly(
 		};
 	}
 
+	const { cwd = process.cwd() } = options;
+
 	const formatter = options.formatter
 		? formatters.find((f) => f.name === options.formatter)
-		: await resolveFormatter(options.cwd);
+		: await resolveFormatter(cwd);
 
 	if (!formatter) {
 		return { message: "Could not detect a reporter.", ran: false };
@@ -55,9 +57,7 @@ export async function formatly(
 		formatter,
 		ran: true,
 		result: await new Promise((resolve, reject) => {
-			const child = spawn(baseCommand, [...args, ...patterns], {
-				cwd: process.cwd(),
-			});
+			const child = spawn(baseCommand, [...args, ...patterns], { cwd });
 
 			child.on("error", reject);
 			child.on("exit", (code, signal) => {
