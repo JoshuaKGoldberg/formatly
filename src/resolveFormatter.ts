@@ -4,7 +4,7 @@ import * as fs from "node:fs/promises";
 import { Formatter, formatters } from "./formatters.js";
 
 export async function resolveFormatter(
-	cwd: string,
+	cwd = ".",
 ): Promise<Formatter | undefined> {
 	const children = await fs.readdir(cwd);
 

@@ -20,6 +20,29 @@ vi.mock("fd-package-json", () => ({
 }));
 
 describe("resolveFormatter", () => {
+	describe("cwd", () => {
+		it("defaults cwd to . when not provided", async () => {
+			mockReaddir.mockResolvedValueOnce(["totally", "unrelated"]);
+			mockFindPackage.mockResolvedValueOnce(undefined);
+
+			await resolveFormatter();
+
+			expect(mockReaddir).toHaveBeenCalledWith(".");
+			expect(mockFindPackage).toHaveBeenCalledWith(".");
+		});
+
+		it("uses the cwd when provided", async () => {
+			const cwd = "some/other/path";
+			mockReaddir.mockResolvedValueOnce(["totally", "unrelated"]);
+			mockFindPackage.mockResolvedValueOnce(undefined);
+
+			await resolveFormatter(cwd);
+
+			expect(mockReaddir).toHaveBeenCalledWith(cwd);
+			expect(mockFindPackage).toHaveBeenCalledWith(cwd);
+		});
+	});
+
 	describe("from config file", () => {
 		it.each([
 			["biome", "biome.json", [".git", "biome.json", "src"]],
@@ -32,7 +55,7 @@ describe("resolveFormatter", () => {
 			async (formatterName, _, children) => {
 				mockReaddir.mockResolvedValueOnce(children);
 
-				const formatter = await resolveFormatter(".");
+				const formatter = await resolveFormatter();
 
 				expect(formatter).toBe(
 					formatters.find((formatter) => formatter.name === formatterName),
@@ -46,7 +69,7 @@ describe("resolveFormatter", () => {
 			mockReaddir.mockResolvedValueOnce(["totally", "unrelated"]);
 			mockFindPackage.mockResolvedValueOnce(undefined);
 
-			const formatter = await resolveFormatter(".");
+			const formatter = await resolveFormatter();
 
 			expect(formatter).toBeUndefined();
 		});
@@ -66,7 +89,7 @@ describe("resolveFormatter", () => {
 					},
 				});
 
-				const formatter = await resolveFormatter(".");
+				const formatter = await resolveFormatter();
 
 				expect(formatter).toBe(
 					formatters.find((formatter) => formatter.name === formatterName),
@@ -82,7 +105,7 @@ describe("resolveFormatter", () => {
 					[key]: {},
 				});
 
-				const formatter = await resolveFormatter(".");
+				const formatter = await resolveFormatter();
 
 				expect(formatter).toBe(
 					formatters.find((formatter) => formatter.name === formatterName),
@@ -98,7 +121,7 @@ describe("resolveFormatter", () => {
 			scripts: { totally: "unrelated" },
 		});
 
-		const formatter = await resolveFormatter(".");
+		const formatter = await resolveFormatter();
 
 		expect(formatter).toBeUndefined();
 	});
