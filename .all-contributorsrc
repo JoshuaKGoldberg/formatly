@@ -15,7 +15,8 @@
         "maintenance",
         "projectManagement",
         "tool",
-        "doc"
+        "doc",
+        "bug"
       ]
     },
     {
