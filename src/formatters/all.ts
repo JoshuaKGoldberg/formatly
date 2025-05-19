@@ -1,19 +1,11 @@
-export interface Formatter {
-	name: FormatterName;
-	runner: string;
-	testers: {
-		configFile: RegExp;
-		packageKey?: string;
-		script: RegExp;
-	};
-}
-
-export type FormatterName = "biome" | "deno" | "dprint" | "prettier";
+import { Formatter } from "../types.js";
+import { createRunCommand } from "./createRunCommand.js";
+import { runPrettier } from "./runPrettier.js";
 
 export const formatters = [
 	{
 		name: "biome",
-		runner: "npx @biomejs/biome format --write",
+		runner: createRunCommand("npx @biomejs/biome format --write"),
 		testers: {
 			configFile: /biome\.json/,
 			script: /biome\s+format/,
@@ -21,7 +13,7 @@ export const formatters = [
 	},
 	{
 		name: "deno",
-		runner: "deno fmt",
+		runner: createRunCommand("deno fmt"),
 		testers: {
 			configFile: /deno\.json/,
 			script: /deno/,
@@ -29,7 +21,7 @@ export const formatters = [
 	},
 	{
 		name: "dprint",
-		runner: "npx dprint fmt",
+		runner: createRunCommand("npx dprint fmt"),
 		testers: {
 			configFile: /dprint\.json/,
 			script: /dprint/,
@@ -37,7 +29,7 @@ export const formatters = [
 	},
 	{
 		name: "prettier",
-		runner: "npx prettier --write",
+		runner: runPrettier,
 		testers: {
 			configFile: /prettier(?:rc|\.)/,
 			packageKey: "prettier",

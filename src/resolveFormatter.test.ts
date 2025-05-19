@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { formatters } from "./formatters.js";
+import { formatters } from "./formatters/all.js";
 import { resolveFormatter } from "./resolveFormatter.js";
 
 const mockReaddir = vi.fn();
