@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.4](https://github.com/JoshuaKGoldberg/formatly/compare/0.2.3...0.2.4) (2025-06-02)
+
+### Bug Fixes
+
+- **deps:** update dependency fd-package-json to v2 ([#171](https://github.com/JoshuaKGoldberg/formatly/issues/171)) ([cf84d65](https://github.com/JoshuaKGoldberg/formatly/commit/cf84d657e199ecca78cbffeb4c9101f444f79c8d))
+
 ## [0.2.3](https://github.com/JoshuaKGoldberg/formatly/compare/0.2.2...0.2.3) (2025-05-02)
 
 ### Bug Fixes
