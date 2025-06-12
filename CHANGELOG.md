@@ -1,5 +1,11 @@
 # Changelog
 
+# [0.3.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.2.4...0.3.0) (2025-06-12)
+
+### Features
+
+- use Prettier's CLI function in-memory if possible ([#144](https://github.com/JoshuaKGoldberg/formatly/issues/144)) ([cd31aab](https://github.com/JoshuaKGoldberg/formatly/commit/cd31aabfe564588d6324cb056d960b0753bea4bc)), closes [#114](https://github.com/JoshuaKGoldberg/formatly/issues/114)
+
 ## [0.2.4](https://github.com/JoshuaKGoldberg/formatly/compare/0.2.3...0.2.4) (2025-06-02)
 
 ### Bug Fixes
