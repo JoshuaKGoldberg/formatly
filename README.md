@@ -183,6 +183,12 @@ Userland projects still need to configure a formatter themselves.
 See [`.github/CONTRIBUTING.md`](./.github/CONTRIBUTING.md), then [`.github/DEVELOPMENT.md`](./.github/DEVELOPMENT.md).
 Thanks! 🧼
 
+## Used by
+
+<a href="https://dependents.info/JoshuaKGoldberg/formatly" target="_blank">
+  <img src="https://dependents.info/JoshuaKGoldberg/formatly/image" alt="Network Dependents" />
+</a>
+
 ## Contributors
 
 <!-- spellchecker: disable -->
