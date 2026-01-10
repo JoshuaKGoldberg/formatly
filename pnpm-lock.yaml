@@ -58,8 +58,8 @@ importers:
         specifier: 17.23.0
         version: 17.23.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.2)
       eslint-plugin-package-json:
-        specifier: 0.54.0
-        version: 0.54.0(@types/estree@1.0.8)(eslint@9.39.1(jiti@2.6.1))(jsonc-eslint-parser@2.4.0)
+        specifier: 0.88.1
+        version: 0.88.1(@types/estree@1.0.8)(eslint@9.39.1(jiti@2.6.1))(jsonc-eslint-parser@2.4.0)
       eslint-plugin-perfectionist:
         specifier: 5.3.0
         version: 5.3.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.2)
@@ -2021,8 +2021,8 @@ packages:
   destr@2.0.5:
     resolution: {integrity: sha512-ugFTXCtDZunbzasqBxrK93Ik/DRYsO6S/fedkWEMKqt04xZ4csmnmwGDBAb07QWNaGMAmnTIemsYZCksjATwsA==}
 
-  detect-indent@7.0.1:
-    resolution: {integrity: sha512-Mc7QhQ8s+cLrnUfU/Ji94vG/r8M26m8f++vyres4ZoojaRDpZ1eSIh/EpzLNwlWuvzSZ3UbDFspjFvTDXe6e/g==}
+  detect-indent@7.0.2:
+    resolution: {integrity: sha512-y+8xyqdGLL+6sh0tVeHcfP/QDd8gUgbasolJJpY7NgeQGSZ739bDtSiaiDgtoicy+mtYB81dKLxO9xRhCyIB3A==}
     engines: {node: '>=12.20'}
 
   detect-newline@4.0.1:
@@ -2177,9 +2177,9 @@ packages:
     peerDependencies:
       eslint: '>=8.23.0'
 
-  eslint-plugin-package-json@0.54.0:
-    resolution: {integrity: sha512-KXVMhx/Hj2Rb8LbBbWG0fXoqImNz5rUVdF5FO8EGDsgWd3zGBisxFf9rZGGzPeMQTF67Bo/49c8xXFyT+Nd+dw==}
-    engines: {node: ^=20.19.0 || >=22.12.0}
+  eslint-plugin-package-json@0.88.1:
+    resolution: {integrity: sha512-azVaiYwKOZBA4I8q7kxZ8pJ64pihQdAh7MWKQveoZeF/4dDWPxehqkbS3psl3yWvz3Etea9oxALEXso0MUi/Wg==}
+    engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       eslint: '>=8.0.0'
       jsonc-eslint-parser: ^2.0.0
@@ -3253,9 +3253,9 @@ packages:
   package-json-from-dist@1.0.1:
     resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
 
-  package-json-validator@0.29.1:
-    resolution: {integrity: sha512-xS8okscm06Nw2OhInIqFpFhkVWLRYRjCujHN7yeEUHlS+Ppg1n/ec4AkDlycdhUX/98HbAuOfKJ0lLXt6NIV9w==}
-    engines: {node: ^20.19.0 || >=22.12.0}
+  package-json-validator@0.59.1:
+    resolution: {integrity: sha512-cLk5/c/OJX9nA9rl3d2Gymrxv2lqhOBn3+1+D6ZqPNjL6ZyhcjVDUfKyXh+nDyQjGVEQfPoVIE5kLrZ2zn6nDQ==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
     hasBin: true
 
   parent-module@1.0.1:
@@ -3655,6 +3655,9 @@ packages:
   sort-object-keys@1.1.3:
     resolution: {integrity: sha512-855pvK+VkU7PaKYPc+Jjnmt4EzejQHyhhF33q31qG8x7maDzkeFhAAThdCYay11CISO+qAMwjOBP+fPZe0IPyg==}
 
+  sort-object-keys@2.0.1:
+    resolution: {integrity: sha512-R89fO+z3x7hiKPXX5P0qim+ge6Y60AjtlW+QQpRozrrNcR1lw9Pkpm5MLB56HoNvdcLHL4wbpq16OcvGpEDJIg==}
+
   sort-package-json@2.15.1:
     resolution: {integrity: sha512-9x9+o8krTT2saA9liI4BljNjwAbvUnWf11Wq+i/iZt8nl2UGYnf3TH5uBydE7VALmP7AGwlfszuEeL8BDyb0YA==}
     hasBin: true
@@ -3947,9 +3950,9 @@ packages:
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
 
-  validate-npm-package-name@6.0.2:
-    resolution: {integrity: sha512-IUoow1YUtvoBBC06dXs8bR8B9vuA3aJfmQNKMoaPG/OFsPmoQvw8xh+6Ye25Gx9DQhoEom3Pcu9MKHerm/NpUQ==}
-    engines: {node: ^18.17.0 || >=20.5.0}
+  validate-npm-package-name@7.0.2:
+    resolution: {integrity: sha512-hVDIBwsRruT73PbK7uP5ebUt+ezEtCmzZz3F59BSr2F6OVFnJ/6h8liuvdLrQ88Xmnk6/+xGGuq+pG9WwTuy3A==}
+    engines: {node: ^20.17.0 || >=22.9.0}
 
   vite@7.1.12:
     resolution: {integrity: sha512-ZWyE8YXEXqJrrSLvYgrRP7p62OziLW7xI5HYGWFzOvupfAlrLvURSzv/FyGyy0eidogEM3ujU+kUG1zuHgb6Ug==}
@@ -6167,7 +6170,7 @@ snapshots:
 
   destr@2.0.5: {}
 
-  detect-indent@7.0.1: {}
+  detect-indent@7.0.2: {}
 
   detect-newline@4.0.1: {}
 
@@ -6356,20 +6359,20 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  eslint-plugin-package-json@0.54.0(@types/estree@1.0.8)(eslint@9.39.1(jiti@2.6.1))(jsonc-eslint-parser@2.4.0):
+  eslint-plugin-package-json@0.88.1(@types/estree@1.0.8)(eslint@9.39.1(jiti@2.6.1))(jsonc-eslint-parser@2.4.0):
     dependencies:
       '@altano/repository-tools': 2.0.1
       change-case: 5.4.4
-      detect-indent: 7.0.1
+      detect-indent: 7.0.2
       detect-newline: 4.0.1
       eslint: 9.39.1(jiti@2.6.1)
       eslint-fix-utils: 0.4.0(@types/estree@1.0.8)(eslint@9.39.1(jiti@2.6.1))
       jsonc-eslint-parser: 2.4.0
-      package-json-validator: 0.29.1
+      package-json-validator: 0.59.1
       semver: 7.7.3
-      sort-object-keys: 1.1.3
+      sort-object-keys: 2.0.1
       sort-package-json: 3.4.0
-      validate-npm-package-name: 6.0.2
+      validate-npm-package-name: 7.0.2
     transitivePeerDependencies:
       - '@types/estree'
 
@@ -7642,10 +7645,11 @@ snapshots:
 
   package-json-from-dist@1.0.1: {}
 
-  package-json-validator@0.29.1:
+  package-json-validator@0.59.1:
     dependencies:
       semver: 7.7.3
       validate-npm-package-license: 3.0.4
+      validate-npm-package-name: 7.0.2
       yargs: 18.0.0
 
   parent-module@1.0.1:
@@ -8060,9 +8064,11 @@ snapshots:
 
   sort-object-keys@1.1.3: {}
 
+  sort-object-keys@2.0.1: {}
+
   sort-package-json@2.15.1:
     dependencies:
-      detect-indent: 7.0.1
+      detect-indent: 7.0.2
       detect-newline: 4.0.1
       get-stdin: 9.0.0
       git-hooks-list: 3.1.0
@@ -8073,7 +8079,7 @@ snapshots:
 
   sort-package-json@3.4.0:
     dependencies:
-      detect-indent: 7.0.1
+      detect-indent: 7.0.2
       detect-newline: 4.0.1
       git-hooks-list: 4.1.1
       is-plain-obj: 4.1.0
@@ -8347,7 +8353,7 @@ snapshots:
       spdx-correct: 3.2.0
       spdx-expression-parse: 3.0.1
 
-  validate-npm-package-name@6.0.2: {}
+  validate-npm-package-name@7.0.2: {}
 
   vite@7.1.12(@types/node@24.10.0)(jiti@2.6.1)(yaml@2.8.2):
     dependencies:
