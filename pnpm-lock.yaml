@@ -85,17 +85,17 @@ importers:
         specifier: 0.49.0
         version: 0.49.0
       prettier:
-        specifier: 3.8.0
-        version: 3.8.0
+        specifier: 3.9.0
+        version: 3.9.0
       prettier-plugin-curly:
         specifier: 0.4.0
-        version: 0.4.0(prettier@3.8.0)
+        version: 0.4.0(prettier@3.9.0)
       prettier-plugin-packagejson:
         specifier: 3.0.0
-        version: 3.0.0(prettier@3.8.0)
+        version: 3.0.0(prettier@3.9.0)
       prettier-plugin-sh:
         specifier: 0.18.0
-        version: 0.18.0(prettier@3.8.0)
+        version: 0.18.0(prettier@3.9.0)
       release-it:
         specifier: 20.2.0
         version: 20.2.0(@types/node@24.13.2)(magicast@0.5.3)
@@ -3665,8 +3665,8 @@ packages:
     peerDependencies:
       prettier: ^3.6.0
 
-  prettier@3.8.0:
-    resolution: {integrity: sha512-yEPsovQfpxYfgWNhCfECjG5AQaO+K3dp6XERmOepyPDVqcJm+bjyCVO3pmU+nAPe0N5dDvekfGezt/EIiRe1TA==}
+  prettier@3.9.0:
+    resolution: {integrity: sha512-LjIqSIC5VYLzs9WedVmJ2ljNAGnU+DteIClbahu4L/DBeWjZ6iT/k1lAYyu9JUh+1xINxWadaPw/Pl63y/agAw==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -8056,23 +8056,23 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-plugin-curly@0.4.0(prettier@3.8.0):
+  prettier-plugin-curly@0.4.0(prettier@3.9.0):
     dependencies:
-      prettier: 3.8.0
+      prettier: 3.9.0
 
-  prettier-plugin-packagejson@3.0.0(prettier@3.8.0):
+  prettier-plugin-packagejson@3.0.0(prettier@3.9.0):
     dependencies:
       sort-package-json: 3.6.0
     optionalDependencies:
-      prettier: 3.8.0
+      prettier: 3.9.0
 
-  prettier-plugin-sh@0.18.0(prettier@3.8.0):
+  prettier-plugin-sh@0.18.0(prettier@3.9.0):
     dependencies:
       '@reteps/dockerfmt': 0.3.6
-      prettier: 3.8.0
+      prettier: 3.9.0
       sh-syntax: 0.5.8
 
-  prettier@3.8.0: {}
+  prettier@3.9.0: {}
 
   pretty-ms@9.3.0:
     dependencies:
