@@ -40,7 +40,7 @@ export interface Formatter {
 	};
 }
 
-export type FormatterName = "biome" | "deno" | "dprint" | "prettier";
+export type FormatterName = "biome" | "deno" | "dprint" | "oxfmt" | "prettier";
 
 export type FormatterRunner = (
 	options: FormatterRunnerOptions,
