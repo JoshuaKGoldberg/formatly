@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { runFormatterCommand } from "./runFormatterCommand.js";
+import {
+	runFormatterCommand,
+	runPackageFormatterCommand,
+} from "./runFormatterCommand.js";
 
 const mockSpawn = vi.fn(() => ({
 	on: (
@@ -39,7 +42,10 @@ describe("runFormatterCommand", () => {
 			name: "pnpm",
 		});
 
-		await runFormatterCommand("npx dprint fmt", options);
+		await runPackageFormatterCommand(
+			{ args: ["fmt"], command: "dprint" },
+			options,
+		);
 
 		expect(mockDetect).toHaveBeenCalledWith({ cwd: options.cwd });
 		expect(mockSpawn).toHaveBeenCalledWith(
@@ -52,7 +58,10 @@ describe("runFormatterCommand", () => {
 	it("falls back to npx when a package manager cannot be detected", async () => {
 		mockDetect.mockResolvedValueOnce(null);
 
-		await runFormatterCommand("npx dprint fmt", options);
+		await runPackageFormatterCommand(
+			{ args: ["fmt"], command: "dprint" },
+			options,
+		);
 
 		expect(mockSpawn).toHaveBeenCalledWith(
 			"npx",
@@ -62,7 +71,7 @@ describe("runFormatterCommand", () => {
 	});
 
 	it("runs non-package-manager commands directly", async () => {
-		await runFormatterCommand("deno fmt", options);
+		await runFormatterCommand({ args: ["fmt"], command: "deno" }, options);
 
 		expect(mockDetect).not.toHaveBeenCalled();
 		expect(mockSpawn).toHaveBeenCalledWith(
