@@ -2,7 +2,7 @@ import { createRequire } from "node:module";
 import path from "node:path";
 
 import { FormatterRunner } from "../types.js";
-import { runFormatterCommand } from "./runFormatterCommand.js";
+import { runPackageFormatterCommand } from "./runFormatterCommand.js";
 import { wrapSafe } from "./wrapSafe.js";
 
 /**
@@ -23,7 +23,10 @@ export const runPrettier: FormatterRunner = async ({ cwd, patterns }) => {
 	);
 
 	if (!prettierCli) {
-		return await runFormatterCommand("npx prettier --write", { cwd, patterns });
+		return await runPackageFormatterCommand(
+			{ args: ["--write"], command: "prettier" },
+			{ cwd, patterns },
+		);
 	}
 
 	await prettierCli.run(["--log-level", "silent", "--write", ...patterns]);

@@ -1,4 +1,6 @@
 import { spawn } from "child_process";
+import { detect, type ResolvedCommand } from "package-manager-detector";
+import { resolveCommand } from "package-manager-detector/commands";
 
 import {
 	FormatlyReportChildProcessResult,
@@ -6,13 +8,35 @@ import {
 } from "../types.js";
 
 export async function runFormatterCommand(
-	runner: string,
+	{ args, command }: ResolvedCommand,
 	{ cwd, patterns }: FormatterRunnerOptions,
 ): Promise<FormatlyReportChildProcessResult> {
-	const [baseCommand, ...args] = runner.split(" ");
+	return await spawnFormatterCommand(
+		{ args: [...args, ...patterns], command },
+		cwd,
+	);
+}
 
+export async function runPackageFormatterCommand(
+	{ args, command }: ResolvedCommand,
+	{ cwd, patterns }: FormatterRunnerOptions,
+): Promise<FormatlyReportChildProcessResult> {
+	const packageArguments = [command, ...args, ...patterns];
+	const resolvedCommand = resolveCommand(
+		(await detect({ cwd }))?.agent ?? "npm",
+		"execute-local",
+		packageArguments,
+	) ?? { args: packageArguments, command: "npx" };
+
+	return await spawnFormatterCommand(resolvedCommand, cwd);
+}
+
+async function spawnFormatterCommand(
+	{ args, command }: ResolvedCommand,
+	cwd: string,
+): Promise<FormatlyReportChildProcessResult> {
 	return await new Promise((resolve, reject) => {
-		const child = spawn(baseCommand, [...args, ...patterns], { cwd });
+		const child = spawn(command, args, { cwd });
 
 		child.on("error", reject);
 		child.on("exit", (code, signal) => {

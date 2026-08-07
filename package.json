@@ -37,7 +37,8 @@
 		"*": "prettier --ignore-unknown --write"
 	},
 	"dependencies": {
-		"fd-package-json": "^2.0.0"
+		"fd-package-json": "^2.0.0",
+		"package-manager-detector": "^1.8.0"
 	},
 	"devDependencies": {
 		"@eslint-community/eslint-plugin-eslint-comments": "4.7.0",

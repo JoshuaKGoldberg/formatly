@@ -8,11 +8,11 @@ vi.mock("node:module", () => ({
 	createRequire: () => mockRequire,
 }));
 
-const mockRunFormatterCommand = vi.fn();
+const mockRunPackageFormatterCommand = vi.fn();
 
 vi.mock("./runFormatterCommand.js", () => ({
-	get runFormatterCommand() {
-		return mockRunFormatterCommand;
+	get runPackageFormatterCommand() {
+		return mockRunPackageFormatterCommand;
 	},
 }));
 
@@ -29,8 +29,8 @@ describe("runPrettier", () => {
 
 		await runPrettier(options);
 
-		expect(mockRunFormatterCommand).toHaveBeenCalledWith(
-			"npx prettier --write",
+		expect(mockRunPackageFormatterCommand).toHaveBeenCalledWith(
+			{ args: ["--write"], command: "prettier" },
 			options,
 		);
 	});
@@ -43,7 +43,7 @@ describe("runPrettier", () => {
 
 		await runPrettier(options);
 
-		expect(mockRunFormatterCommand).not.toHaveBeenCalled();
+		expect(mockRunPackageFormatterCommand).not.toHaveBeenCalled();
 		expect(mockPrettierCli.run).toHaveBeenCalledWith([
 			"--log-level",
 			"silent",

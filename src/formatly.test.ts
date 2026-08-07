@@ -96,8 +96,8 @@ describe("formatly", () => {
 		expect(mockResolveFormatter).toHaveBeenCalledWith(cwd);
 
 		expect(mockSpawn).toHaveBeenCalledWith(
-			"npx",
-			["@biomejs/biome", "format", "--write", ...patterns],
+			"pnpm",
+			["exec", "@biomejs/biome", "format", "--write", ...patterns],
 			{ cwd },
 		);
 	});

@@ -11,6 +11,9 @@ importers:
       fd-package-json:
         specifier: ^2.0.0
         version: 2.0.0
+      package-manager-detector:
+        specifier: ^1.8.0
+        version: 1.8.0
     devDependencies:
       '@eslint-community/eslint-plugin-eslint-comments':
         specifier: 4.7.0
@@ -3485,6 +3488,9 @@ packages:
     resolution: {integrity: sha512-xS8okscm06Nw2OhInIqFpFhkVWLRYRjCujHN7yeEUHlS+Ppg1n/ec4AkDlycdhUX/98HbAuOfKJ0lLXt6NIV9w==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
+
+  package-manager-detector@1.8.0:
+    resolution: {integrity: sha512-yQA4H19AmPEoMUeavPMDIe1higySl/gH/yaQrkT/s07Qp+7pp2hYz30N3z2l5BkjVkF9Ow6o0wjJamm2y7Sn0A==}
 
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
@@ -7879,6 +7885,8 @@ snapshots:
       semver: 7.8.5
       validate-npm-package-license: 3.0.4
       yargs: 18.0.0
+
+  package-manager-detector@1.8.0: {}
 
   parent-module@1.0.1:
     dependencies:
