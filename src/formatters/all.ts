@@ -28,6 +28,14 @@ export const formatters = [
 		},
 	},
 	{
+		name: "oxfmt",
+		runner: createRunCommand("npx oxfmt"),
+		testers: {
+			configFile: /^(?:\.oxfmtrc\.(?:json|jsonc)|oxfmt\.config\.(?:mts|ts))$/,
+			script: /oxfmt/,
+		},
+	},
+	{
 		name: "prettier",
 		runner: runPrettier,
 		testers: {

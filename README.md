@@ -154,6 +154,7 @@ Formatters are detected based on the first match from, in order:
 | [Biome](https://biomejs.dev/formatter)                      | [Configure Biome](https://biomejs.dev/guides/configure-biome)                                           |              | `biome`    |
 | [deno fmt](https://docs.deno.com/runtime/reference/cli/fmt) | [Deno Configuration > Formatting](https://docs.deno.com/runtime/fundamentals/configuration/#formatting) |              | `deno`     |
 | [dprint](https://dprint.dev)                                | [dprint setup](https://dprint.dev/setup)                                                                |              | `dprint`   |
+| [Oxfmt](https://oxc.rs/docs/guide/usage/formatter)          | [Oxfmt Configuration](https://oxc.rs/docs/guide/usage/formatter/config.html)                            |              | `oxfmt`    |
 | [Prettier](https://prettier.io)                             | [Prettier Configuration File](https://prettier.io/docs/en/configuration)                                | `"prettier"` | `prettier` |
 
 > Want support for a formatter not mentioned here?
