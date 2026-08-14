@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.3.0...0.4.0) (2026-08-14)
+
+### Features
+
+- add oxfmt support ([#544](https://github.com/JoshuaKGoldberg/formatly/issues/544)) ([69cc5f2](https://github.com/JoshuaKGoldberg/formatly/commit/69cc5f2d940158ad3d810808cd4ebba15f4e1298)), closes [#546](https://github.com/JoshuaKGoldberg/formatly/issues/546)
+
 # [0.3.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.2.4...0.3.0) (2025-06-12)
 
 ### Features
