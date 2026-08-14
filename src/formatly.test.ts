@@ -86,6 +86,16 @@ describe("formatly", () => {
 		});
 	});
 
+	it("runs oxfmt with npx", async () => {
+		const formatter = "oxfmt";
+
+		await formatly(patterns, { formatter });
+
+		expect(mockSpawn).toHaveBeenCalledWith("npx", [formatter, ...patterns], {
+			cwd: process.cwd(),
+		});
+	});
+
 	it("uses provided cwd to resolve formatter and spawn process", async () => {
 		const cwd = "custom";
 		const mockFormatter = formatters[0];

@@ -48,6 +48,10 @@ describe("resolveFormatter", () => {
 			["biome", "biome.json", [".git", "biome.json", "src"]],
 			["deno", "deno.json", [".git", "deno.json", "src"]],
 			["dprint", "dprint.json", [".git", "dprint.json", "src"]],
+			["oxfmt", ".oxfmtrc.json", [".git", ".oxfmtrc.json", "src"]],
+			["oxfmt", ".oxfmtrc.jsonc", [".git", ".oxfmtrc.jsonc", "src"]],
+			["oxfmt", "oxfmt.config.ts", [".git", "oxfmt.config.ts", "src"]],
+			["oxfmt", "oxfmt.config.mts", [".git", "oxfmt.config.mts", "src"]],
 			["prettier", ".prettierrc", [".git", ".prettierrc", "src"]],
 			["prettier", "prettier.config.js", [".git", ".prettierrc", "src"]],
 		])(
@@ -78,6 +82,7 @@ describe("resolveFormatter", () => {
 			["biome", "biome format"],
 			["deno", "deno fmt"],
 			["dprint", "dprint"],
+			["oxfmt", "oxfmt"],
 			["prettier", "prettier"],
 		])(
 			"resolves with %s when %s exists in a script",
