@@ -1,11 +1,17 @@
 import { Formatter } from "../types.js";
-import { createRunCommand } from "./createRunCommand.js";
+import {
+	createRunCommand,
+	createRunPackageCommand,
+} from "./createRunCommand.js";
 import { runPrettier } from "./runPrettier.js";
 
 export const formatters = [
 	{
 		name: "biome",
-		runner: createRunCommand("npx @biomejs/biome format --write"),
+		runner: createRunPackageCommand({
+			args: ["format", "--write"],
+			command: "@biomejs/biome",
+		}),
 		testers: {
 			configFile: /biome\.json/,
 			script: /biome\s+format/,
@@ -13,7 +19,10 @@ export const formatters = [
 	},
 	{
 		name: "deno",
-		runner: createRunCommand("deno fmt"),
+		runner: createRunCommand({
+			args: ["fmt"],
+			command: "deno",
+		}),
 		testers: {
 			configFile: /deno\.json/,
 			script: /deno/,
@@ -21,7 +30,10 @@ export const formatters = [
 	},
 	{
 		name: "dprint",
-		runner: createRunCommand("npx dprint fmt"),
+		runner: createRunPackageCommand({
+			args: ["fmt"],
+			command: "dprint",
+		}),
 		testers: {
 			configFile: /dprint\.json/,
 			script: /dprint/,
