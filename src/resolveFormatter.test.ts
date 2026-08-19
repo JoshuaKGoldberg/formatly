@@ -1,3 +1,4 @@
+import * as path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
 import { formatters } from "./formatters/all.js";
@@ -39,6 +40,123 @@ describe("resolveFormatter", () => {
 			await resolveFormatter(cwd);
 
 			expect(mockReaddir).toHaveBeenCalledWith(cwd);
+			expect(mockFindPackage).toHaveBeenCalledWith(cwd);
+		});
+	});
+
+	describe("stopDirectory", () => {
+		it("searches only the cwd when stopDirectory is not provided", async () => {
+			const cwd = path.join(path.resolve("/"), "repo", "packages", "child");
+			mockReaddir.mockResolvedValueOnce(["totally", "unrelated"]);
+			mockFindPackage.mockResolvedValueOnce(undefined);
+
+			await resolveFormatter(cwd);
+
+			expect(mockReaddir.mock.calls).toEqual([[cwd]]);
+		});
+
+		it("resolves with a formatter when a parent directory within stopDirectory has a config file", async () => {
+			const stopDirectory = path.join(path.resolve("/"), "repo");
+			const cwd = path.join(stopDirectory, "packages", "child");
+			mockReaddir
+				.mockResolvedValueOnce(["src"])
+				.mockResolvedValueOnce(["child"])
+				.mockResolvedValueOnce([".git", ".prettierrc"]);
+
+			const formatter = await resolveFormatter(cwd, { stopDirectory });
+
+			expect(formatter).toBe(
+				formatters.find((formatter) => formatter.name === "prettier"),
+			);
+			expect(mockReaddir.mock.calls).toEqual([
+				[cwd],
+				[path.join(stopDirectory, "packages")],
+				[stopDirectory],
+			]);
+		});
+
+		it("resolves with undefined when no config file exists in any directory up to stopDirectory", async () => {
+			const stopDirectory = path.join(path.resolve("/"), "repo");
+			const cwd = path.join(stopDirectory, "packages", "child");
+			mockReaddir.mockResolvedValue(["totally", "unrelated"]);
+			mockFindPackage.mockResolvedValueOnce(undefined);
+
+			const formatter = await resolveFormatter(cwd, { stopDirectory });
+
+			expect(formatter).toBeUndefined();
+			expect(mockReaddir.mock.calls).toEqual([
+				[cwd],
+				[path.join(stopDirectory, "packages")],
+				[stopDirectory],
+			]);
+		});
+
+		it("resolves stopDirectory relative to the process working directory when provided a relative path", async () => {
+			const cwd = path.join(process.cwd(), "child");
+			mockReaddir.mockResolvedValue(["totally", "unrelated"]);
+			mockFindPackage.mockResolvedValueOnce(undefined);
+
+			await resolveFormatter(cwd, { stopDirectory: "." });
+
+			expect(mockReaddir.mock.calls).toEqual([[cwd], [process.cwd()]]);
+		});
+
+		it("stops after the directory matched by stopDirectory when provided a function", async () => {
+			const root = path.join(path.resolve("/"), "repo");
+			const cwd = path.join(root, "packages", "child");
+			mockReaddir.mockResolvedValue(["totally", "unrelated"]);
+			mockFindPackage.mockResolvedValueOnce(undefined);
+
+			await resolveFormatter(cwd, {
+				stopDirectory: (currentDirectory) =>
+					path.basename(currentDirectory) === "packages",
+			});
+
+			expect(mockReaddir.mock.calls).toEqual([
+				[cwd],
+				[path.join(root, "packages")],
+			]);
+		});
+
+		it("throws an error when the file system root is reached before stopDirectory matches", async () => {
+			const root = path.resolve("/");
+			const cwd = path.join(root, "repo", "child");
+			mockReaddir.mockResolvedValue(["totally", "unrelated"]);
+
+			await expect(
+				resolveFormatter(cwd, { stopDirectory: () => false }),
+			).rejects.toThrow(
+				`Reached the file system root searching up from ${cwd} without matching stopDirectory.`,
+			);
+		});
+
+		it("resolves with a formatter when the file system root has a config file and matches stopDirectory", async () => {
+			const root = path.resolve("/");
+			const cwd = path.join(root, "repo");
+			mockReaddir
+				.mockResolvedValueOnce(["totally", "unrelated"])
+				.mockResolvedValueOnce([".prettierrc"]);
+
+			const formatter = await resolveFormatter(cwd, { stopDirectory: root });
+
+			expect(formatter).toBe(
+				formatters.find((formatter) => formatter.name === "prettier"),
+			);
+		});
+
+		it("falls back to the package.json of the cwd when no directory up to stopDirectory has a config file", async () => {
+			const stopDirectory = path.join(path.resolve("/"), "repo");
+			const cwd = path.join(stopDirectory, "packages", "child");
+			mockReaddir.mockResolvedValue(["totally", "unrelated"]);
+			mockFindPackage.mockResolvedValueOnce({
+				scripts: { format: "prettier" },
+			});
+
+			const formatter = await resolveFormatter(cwd, { stopDirectory });
+
+			expect(formatter).toBe(
+				formatters.find((formatter) => formatter.name === "prettier"),
+			);
 			expect(mockFindPackage).toHaveBeenCalledWith(cwd);
 		});
 	});
