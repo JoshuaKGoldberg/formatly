@@ -161,6 +161,74 @@ describe("resolveFormatter", () => {
 		});
 	});
 
+	describe("order", () => {
+		it("resolves with biome when order is not provided and multiple config files exist", async () => {
+			mockReaddir.mockResolvedValueOnce(["biome.json", ".prettierrc"]);
+
+			const formatter = await resolveFormatter();
+
+			expect(formatter).toBe(
+				formatters.find((formatter) => formatter.name === "biome"),
+			);
+		});
+
+		it("resolves with prettier when order prefers prettier over biome", async () => {
+			mockReaddir.mockResolvedValueOnce(["biome.json", ".prettierrc"]);
+
+			const formatter = await resolveFormatter(".", { order: ["prettier"] });
+
+			expect(formatter).toBe(
+				formatters.find((formatter) => formatter.name === "prettier"),
+			);
+		});
+
+		it("resolves with prettier when order lists prettier more than once", async () => {
+			mockReaddir.mockResolvedValueOnce(["biome.json", ".prettierrc"]);
+
+			const formatter = await resolveFormatter(".", {
+				order: ["prettier", "prettier"],
+			});
+
+			expect(formatter).toBe(
+				formatters.find((formatter) => formatter.name === "prettier"),
+			);
+		});
+
+		it("resolves with biome when order only lists formatters without a config file", async () => {
+			mockReaddir.mockResolvedValueOnce(["biome.json"]);
+
+			const formatter = await resolveFormatter(".", { order: ["prettier"] });
+
+			expect(formatter).toBe(
+				formatters.find((formatter) => formatter.name === "biome"),
+			);
+		});
+
+		it("resolves with prettier when order prefers prettier and both formatters exist in scripts", async () => {
+			mockReaddir.mockResolvedValueOnce([]);
+			mockFindPackage.mockResolvedValueOnce({
+				scripts: { format: "biome format", lint: "prettier" },
+			});
+
+			const formatter = await resolveFormatter(".", { order: ["prettier"] });
+
+			expect(formatter).toBe(
+				formatters.find((formatter) => formatter.name === "prettier"),
+			);
+		});
+
+		it("resolves with prettier when order prefers prettier and only a package key matches", async () => {
+			mockReaddir.mockResolvedValueOnce([]);
+			mockFindPackage.mockResolvedValueOnce({ prettier: {} });
+
+			const formatter = await resolveFormatter(".", { order: ["prettier"] });
+
+			expect(formatter).toBe(
+				formatters.find((formatter) => formatter.name === "prettier"),
+			);
+		});
+	});
+
 	describe("from config file", () => {
 		it.each([
 			["biome", "biome.json", [".git", "biome.json", "src"]],

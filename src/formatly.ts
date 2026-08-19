@@ -13,11 +13,11 @@ export async function formatly(
 		};
 	}
 
-	const { cwd = process.cwd(), stopDirectory } = options;
+	const { cwd = process.cwd(), order, stopDirectory } = options;
 
 	const formatter = options.formatter
 		? formatters.find((f) => f.name === options.formatter)
-		: await resolveFormatter(cwd, { stopDirectory });
+		: await resolveFormatter(cwd, { order, stopDirectory });
 
 	if (!formatter) {
 		return { message: "Could not detect a formatter.", ran: false };

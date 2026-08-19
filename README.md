@@ -77,6 +77,7 @@ Parameters:
 2. `options: FormatlyOptions` _(optional)_:
    - `cwd: string` _(optional)_: working directory, if not `"."`
    - `formatter: FormatterName` _(optional)_: explicit formatter to use instead of detecting one, supports `"biome"`, `"deno"`, `"dprint"`, and `"prettier"`
+   - `order: FormatterName[]` _(optional)_: formatters to detect first, in order, as used by [`resolveFormatter`](#resolveformatter)
    - `stopDirectory: StopDirectory` _(optional)_: directory to stop searching parent directories for a config file at, as used by [`resolveFormatter`](#resolveformatter)
 
 Resolves with a `FormatlyReport`, which is either:
@@ -132,6 +133,7 @@ Parameters:
 
 1. `cwd: string` _(optional)_: working directory, if not `"."`
 2. `options: ResolveFormatterOptions` _(optional)_:
+   - `order: FormatterName[]` _(optional)_: formatters to detect first, in order
    - `stopDirectory: StopDirectory` _(optional)_: directory to stop searching parent directories for a config file at, either a `string` path or a `(currentDirectory: string) => boolean` function
 
 By default, only the working directory is searched for a config file.
@@ -152,6 +154,24 @@ const formatter = await resolveFormatter("path/to/project", {
 });
 
 console.log(formatter);
+```
+
+By default, formatters are detected in their [documented order](#supported-formatters).
+Passing `order` tries the named formatters first, in the order given; any formatter not named is tried afterwards in the default order.
+Names listed more than once are only tried at their first position, and names that aren't supported formatters are ignored.
+
+For example, to detect Biome only if no other formatter matches:
+
+```ts
+import { resolveFormatter } from "formatly";
+
+const formatter = await resolveFormatter("path/to/project", {
+	order: ["deno", "dprint", "oxfmt", "prettier", "biome"],
+});
+
+if (formatter?.name === "biome") {
+	console.log("Only Biome was found, and it can't format Markdown.");
+}
 ```
 
 Resolves with either:

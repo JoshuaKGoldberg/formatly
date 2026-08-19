@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { formatly } from "./formatly.js";
 import { formatters } from "./formatters/all.js";
+import { FormatterName } from "./types.js";
 
 const mockSpawn = vi.fn(() => ({
 	on: (
@@ -93,7 +94,20 @@ describe("formatly", () => {
 		await formatly(patterns, { stopDirectory });
 
 		expect(mockResolveFormatter).toHaveBeenCalledWith(process.cwd(), {
+			order: undefined,
 			stopDirectory,
+		});
+	});
+
+	it("passes order to resolveFormatter when provided", async () => {
+		const order: FormatterName[] = ["prettier"];
+		mockResolveFormatter.mockResolvedValueOnce(formatters[0]);
+
+		await formatly(patterns, { order });
+
+		expect(mockResolveFormatter).toHaveBeenCalledWith(process.cwd(), {
+			order,
+			stopDirectory: undefined,
 		});
 	});
 
@@ -115,6 +129,7 @@ describe("formatly", () => {
 		await formatly(patterns, { cwd });
 
 		expect(mockResolveFormatter).toHaveBeenCalledWith(cwd, {
+			order: undefined,
 			stopDirectory: undefined,
 		});
 
