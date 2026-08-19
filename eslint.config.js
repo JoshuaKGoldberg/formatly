@@ -42,6 +42,10 @@ export default tseslint.config(
 			},
 		},
 		rules: {
+			"@typescript-eslint/no-unnecessary-condition": [
+				"error",
+				{ allowConstantLoopConditions: "only-allowed-literals" },
+			],
 			"n/no-unsupported-features/node-builtins": "off",
 
 			// Stylistic concerns that don't interfere with Prettier

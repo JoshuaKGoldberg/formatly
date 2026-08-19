@@ -86,6 +86,17 @@ describe("formatly", () => {
 		});
 	});
 
+	it("passes stopDirectory to resolveFormatter when provided", async () => {
+		const stopDirectory = "custom";
+		mockResolveFormatter.mockResolvedValueOnce(formatters[0]);
+
+		await formatly(patterns, { stopDirectory });
+
+		expect(mockResolveFormatter).toHaveBeenCalledWith(process.cwd(), {
+			stopDirectory,
+		});
+	});
+
 	it("runs oxfmt with npx", async () => {
 		const formatter = "oxfmt";
 
@@ -103,7 +114,9 @@ describe("formatly", () => {
 
 		await formatly(patterns, { cwd });
 
-		expect(mockResolveFormatter).toHaveBeenCalledWith(cwd);
+		expect(mockResolveFormatter).toHaveBeenCalledWith(cwd, {
+			stopDirectory: undefined,
+		});
 
 		expect(mockSpawn).toHaveBeenCalledWith(
 			"pnpm",
