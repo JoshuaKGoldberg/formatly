@@ -13,6 +13,12 @@ interface PrettierInternalCLI {
 	run(rawArguments?: string[]): Promise<void>;
 }
 
+function resolvePattern(cwd: string, pattern: string) {
+	return pattern.startsWith("!")
+		? `!${path.resolve(cwd, pattern.slice(1))}`
+		: path.resolve(cwd, pattern);
+}
+
 export const runPrettier: FormatterRunner = async ({ cwd, patterns }) => {
 	// We first try to load Prettier's CLI module directly.
 	// It's not in prettier's exports, but CJS require() doesn't respect those.
@@ -29,7 +35,20 @@ export const runPrettier: FormatterRunner = async ({ cwd, patterns }) => {
 		);
 	}
 
-	await prettierCli.run(["--log-level", "silent", "--write", ...patterns]);
+	// Prettier's CLI has no --cwd flag: it expands patterns and looks for its
+	// default ignore files relative to process.cwd(). Anchoring both to cwd keeps
+	// this runner equivalent to running the prettier binary with that cwd.
+	// See https://github.com/JoshuaKGoldberg/formatly/issues/563
+	await prettierCli.run([
+		"--ignore-path",
+		path.join(cwd, ".gitignore"),
+		"--ignore-path",
+		path.join(cwd, ".prettierignore"),
+		"--log-level",
+		"silent",
+		"--write",
+		...patterns.map((pattern) => resolvePattern(cwd, pattern)),
+	]);
 
 	return {
 		runner: "virtual",
