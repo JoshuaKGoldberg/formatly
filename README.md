@@ -55,12 +55,6 @@ To match only `.ts` files in `src/`:
 npx formatly "src/**/*.ts"
 ```
 
-Once formatting finishes, the detected formatter's name is printed:
-
-```plaintext
-Formatted with prettier. 🧼
-```
-
 ### Node.js API
 
 ```shell
