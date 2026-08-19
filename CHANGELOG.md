@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.7.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.5.0...0.7.0) (2026-08-19)
+
+### Features
+
+- add order option to prefer formatters during detection ([#569](https://github.com/JoshuaKGoldberg/formatly/issues/569)) ([c40766c](https://github.com/JoshuaKGoldberg/formatly/commit/c40766cd6ba6cd0a426447c4e7252fedf6f9f994)), closes [#113](https://github.com/JoshuaKGoldberg/formatly/issues/113)
+- add stopDirectory option for parent directory searching ([#568](https://github.com/JoshuaKGoldberg/formatly/issues/568)) ([5337bdc](https://github.com/JoshuaKGoldberg/formatly/commit/5337bdce5c184bfc2c0cbe049560eb2083578735)), closes [#54](https://github.com/JoshuaKGoldberg/formatly/issues/54)
+- print detected formatter name in the CLI ([#570](https://github.com/JoshuaKGoldberg/formatly/issues/570)) ([5c3f811](https://github.com/JoshuaKGoldberg/formatly/commit/5c3f811e89d83a647213d765f25029df84d14788)), closes [#123](https://github.com/JoshuaKGoldberg/formatly/issues/123)
+
+### Bug Fixes
+
+- say formatter, not reporter, when detection fails ([#571](https://github.com/JoshuaKGoldberg/formatly/issues/571)) ([519878d](https://github.com/JoshuaKGoldberg/formatly/commit/519878d11a95f9764987edd811053be4f530585b)), closes [#124](https://github.com/JoshuaKGoldberg/formatly/issues/124)
+
 ## [0.5.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.4.0...0.5.0) (2026-08-19)
 
 ### Features
