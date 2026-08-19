@@ -57,7 +57,7 @@ npx formatly "src/**/*.ts"
 Once formatting finishes, the detected formatter's name is printed:
 
 ```plaintext
-Formatted with prettier! 🧼
+Formatted with prettier. 🧼
 ```
 
 ### Node.js API

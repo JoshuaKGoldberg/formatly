@@ -31,7 +31,7 @@ describe("cli", () => {
 		const result = await cli(patterns);
 
 		expect(result).toBe(0);
-		expect(mockLog).toHaveBeenCalledWith("Formatted with prettier! 🧼");
+		expect(mockLog).toHaveBeenCalledWith("Formatted with prettier. 🧼");
 		expect(mockError).not.toHaveBeenCalled();
 	});
 
