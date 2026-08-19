@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { formatters } from "./formatters/all.js";
 import { resolveFormatter } from "./resolveFormatter.js";
+import { FormatterName } from "./types.js";
 
 const mockReaddir = vi.fn();
 
@@ -214,6 +215,16 @@ describe("resolveFormatter", () => {
 
 			expect(formatter).toBe(
 				formatters.find((formatter) => formatter.name === "prettier"),
+			);
+		});
+
+		it("throws an error when order includes an unknown formatter name", async () => {
+			const order: string[] = ["unknown"];
+
+			await expect(
+				resolveFormatter(".", { order: order as FormatterName[] }),
+			).rejects.toThrow(
+				"Unknown formatter name in order: unknown. Known formatters are biome, deno, dprint, oxfmt, prettier.",
 			);
 		});
 

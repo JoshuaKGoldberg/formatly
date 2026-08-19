@@ -66,9 +66,17 @@ function createStopDirectoryMatcher(stopDirectory: StopDirectory) {
 }
 
 function orderFormatters(order: FormatterName[] = []) {
-	const preferred = order
-		.map((name) => formatters.find((formatter) => formatter.name === name))
-		.filter((formatter) => formatter !== undefined);
+	const preferred = order.map((name) => {
+		const formatter = formatters.find((formatter) => formatter.name === name);
+
+		if (!formatter) {
+			throw new Error(
+				`Unknown formatter name in order: ${name}. Known formatters are ${formatters.map((formatter) => formatter.name).join(", ")}.`,
+			);
+		}
+
+		return formatter;
+	});
 
 	return [...new Set([...preferred, ...formatters])];
 }
