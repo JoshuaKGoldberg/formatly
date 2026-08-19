@@ -1,4 +1,4 @@
-export interface FormatlyOptions {
+export interface FormatlyOptions extends ResolveFormatterOptions {
 	cwd?: string;
 
 	/**
@@ -50,3 +50,13 @@ export interface FormatterRunnerOptions {
 	cwd: string;
 	patterns: string[];
 }
+
+export interface ResolveFormatterOptions {
+	/**
+	 * Directory to stop searching parent directories for a config file at.
+	 * If not provided, only the working directory is searched.
+	 */
+	stopDirectory?: StopDirectory;
+}
+
+export type StopDirectory = ((currentDirectory: string) => boolean) | string;

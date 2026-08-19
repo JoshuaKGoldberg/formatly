@@ -25,6 +25,7 @@
 - [Biome](https://biomejs.dev/formatter)
 - [deno fmt](https://docs.deno.com/runtime/reference/cli/fmt)
 - [dprint](https://dprint.dev)
+- [Oxfmt](https://oxc.rs/docs/guide/usage/formatter)
 - [Prettier](https://prettier.io)
 
 See [Formatter Detection](#formatter-detection) for details on how they are detected.
@@ -77,6 +78,7 @@ Parameters:
 2. `options: FormatlyOptions` _(optional)_:
    - `cwd: string` _(optional)_: working directory, if not `"."`
    - `formatter: FormatterName` _(optional)_: explicit formatter to use instead of detecting one, supports `"biome"`, `"deno"`, `"dprint"`, and `"prettier"`
+   - `stopDirectory: StopDirectory` _(optional)_: directory to stop searching parent directories for a config file at, as used by [`resolveFormatter`](#resolveformatter)
 
 Resolves with a `FormatlyReport`, which is either:
 
@@ -130,6 +132,28 @@ console.log(formatter);
 Parameters:
 
 1. `cwd: string` _(optional)_: working directory, if not `"."`
+2. `options: ResolveFormatterOptions` _(optional)_:
+   - `stopDirectory: StopDirectory` _(optional)_: directory to stop searching parent directories for a config file at, either a `string` path or a `(currentDirectory: string) => boolean` function
+
+By default, only the working directory is searched for a config file.
+Passing `stopDirectory` also searches each parent directory in turn, stopping once the directory matching `stopDirectory` has been searched.
+A `string` is matched as a directory path, while a function is called with each directory and may return `true` to indicate the last directory to search.
+Reaching the file system root without a match throws an error, as that indicates a `stopDirectory` that isn't a parent of the working directory.
+
+For example, to search up to whichever parent directory contains a `.git` directory:
+
+```ts
+import { resolveFormatter } from "formatly";
+import { existsSync } from "node:fs";
+import * as path from "node:path";
+
+const formatter = await resolveFormatter("path/to/project", {
+	stopDirectory: (currentDirectory) =>
+		existsSync(path.join(currentDirectory, ".git")),
+});
+
+console.log(formatter);
+```
 
 Resolves with either:
 
@@ -146,6 +170,9 @@ Formatters are detected based on the first match from, in order:
 1. Existence of the formatter's default supported config file name
 2. The formatter's name in a `package.json` `fmt` or `format` script
 3. Well-known root-level `package.json` key
+
+Config files are only searched for in the working directory unless a [`stopDirectory`](#resolveformatter) is provided.
+`package.json` is always searched for in the working directory and its parent directories.
 
 ### Supported Formatters
 

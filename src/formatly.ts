@@ -13,14 +13,14 @@ export async function formatly(
 		};
 	}
 
-	const { cwd = process.cwd() } = options;
+	const { cwd = process.cwd(), stopDirectory } = options;
 
 	const formatter = options.formatter
 		? formatters.find((f) => f.name === options.formatter)
-		: await resolveFormatter(cwd);
+		: await resolveFormatter(cwd, { stopDirectory });
 
 	if (!formatter) {
-		return { message: "Could not detect a reporter.", ran: false };
+		return { message: "Could not detect a formatter.", ran: false };
 	}
 
 	return {
