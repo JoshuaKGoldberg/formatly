@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.5.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.4.0...0.5.0) (2026-08-19)
+
+### Features
+
+- use project package manager to run formatters ([#545](https://github.com/JoshuaKGoldberg/formatly/issues/545)) ([4485504](https://github.com/JoshuaKGoldberg/formatly/commit/4485504a7fdd1d75a89b7bc0e6e795616af817ca)), closes [#112](https://github.com/JoshuaKGoldberg/formatly/issues/112)
+
+### Bug Fixes
+
+- pass oxfmt to createRunCommand as a resolved command ([#566](https://github.com/JoshuaKGoldberg/formatly/issues/566)) ([9f30657](https://github.com/JoshuaKGoldberg/formatly/commit/9f306576d2928bc7718955281d27c58ea84e64dd)), closes [#573](https://github.com/JoshuaKGoldberg/formatly/issues/573), references [#544](https://github.com/JoshuaKGoldberg/formatly/issues/544)
+
 ## [0.4.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.3.0...0.4.0) (2026-08-14)
 
 ### Features
