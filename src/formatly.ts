@@ -20,7 +20,7 @@ export async function formatly(
 		: await resolveFormatter(cwd);
 
 	if (!formatter) {
-		return { message: "Could not detect a reporter.", ran: false };
+		return { message: "Could not detect a formatter.", ran: false };
 	}
 
 	return {
