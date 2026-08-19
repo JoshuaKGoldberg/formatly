@@ -47,7 +47,7 @@ describe("formatly", () => {
 		const report = await formatly(patterns);
 
 		expect(report).toEqual({
-			message: "Could not detect a reporter.",
+			message: "Could not detect a formatter.",
 			ran: false,
 		});
 		expect(mockSpawn).not.toHaveBeenCalled();
