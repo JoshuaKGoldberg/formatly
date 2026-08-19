@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { formatters } from "./formatters/all.js";
 import { resolveFormatter } from "./resolveFormatter.js";
+import { FormatterName } from "./types.js";
 
 const mockReaddir = vi.fn();
 
@@ -158,6 +159,78 @@ describe("resolveFormatter", () => {
 				formatters.find((formatter) => formatter.name === "prettier"),
 			);
 			expect(mockFindPackage).toHaveBeenCalledWith(cwd);
+		});
+	});
+
+	describe("order", () => {
+		it("resolves with biome when order is not provided and multiple config files exist", async () => {
+			mockReaddir.mockResolvedValueOnce(["biome.json", ".prettierrc"]);
+
+			const formatter = await resolveFormatter();
+
+			expect(formatter).toBe(
+				formatters.find((formatter) => formatter.name === "biome"),
+			);
+		});
+
+		it("resolves with prettier when order prefers prettier over biome", async () => {
+			mockReaddir.mockResolvedValueOnce(["biome.json", ".prettierrc"]);
+
+			const formatter = await resolveFormatter(".", { order: ["prettier"] });
+
+			expect(formatter).toBe(
+				formatters.find((formatter) => formatter.name === "prettier"),
+			);
+		});
+
+		it("throws an error when order lists a formatter more than once", async () => {
+			await expect(
+				resolveFormatter(".", { order: ["prettier", "prettier"] }),
+			).rejects.toThrow("Duplicate formatter name in order: prettier.");
+		});
+
+		it("resolves with biome when order only lists formatters without a config file", async () => {
+			mockReaddir.mockResolvedValueOnce(["biome.json"]);
+
+			const formatter = await resolveFormatter(".", { order: ["prettier"] });
+
+			expect(formatter).toBe(
+				formatters.find((formatter) => formatter.name === "biome"),
+			);
+		});
+
+		it("resolves with prettier when order prefers prettier and both formatters exist in scripts", async () => {
+			mockReaddir.mockResolvedValueOnce([]);
+			mockFindPackage.mockResolvedValueOnce({
+				scripts: { format: "biome format", lint: "prettier" },
+			});
+
+			const formatter = await resolveFormatter(".", { order: ["prettier"] });
+
+			expect(formatter).toBe(
+				formatters.find((formatter) => formatter.name === "prettier"),
+			);
+		});
+
+		it("throws an error when order includes an unknown formatter name", async () => {
+			const order: string[] = ["unknown"];
+
+			await expect(
+				resolveFormatter(".", { order: order as FormatterName[] }),
+			).rejects.toThrow(
+				"Unknown formatter name in order: unknown. Known formatters are biome, deno, dprint, oxfmt, prettier.",
+			);
+		});
+
+		it("resolves with prettier when order prefers prettier and only a package key matches", async () => {
+			mockReaddir.mockResolvedValueOnce([]);
+			mockFindPackage.mockResolvedValueOnce({ prettier: {} });
+
+			const formatter = await resolveFormatter(".", { order: ["prettier"] });
+
+			expect(formatter).toBe(
+				formatters.find((formatter) => formatter.name === "prettier"),
+			);
 		});
 	});
 

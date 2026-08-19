@@ -3,17 +3,24 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
 import { formatters } from "./formatters/all.js";
-import { Formatter, ResolveFormatterOptions, StopDirectory } from "./types.js";
+import {
+	Formatter,
+	FormatterName,
+	ResolveFormatterOptions,
+	StopDirectory,
+} from "./types.js";
 
 export async function resolveFormatter(
 	cwd = ".",
 	options: ResolveFormatterOptions = {},
 ): Promise<Formatter | undefined> {
+	const orderedFormatters = orderFormatters(options.order);
+
 	for (const directory of walkUpDirectories(cwd, options)) {
 		const children = await fs.readdir(directory);
 
-		for (const child of children) {
-			for (const formatter of formatters) {
+		for (const formatter of orderedFormatters) {
+			for (const child of children) {
 				if (formatter.testers.configFile.test(child)) {
 					return formatter;
 				}
@@ -28,15 +35,15 @@ export async function resolveFormatter(
 
 	const { scripts = {}, ...otherKeys } = packageData;
 
-	for (const script of Object.values(scripts as object)) {
-		for (const formatter of formatters) {
+	for (const formatter of orderedFormatters) {
+		for (const script of Object.values(scripts as object)) {
 			if (formatter.testers.script.test(script as string)) {
 				return formatter;
 			}
 		}
 	}
 
-	for (const formatter of formatters) {
+	for (const formatter of orderedFormatters) {
 		if (
 			"packageKey" in formatter.testers &&
 			formatter.testers.packageKey in otherKeys
@@ -56,6 +63,30 @@ function createStopDirectoryMatcher(stopDirectory: StopDirectory) {
 	const resolved = path.resolve(stopDirectory);
 
 	return (currentDirectory: string) => currentDirectory === resolved;
+}
+
+function orderFormatters(order: FormatterName[] = []) {
+	const seen = new Set<FormatterName>();
+
+	const preferred = order.map((name) => {
+		const formatter = formatters.find((formatter) => formatter.name === name);
+
+		if (!formatter) {
+			throw new Error(
+				`Unknown formatter name in order: ${name}. Known formatters are ${formatters.map((formatter) => formatter.name).join(", ")}.`,
+			);
+		}
+
+		if (seen.has(name)) {
+			throw new Error(`Duplicate formatter name in order: ${name}.`);
+		}
+
+		seen.add(name);
+
+		return formatter;
+	});
+
+	return [...new Set([...preferred, ...formatters])];
 }
 
 function* walkUpDirectories(

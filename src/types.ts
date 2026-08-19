@@ -53,6 +53,12 @@ export interface FormatterRunnerOptions {
 
 export interface ResolveFormatterOptions {
 	/**
+	 * Formatter names to detect in order, before any formatters not listed.
+	 * Unlisted formatters are then detected in their default order.
+	 */
+	order?: FormatterName[];
+
+	/**
 	 * Directory to stop searching parent directories for a config file at.
 	 * If not provided, only the working directory is searched.
 	 */
