@@ -41,7 +41,10 @@ export const formatters = [
 	},
 	{
 		name: "oxfmt",
-		runner: createRunCommand("npx oxfmt"),
+		runner: createRunCommand({
+			args: ["oxfmt"],
+			command: "npx",
+		}),
 		testers: {
 			configFile: /^(?:\.oxfmtrc\.(?:json|jsonc)|oxfmt\.config\.(?:mts|ts))$/,
 			script: /oxfmt/,
