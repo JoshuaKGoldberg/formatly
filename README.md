@@ -41,7 +41,6 @@ It will then:
 
 1. Detect which [supported formatter](#supported-formatters) is configured in the repository
 2. Pass those glob patterns directly to the formatter
-3. Print which formatter was used
 
 For example, to match all directories and folders in the current directory:
 
