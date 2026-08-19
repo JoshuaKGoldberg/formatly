@@ -25,6 +25,7 @@
 - [Biome](https://biomejs.dev/formatter)
 - [deno fmt](https://docs.deno.com/runtime/reference/cli/fmt)
 - [dprint](https://dprint.dev)
+- [Oxfmt](https://oxc.rs/docs/guide/usage/formatter)
 - [Prettier](https://prettier.io)
 
 See [Formatter Detection](#formatter-detection) for details on how they are detected.
