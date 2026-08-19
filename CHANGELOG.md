@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.5.0...0.6.0) (2026-08-19)
+
+### Features
+
+- add stopDirectory option for parent directory searching ([#568](https://github.com/JoshuaKGoldberg/formatly/issues/568)) ([5337bdc](https://github.com/JoshuaKGoldberg/formatly/commit/5337bdce5c184bfc2c0cbe049560eb2083578735)), closes [#54](https://github.com/JoshuaKGoldberg/formatly/issues/54)
+
 ## [0.5.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.4.0...0.5.0) (2026-08-19)
 
 ### Features
