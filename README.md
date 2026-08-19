@@ -159,8 +159,7 @@ console.log(formatter);
 
 By default, formatters are detected in their [documented order](#supported-formatters).
 Passing `order` tries the named formatters first, in the order given; any formatter not named is tried afterwards in the default order.
-Names listed more than once are only tried at their first position.
-Names that aren't supported formatters throw an error.
+Duplicate names, and names that aren't supported formatters, throw an error.
 
 For example, to detect Biome before Prettier:
 

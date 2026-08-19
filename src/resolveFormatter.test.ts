@@ -183,16 +183,10 @@ describe("resolveFormatter", () => {
 			);
 		});
 
-		it("resolves with prettier when order lists prettier more than once", async () => {
-			mockReaddir.mockResolvedValueOnce(["biome.json", ".prettierrc"]);
-
-			const formatter = await resolveFormatter(".", {
-				order: ["prettier", "prettier"],
-			});
-
-			expect(formatter).toBe(
-				formatters.find((formatter) => formatter.name === "prettier"),
-			);
+		it("throws an error when order lists a formatter more than once", async () => {
+			await expect(
+				resolveFormatter(".", { order: ["prettier", "prettier"] }),
+			).rejects.toThrow("Duplicate formatter name in order: prettier.");
 		});
 
 		it("resolves with biome when order only lists formatters without a config file", async () => {

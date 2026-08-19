@@ -66,6 +66,8 @@ function createStopDirectoryMatcher(stopDirectory: StopDirectory) {
 }
 
 function orderFormatters(order: FormatterName[] = []) {
+	const seen = new Set<FormatterName>();
+
 	const preferred = order.map((name) => {
 		const formatter = formatters.find((formatter) => formatter.name === name);
 
@@ -74,6 +76,12 @@ function orderFormatters(order: FormatterName[] = []) {
 				`Unknown formatter name in order: ${name}. Known formatters are ${formatters.map((formatter) => formatter.name).join(", ")}.`,
 			);
 		}
+
+		if (seen.has(name)) {
+			throw new Error(`Duplicate formatter name in order: ${name}.`);
+		}
+
+		seen.add(name);
 
 		return formatter;
 	});
