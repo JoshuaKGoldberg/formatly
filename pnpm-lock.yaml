@@ -49,8 +49,8 @@ importers:
         specifier: 10.9.0
         version: 10.9.0(jiti@2.7.0)
       eslint-plugin-jsdoc:
-        specifier: 64.2.1
-        version: 64.2.1(eslint@10.9.0(jiti@2.7.0))
+        specifier: 64.3.1
+        version: 64.3.1(eslint@10.9.0(jiti@2.7.0))(typescript@5.9.3)
       eslint-plugin-jsonc:
         specifier: 3.4.1
         version: 3.4.1(eslint@10.9.0(jiti@2.7.0))
@@ -2339,8 +2339,8 @@ packages:
     peerDependencies:
       eslint: '>=8'
 
-  eslint-plugin-jsdoc@64.2.1:
-    resolution: {integrity: sha512-6GpSYxLPcbMw38S94Cngrgs1Zv8yLinQS1O17OxJVZ6deLbrMRCERUYQKceweSqEuG2kx5Amn4l3aKPkCp4geQ==}
+  eslint-plugin-jsdoc@64.3.1:
+    resolution: {integrity: sha512-iBAAssLx5P8RlfQTzY8+1o5O2/JCoFdT8Mpzl+38OmRen5s1SPmPvmpBwAb3Er21cQ8J39EgfFYpUdrvVfH8bg==}
     engines: {node: ^22.22.2 || >=24.15.0}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
@@ -6368,10 +6368,11 @@ snapshots:
       eslint: 10.9.0(jiti@2.7.0)
       eslint-compat-utils: 0.5.1(eslint@10.9.0(jiti@2.7.0))
 
-  eslint-plugin-jsdoc@64.2.1(eslint@10.9.0(jiti@2.7.0)):
+  eslint-plugin-jsdoc@64.3.1(eslint@10.9.0(jiti@2.7.0))(typescript@5.9.3):
     dependencies:
       '@es-joy/jsdoccomment': 0.95.1
       '@es-joy/resolve.exports': 1.2.0
+      '@typescript-eslint/utils': 8.68.0(eslint@10.9.0(jiti@2.7.0))(typescript@5.9.3)
       are-docs-informative: 0.1.1
       comment-parser: 1.4.8
       debug: 4.4.3
@@ -6387,6 +6388,7 @@ snapshots:
       to-valid-identifier: 1.0.0
     transitivePeerDependencies:
       - supports-color
+      - typescript
 
   eslint-plugin-jsonc@3.4.1(eslint@10.9.0(jiti@2.7.0)):
     dependencies:
