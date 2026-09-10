@@ -41,7 +41,7 @@
 		"package-manager-detector": "^1.8.0"
 	},
 	"devDependencies": {
-		"@eslint-community/eslint-plugin-eslint-comments": "4.7.2",
+		"@eslint-community/eslint-plugin-eslint-comments": "4.8.0",
 		"@eslint/js": "10.0.1",
 		"@release-it/conventional-changelog": "12.0.0",
 		"@types/eslint-plugin-markdown": "2.0.2",
