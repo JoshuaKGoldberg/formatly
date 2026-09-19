@@ -30,6 +30,21 @@ vi.mock("package-manager-detector", () => ({
 	},
 }));
 
+const mockResolveCommand = vi.hoisted(() => vi.fn());
+
+vi.mock("package-manager-detector/commands", async (importOriginal) => {
+	const actual =
+		await importOriginal<typeof import("package-manager-detector/commands")>();
+
+	mockResolveCommand.mockImplementation(actual.resolveCommand);
+
+	return {
+		get resolveCommand() {
+			return mockResolveCommand;
+		},
+	};
+});
+
 const options = {
 	cwd: "project",
 	patterns: ["src/**/*.ts"],
@@ -57,6 +72,25 @@ describe("runFormatterCommand", () => {
 
 	it("falls back to npx when a package manager cannot be detected", async () => {
 		mockDetect.mockResolvedValueOnce(null);
+
+		await runPackageFormatterCommand(
+			{ args: ["fmt"], command: "dprint" },
+			options,
+		);
+
+		expect(mockSpawn).toHaveBeenCalledWith(
+			"npx",
+			["dprint", "fmt", ...options.patterns],
+			{ cwd: options.cwd },
+		);
+	});
+
+	it("falls back to npx when the package manager has no local execute command", async () => {
+		mockDetect.mockResolvedValueOnce({
+			agent: "pnpm",
+			name: "pnpm",
+		});
+		mockResolveCommand.mockReturnValueOnce(null);
 
 		await runPackageFormatterCommand(
 			{ args: ["fmt"], command: "dprint" },
