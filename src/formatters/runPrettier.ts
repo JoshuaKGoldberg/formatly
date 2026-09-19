@@ -13,14 +13,46 @@ interface PrettierInternalCLI {
 	run(rawArguments?: string[]): Promise<void>;
 }
 
-export const runPrettier: FormatterRunner = async ({ cwd, patterns }) => {
-	// We first try to load Prettier's CLI module directly.
-	// It's not in prettier's exports, but CJS require() doesn't respect those.
+/**
+ * Prettier 3.6 split internal/cli.mjs into internal/legacy-cli.mjs and
+ * internal/experimental-cli.mjs. Only the legacy module exports run():
+ * the experimental one reads process.argv and formats as a side effect of
+ * being imported.
+ * @see https://github.com/JoshuaKGoldberg/formatly/issues/574
+ */
+const prettierInternalCliModules = [
+	"prettier/internal/legacy-cli.mjs",
+	"prettier/internal/cli.mjs",
+];
+
+function requirePrettierInternalCli(cwd: string) {
+	// The CLI module isn't in prettier's exports, but CJS require() doesn't respect those.
 	// See https://github.com/prettier/prettier/issues/17422
 	const require = createRequire(path.join(cwd, "index.js"));
-	const prettierCli = wrapSafe(
-		() => require("prettier/internal/cli.mjs") as PrettierInternalCLI,
-	);
+
+	for (const moduleName of prettierInternalCliModules) {
+		const prettierCli = wrapSafe(
+			() => require(moduleName) as PrettierInternalCLI,
+		);
+
+		if (prettierCli) {
+			return prettierCli;
+		}
+	}
+
+	return undefined;
+}
+
+export const runPrettier: FormatterRunner = async ({ cwd, patterns }) => {
+	// Prettier's CLI has no --cwd flag: it expands patterns, looks for its
+	// default ignore files, and locates its cache relative to process.cwd().
+	// Rather than reimplement those from the outside, we only format in-memory
+	// when the requested cwd is the process's, and spawn a child process otherwise.
+	// See https://github.com/JoshuaKGoldberg/formatly/issues/563
+	const prettierCli =
+		path.resolve(cwd) === process.cwd()
+			? requirePrettierInternalCli(cwd)
+			: undefined;
 
 	if (!prettierCli) {
 		return await runPackageFormatterCommand(
