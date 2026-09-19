@@ -13,6 +13,7 @@ interface MockChildOptions {
 	error?: Error;
 	signal?: NodeJS.Signals | null;
 	stderr?: string;
+	stdinError?: Error;
 	stdout?: string;
 }
 
@@ -21,6 +22,7 @@ function createMockChild({
 	error,
 	signal = null,
 	stderr = "",
+	stdinError,
 	stdout = "",
 }: MockChildOptions) {
 	const child = Object.assign(new EventEmitter(), {
@@ -33,6 +35,10 @@ function createMockChild({
 		if (error) {
 			child.emit("error", error);
 			return;
+		}
+
+		if (stdinError) {
+			child.stdin.emit("error", stdinError);
 		}
 
 		child.stdout.emit("data", Buffer.from(stdout));
@@ -113,6 +119,25 @@ describe("runFormatterTextCommand", () => {
 
 		expect(result).toEqual({
 			error: new Error("deno was terminated by signal SIGTERM."),
+		});
+	});
+
+	it("resolves with the exit error when the command closes stdin before reading it", async () => {
+		mockSpawn.mockReturnValueOnce(
+			createMockChild({
+				code: 1,
+				stderr: "Unknown --ext value\n",
+				stdinError: new Error("write EPIPE"),
+			}),
+		);
+
+		const result = await runFormatterTextCommand(
+			{ args: () => ["fmt"], command: "deno" },
+			options,
+		);
+
+		expect(result).toEqual({
+			error: new Error("deno exited with code 1.\nUnknown --ext value"),
 		});
 	});
 
