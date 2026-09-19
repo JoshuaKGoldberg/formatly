@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.7.1](https://github.com/JoshuaKGoldberg/formatly/compare/0.7.0...0.7.1) (2026-09-19)
+
+### Bug Fixes
+
+- load Prettier's legacy internal CLI and respect cwd when formatting in-memory ([#612](https://github.com/JoshuaKGoldberg/formatly/issues/612)) ([7428598](https://github.com/JoshuaKGoldberg/formatly/commit/74285984df5344871b09023fc9e13eab1235df09)), closes [#574](https://github.com/JoshuaKGoldberg/formatly/issues/574) [#563](https://github.com/JoshuaKGoldberg/formatly/issues/563), references [#574](https://github.com/JoshuaKGoldberg/formatly/issues/574) [#563](https://github.com/JoshuaKGoldberg/formatly/issues/563)
+
 ## [0.7.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.6.0...0.7.0) (2026-08-19)
 
 ### Features
