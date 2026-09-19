@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.8.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.7.1...0.8.0) (2026-09-19)
+
+### Features
+
+- add format API for formatting text in memory ([#613](https://github.com/JoshuaKGoldberg/formatly/issues/613)) ([c9475cd](https://github.com/JoshuaKGoldberg/formatly/commit/c9475cdab870ab8a301ba1c193d0874ed95db90d)), closes [#11](https://github.com/JoshuaKGoldberg/formatly/issues/11)
+
 ## [0.7.1](https://github.com/JoshuaKGoldberg/formatly/compare/0.7.0...0.7.1) (2026-09-19)
 
 ### Bug Fixes
