@@ -30,7 +30,29 @@ export interface FormatlyReportVirtualResult {
 	runner: "virtual";
 }
 
+export interface FormatOptions extends FormatlyOptions {
+	/**
+	 * Path the text should be treated as being at, relative to cwd.
+	 * Formatters use it to infer the parser and apply per-path config overrides.
+	 */
+	filePath: string;
+}
+
+export type FormatReport =
+	FormatlyReportError | FormatReportFailure | FormatReportResult;
+
+export interface FormatReportFailure extends FormatTextResultError {
+	formatter: Formatter;
+	ran: true;
+}
+
+export interface FormatReportResult extends FormatTextResultFormatted {
+	formatter: Formatter;
+	ran: true;
+}
+
 export interface Formatter {
+	formatText: FormatterTextRunner;
 	name: FormatterName;
 	runner: FormatterRunner;
 	testers: {
@@ -49,6 +71,33 @@ export type FormatterRunner = (
 export interface FormatterRunnerOptions {
 	cwd: string;
 	patterns: string[];
+}
+
+export type FormatterTextRunner = (
+	options: FormatterTextRunnerOptions,
+) => Promise<FormatTextResult>;
+
+export interface FormatterTextRunnerOptions {
+	cwd: string;
+
+	/**
+	 * Absolute path the text should be treated as being at.
+	 */
+	filePath: string;
+	text: string;
+}
+
+export type FormatTextResult =
+	FormatTextResultError | FormatTextResultFormatted;
+
+export interface FormatTextResultError {
+	error: Error;
+	formatted?: never;
+}
+
+export interface FormatTextResultFormatted {
+	error?: never;
+	formatted: string;
 }
 
 export interface ResolveFormatterOptions {

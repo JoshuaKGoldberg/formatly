@@ -60,7 +60,51 @@ npx formatly "src/**/*.ts"
 npm i formatly
 ```
 
-The `formatly` package exports the functions used by the `formatly` CLI.
+The `formatly` package exports the functions used by the `formatly` CLI, as well as a `format` function for formatting text in memory.
+
+#### `format`
+
+Formats a `string` of text as if it were a file at a given path, without writing to disk.
+
+```ts
+import { format } from "formatly";
+import fs from "node:fs/promises";
+
+const report = await format("console.log(123)", { filePath: "src/index.ts" });
+
+if (report.ran && !report.error) {
+	await fs.writeFile("src/index.ts", report.formatted);
+}
+```
+
+Parameters:
+
+1. `text: string` _(required)_: the text to format
+2. `options: FormatOptions` _(required)_:
+   - `filePath: string` _(required)_: path the text should be treated as being at, relative to `cwd`; formatters use it to infer the parser and apply any per-path config overrides
+   - `cwd: string` _(optional)_: working directory, if not `"."`
+   - `formatter: FormatterName` _(optional)_: explicit formatter to use instead of detecting one, as in [`formatly`](#formatly)
+   - `order: FormatterName[]` _(optional)_: formatters to detect first, in order, as used by [`resolveFormatter`](#resolveformatter)
+   - `stopDirectory: StopDirectory` _(optional)_: directory to stop searching parent directories for a config file at, as used by [`resolveFormatter`](#resolveformatter)
+
+Resolves with a `FormatReport`, which is one of:
+
+- `FormatlyReportError` if a formatter could not be determined, which is an object containing:
+  - `message: string`
+  - `ran: false`
+- `FormatReportFailure` if the formatter ran but failed, such as on a syntax error, which is an object containing:
+  - `error: Error`: the failure, including any output the formatter printed to stderr
+  - `formatter: Formatter`: as resolved by [`resolveFormatter`](#resolveformatter)
+  - `ran: true`
+- `FormatReportResult` if the formatter succeeded, which is an object containing:
+  - `formatted: string`: the formatted text
+  - `formatter: Formatter`: as resolved by [`resolveFormatter`](#resolveformatter)
+  - `ran: true`
+
+Text is formatted by piping it through the formatter's CLI, so the formatter must be installed in the project.
+Prettier is instead run in memory using the project's own installed `prettier` package when it can be resolved from `cwd`.
+
+> Note: `deno fmt` can only be told the file's extension, not its path, so per-path config overrides in `deno.json` don't apply to `format`.
 
 #### `formatly`
 
@@ -123,8 +167,9 @@ import { resolveFormatter } from "formatly";
 const formatter = await resolveFormatter();
 
 // {
-//   name: "Prettier",
-//   runner: "npx prettier --write",
+//   formatText: [Function],
+//   name: "prettier",
+//   runner: [Function],
 //   testers: { ... }
 // }
 console.log(formatter);
@@ -178,7 +223,8 @@ Resolves with either:
 - `undefined` if a formatter could not be detected
 - `Formatter` if one can be found, which is an object containing:
   - `name: string`: English name of the formatter
-  - `runner: string`: the shell command used to run the formatter
+  - `formatText: FormatterTextRunner`: the function used to format text in memory
+  - `runner: FormatterRunner`: the function used to run the formatter on files
   - `testers: object`: strings and regular expressions used to test for the formatter
 
 ## Formatter Detection
@@ -216,7 +262,7 @@ But there are several popular formatters in use today: it's not enough to just c
 Formatly takes away the burden of
 
 - Detecting which formatter -if any- a userland project is using
-- Calling to that formatter's API(s) to format the file
+- Calling to that formatter's API(s) to format the file, on disk or in memory
 
 ### Does Formatly replace Prettier, etc.?
 
