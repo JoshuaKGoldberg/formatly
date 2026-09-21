@@ -16,10 +16,10 @@ importers:
         version: 1.8.0
     devDependencies:
       '@biomejs/biome':
-        specifier: ^2.5.14
+        specifier: 2.5.14
         version: 2.5.14
       '@dprint/typescript':
-        specifier: ^0.96.1
+        specifier: 0.96.1
         version: 0.96.1
       '@eslint-community/eslint-plugin-eslint-comments':
         specifier: 4.8.0
@@ -52,7 +52,7 @@ importers:
         specifier: 10.3.0
         version: 10.3.0
       dprint:
-        specifier: ^0.57.4
+        specifier: 0.57.4
         version: 0.57.4
       eslint:
         specifier: 10.10.0
@@ -97,7 +97,7 @@ importers:
         specifier: 0.49.1
         version: 0.49.1
       oxfmt:
-        specifier: ^0.69.0
+        specifier: 0.69.0
         version: 0.69.0
       prettier:
         specifier: 3.9.6
