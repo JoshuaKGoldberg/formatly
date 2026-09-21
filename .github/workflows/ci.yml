@@ -56,6 +56,8 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/prepare
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
+      - run: pnpm build
       - run: pnpm run test --coverage
       - env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

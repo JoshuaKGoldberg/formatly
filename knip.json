@@ -1,7 +1,13 @@
 {
 	"$schema": "https://unpkg.com/knip@5.46.0/schema.json",
 	"entry": ["src/**/*.test.*", "src/index.ts"],
-	"ignoreDependencies": ["markdownlint"],
+	"ignoreDependencies": [
+		"@biomejs/biome",
+		"@dprint/typescript",
+		"dprint",
+		"markdownlint",
+		"oxfmt"
+	],
 	"ignoreExportsUsedInFile": { "interface": true, "type": true },
 	"project": ["src/**/*.ts"]
 }
