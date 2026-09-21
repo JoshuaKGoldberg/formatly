@@ -4,6 +4,7 @@ import { resolveCommand } from "package-manager-detector/commands";
 
 import {
 	FormatlyReportChildProcessResult,
+	FormatlyReportDryRunResult,
 	FormatterRunnerOptions,
 	FormatterTextRunnerOptions,
 	FormatTextResult,
@@ -21,11 +22,12 @@ export interface FormatTextCommand {
 
 export async function runFormatterCommand(
 	{ args, command }: ResolvedCommand,
-	{ cwd, patterns }: FormatterRunnerOptions,
-): Promise<FormatlyReportChildProcessResult> {
+	{ cwd, dryRun, patterns }: FormatterRunnerOptions,
+): Promise<FormatlyReportChildProcessResult | FormatlyReportDryRunResult> {
 	return await spawnFormatterCommand(
 		{ args: [...args, ...patterns], command },
 		cwd,
+		dryRun,
 	);
 }
 
@@ -42,11 +44,12 @@ export async function runFormatterTextCommand(
 
 export async function runPackageFormatterCommand(
 	{ args, command }: ResolvedCommand,
-	{ cwd, patterns }: FormatterRunnerOptions,
-): Promise<FormatlyReportChildProcessResult> {
+	{ cwd, dryRun, patterns }: FormatterRunnerOptions,
+): Promise<FormatlyReportChildProcessResult | FormatlyReportDryRunResult> {
 	return await spawnFormatterCommand(
 		await resolvePackageCommand([command, ...args, ...patterns], cwd),
 		cwd,
+		dryRun,
 	);
 }
 
@@ -77,7 +80,12 @@ async function resolvePackageCommand(
 async function spawnFormatterCommand(
 	{ args, command }: ResolvedCommand,
 	cwd: string,
-): Promise<FormatlyReportChildProcessResult> {
+	dryRun: boolean | undefined,
+): Promise<FormatlyReportChildProcessResult | FormatlyReportDryRunResult> {
+	if (dryRun) {
+		return { args, command, runner: "dry-run" };
+	}
+
 	return await new Promise((resolve, reject) => {
 		const child = spawn(command, args, { cwd });
 

@@ -13,7 +13,7 @@ export async function formatly(
 		};
 	}
 
-	const { cwd = process.cwd(), order, stopDirectory } = options;
+	const { cwd = process.cwd(), dryRun, order, stopDirectory } = options;
 
 	const formatter = options.formatter
 		? formatters.find((f) => f.name === options.formatter)
@@ -26,6 +26,6 @@ export async function formatly(
 	return {
 		formatter,
 		ran: true,
-		result: await formatter.runner({ cwd, patterns }),
+		result: await formatter.runner({ cwd, dryRun, patterns }),
 	};
 }
