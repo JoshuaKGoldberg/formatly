@@ -2,6 +2,11 @@ export interface FormatlyOptions extends ResolveFormatterOptions {
 	cwd?: string;
 
 	/**
+	 * Whether to report what would run instead of formatting anything.
+	 */
+	dryRun?: boolean;
+
+	/**
 	 * Pass an explicitly formatter to use instead of automatically detecting
 	 */
 	formatter?: FormatterName;
@@ -15,6 +20,15 @@ export interface FormatlyReportChildProcessResult {
 	signal: NodeJS.Signals | null;
 }
 
+/**
+ * The command a formatter would have spawned, when run with dryRun.
+ */
+export interface FormatlyReportDryRunResult {
+	args: string[];
+	command: string;
+	runner: "dry-run";
+}
+
 export interface FormatlyReportError {
 	message: string;
 	ran: false;
@@ -23,14 +37,17 @@ export interface FormatlyReportError {
 export interface FormatlyReportResult {
 	formatter: Formatter;
 	ran: true;
-	result: FormatlyReportChildProcessResult | FormatlyReportVirtualResult;
+	result:
+		| FormatlyReportChildProcessResult
+		| FormatlyReportDryRunResult
+		| FormatlyReportVirtualResult;
 }
 
 export interface FormatlyReportVirtualResult {
 	runner: "virtual";
 }
 
-export interface FormatOptions extends FormatlyOptions {
+export interface FormatOptions extends Omit<FormatlyOptions, "dryRun"> {
 	/**
 	 * Path the text should be treated as being at, relative to cwd.
 	 * Formatters use it to infer the parser and apply per-path config overrides.
@@ -66,10 +83,19 @@ export type FormatterName = "biome" | "deno" | "dprint" | "oxfmt" | "prettier";
 
 export type FormatterRunner = (
 	options: FormatterRunnerOptions,
-) => Promise<FormatlyReportChildProcessResult | FormatlyReportVirtualResult>;
+) => Promise<
+	| FormatlyReportChildProcessResult
+	| FormatlyReportDryRunResult
+	| FormatlyReportVirtualResult
+>;
 
 export interface FormatterRunnerOptions {
 	cwd: string;
+
+	/**
+	 * Whether to resolve the command that would run without spawning it.
+	 */
+	dryRun?: boolean;
 	patterns: string[];
 }
 

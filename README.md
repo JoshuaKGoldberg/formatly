@@ -54,6 +54,19 @@ To match only `.ts` files in `src/`:
 npx formatly "src/**/*.ts"
 ```
 
+#### `--dry-run`
+
+Pass `--dry-run` to report which formatter was detected and the command that would run, without formatting anything:
+
+```shell
+npx formatly --dry-run "src/**/*.ts"
+```
+
+```plaintext
+Detected prettier. 🔍
+Would run: prettier --write src/**/*.ts
+```
+
 ### Node.js API
 
 ```shell
@@ -121,6 +134,7 @@ Parameters:
 1. `patterns: string[]` _(required)_: any number of glob patterns
 2. `options: FormatlyOptions` _(optional)_:
    - `cwd: string` _(optional)_: working directory, if not `"."`
+   - `dryRun: boolean` _(optional)_: whether to resolve the command that would run without running it
    - `formatter: FormatterName` _(optional)_: explicit formatter to use instead of detecting one, supports `"biome"`, `"deno"`, `"dprint"`, and `"prettier"`
    - `order: FormatterName[]` _(optional)_: formatters to detect first, in order, as used by [`resolveFormatter`](#resolveformatter)
    - `stopDirectory: StopDirectory` _(optional)_: directory to stop searching parent directories for a config file at, as used by [`resolveFormatter`](#resolveformatter)
@@ -132,9 +146,14 @@ Resolves with a `FormatlyReport`, which is either:
 - `FormatlyReportResult` if a formatter could be determined, which is an object containing:
   - `formatter: Formatter`: as resolved by [`resolveFormatter`](#resolveformatter)
   - `ran: true`
-  - `result: FormatlyReportChildProcessResult`:
-    - `code: number | null`: exit code of the child process
-    - `signal: NodeJS.Signal | null`: signal that terminated the child process
+  - `result`, one of:
+    - `FormatlyReportChildProcessResult` if the formatter was spawned as a child process:
+      - `code: number | null`: exit code of the child process
+      - `signal: NodeJS.Signal | null`: signal that terminated the child process
+    - `FormatlyReportDryRunResult` if `dryRun` was passed:
+      - `args: string[]`: arguments of the command that would have run
+      - `command: string`: the command that would have run
+    - `FormatlyReportVirtualResult` if the formatter was run in memory
 
 For example, to run formatting on TypeScript source files in a child directory and check the result:
 

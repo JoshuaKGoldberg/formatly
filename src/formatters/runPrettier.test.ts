@@ -96,4 +96,32 @@ describe("runPrettier", () => {
 			...options.patterns,
 		]);
 	});
+
+	it("passes dryRun to the command when the internal CLI module is not used", async () => {
+		const cwd = path.resolve("elsewhere");
+
+		await runPrettier({ ...options, cwd, dryRun: true });
+
+		expect(mockRunPackageFormatterCommand).toHaveBeenCalledWith(
+			{ args: ["--write"], command: "prettier" },
+			{ ...options, cwd, dryRun: true },
+		);
+	});
+
+	it("reports the command without running the internal CLI module when dryRun is true", async () => {
+		const mockPrettierCli = {
+			run: vi.fn(),
+		};
+		mockRequire.mockReturnValueOnce(mockPrettierCli);
+
+		const result = await runPrettier({ ...options, dryRun: true });
+
+		expect(result).toEqual({
+			args: ["--write", ...options.patterns],
+			command: "prettier",
+			runner: "dry-run",
+		});
+		expect(mockPrettierCli.run).not.toHaveBeenCalled();
+		expect(mockRunPackageFormatterCommand).not.toHaveBeenCalled();
+	});
 });

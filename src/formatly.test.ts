@@ -87,6 +87,23 @@ describe("formatly", () => {
 		});
 	});
 
+	it("resolves with the command that would run without spawning it when dryRun is true", async () => {
+		const formatter = "oxfmt";
+
+		const report = await formatly(patterns, { dryRun: true, formatter });
+
+		expect(report).toEqual({
+			formatter: formatters.find((f) => f.name === formatter),
+			ran: true,
+			result: {
+				args: [formatter, ...patterns],
+				command: "npx",
+				runner: "dry-run",
+			},
+		});
+		expect(mockSpawn).not.toHaveBeenCalled();
+	});
+
 	it("passes stopDirectory to resolveFormatter when provided", async () => {
 		const stopDirectory = "custom";
 		mockResolveFormatter.mockResolvedValueOnce(formatters[0]);

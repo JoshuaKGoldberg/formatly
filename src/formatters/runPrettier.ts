@@ -43,7 +43,11 @@ function requirePrettierInternalCli(cwd: string) {
 	return undefined;
 }
 
-export const runPrettier: FormatterRunner = async ({ cwd, patterns }) => {
+export const runPrettier: FormatterRunner = async ({
+	cwd,
+	dryRun,
+	patterns,
+}) => {
 	// Prettier's CLI has no --cwd flag: it expands patterns, looks for its
 	// default ignore files, and locates its cache relative to process.cwd().
 	// Rather than reimplement those from the outside, we only format in-memory
@@ -57,8 +61,16 @@ export const runPrettier: FormatterRunner = async ({ cwd, patterns }) => {
 	if (!prettierCli) {
 		return await runPackageFormatterCommand(
 			{ args: ["--write"], command: "prettier" },
-			{ cwd, patterns },
+			{ cwd, dryRun, patterns },
 		);
+	}
+
+	if (dryRun) {
+		return {
+			args: ["--write", ...patterns],
+			command: "prettier",
+			runner: "dry-run",
+		};
 	}
 
 	await prettierCli.run(["--log-level", "silent", "--write", ...patterns]);

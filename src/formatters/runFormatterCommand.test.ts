@@ -114,4 +114,37 @@ describe("runFormatterCommand", () => {
 			{ cwd: options.cwd },
 		);
 	});
+
+	it("resolves the package command without spawning it when dryRun is true", async () => {
+		mockDetect.mockResolvedValueOnce({
+			agent: "pnpm",
+			name: "pnpm",
+		});
+
+		const result = await runPackageFormatterCommand(
+			{ args: ["fmt"], command: "dprint" },
+			{ ...options, dryRun: true },
+		);
+
+		expect(result).toEqual({
+			args: ["exec", "dprint", "fmt", ...options.patterns],
+			command: "pnpm",
+			runner: "dry-run",
+		});
+		expect(mockSpawn).not.toHaveBeenCalled();
+	});
+
+	it("resolves the direct command without spawning it when dryRun is true", async () => {
+		const result = await runFormatterCommand(
+			{ args: ["fmt"], command: "deno" },
+			{ ...options, dryRun: true },
+		);
+
+		expect(result).toEqual({
+			args: ["fmt", ...options.patterns],
+			command: "deno",
+			runner: "dry-run",
+		});
+		expect(mockSpawn).not.toHaveBeenCalled();
+	});
 });
