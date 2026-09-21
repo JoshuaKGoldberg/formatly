@@ -6,11 +6,6 @@ import path from "node:path";
 import { promisify } from "node:util";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-// These tests intentionally don't mock anything: they run the built CLI in a
-// temporary project set up with each formatter's config file and the formatter
-// linked from this repository's node_modules, the way an install would.
-// See https://github.com/JoshuaKGoldberg/formatly/issues/142
-
 const require = createRequire(import.meta.url);
 const bin = path.join(import.meta.dirname, "..", "bin", "index.mjs");
 const lib = path.join(import.meta.dirname, "..", "lib", "cli.js");
