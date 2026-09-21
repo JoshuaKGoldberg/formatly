@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.9.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.8.0...0.9.0) (2026-09-21)
+
+### Features
+
+- add --dry-run flag to report the detected formatter without formatting ([#617](https://github.com/JoshuaKGoldberg/formatly/issues/617)) ([bca70ff](https://github.com/JoshuaKGoldberg/formatly/commit/bca70ff6afb2c7b339cff76f1a1fd751bc8c1bd1)), closes [#575](https://github.com/JoshuaKGoldberg/formatly/issues/575)
+
 ## [0.8.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.7.1...0.8.0) (2026-09-19)
 
 ### Features
