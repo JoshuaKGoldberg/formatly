@@ -104,6 +104,82 @@ describe("runFormatterCommand", () => {
 		);
 	});
 
+	it.each([
+		{
+			agent: "bun",
+			args: ["x", "@biomejs/biome", "format", "--write"],
+			command: "bun",
+		},
+		{
+			agent: "deno",
+			args: ["task", "--eval", "biome", "format", "--write"],
+			command: "deno",
+		},
+		{
+			agent: "npm",
+			args: ["@biomejs/biome", "format", "--write"],
+			command: "npx",
+		},
+		{
+			agent: "pnpm",
+			args: ["exec", "biome", "format", "--write"],
+			command: "pnpm",
+		},
+		{
+			agent: "yarn",
+			args: ["exec", "biome", "--", "format", "--write"],
+			command: "yarn",
+		},
+		{
+			agent: "yarn@berry",
+			args: ["exec", "biome", "format", "--write"],
+			command: "yarn",
+		},
+	])(
+		"executes a package named differently than its bin with $agent",
+		async ({ agent, args, command }) => {
+			mockDetect.mockResolvedValueOnce({ agent, name: agent.split("@")[0] });
+
+			await runPackageFormatterCommand(
+				{
+					args: ["format", "--write"],
+					command: "biome",
+					packageName: "@biomejs/biome",
+				},
+				options,
+			);
+
+			expect(mockSpawn).toHaveBeenCalledWith(
+				command,
+				[...args, ...options.patterns],
+				{ cwd: options.cwd },
+			);
+		},
+	);
+
+	it("falls back to npx with the package name when the package manager has no local execute command", async () => {
+		mockDetect.mockResolvedValueOnce({
+			agent: "pnpm",
+			name: "pnpm",
+		});
+		mockResolveCommand.mockReturnValueOnce(null);
+
+		await runPackageFormatterCommand(
+			{
+				args: ["format", "--write"],
+				command: "biome",
+				packageName: "@biomejs/biome",
+			},
+			options,
+		);
+
+		expect(mockSpawn).toHaveBeenCalledWith(
+			"npx",
+			["@biomejs/biome", "format", "--write", ...options.patterns],
+			{ cwd: options.cwd },
+		);
+	});
+
 	it("runs non-package-manager commands directly", async () => {
 		await runFormatterCommand({ args: ["fmt"], command: "deno" }, options);
 

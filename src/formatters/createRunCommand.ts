@@ -3,6 +3,8 @@ import type { ResolvedCommand } from "package-manager-detector";
 import { FormatterRunner, FormatterTextRunner } from "../types.js";
 import {
 	FormatTextCommand,
+	FormatTextPackageCommand,
+	PackageCommand,
 	runFormatterCommand,
 	runFormatterTextCommand,
 	runPackageFormatterCommand,
@@ -16,7 +18,7 @@ export function createFormatTextCommand(
 }
 
 export function createFormatTextPackageCommand(
-	command: FormatTextCommand,
+	command: FormatTextPackageCommand,
 ): FormatterTextRunner {
 	return async (options) =>
 		await runPackageFormatterTextCommand(command, options);
@@ -27,7 +29,7 @@ export function createRunCommand(command: ResolvedCommand): FormatterRunner {
 }
 
 export function createRunPackageCommand(
-	command: ResolvedCommand,
+	command: PackageCommand,
 ): FormatterRunner {
 	return async (options) => await runPackageFormatterCommand(command, options);
 }

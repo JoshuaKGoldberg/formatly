@@ -188,6 +188,52 @@ describe("runPackageFormatterTextCommand", () => {
 			{ cwd: options.cwd, stdio: "pipe" },
 		);
 	});
+
+	it("executes the bin name when the package manager executes bins", async () => {
+		mockDetect.mockResolvedValueOnce({ agent: "pnpm", name: "pnpm" });
+		mockSpawn.mockReturnValueOnce(createMockChild({ stdout: formatted }));
+
+		await runPackageFormatterTextCommand(
+			{
+				args: () => ["format"],
+				command: "biome",
+				packageName: "@biomejs/biome",
+			},
+			options,
+		);
+
+		expect(mockSpawn).toHaveBeenCalledWith(
+			"pnpm",
+			["exec", "biome", "format"],
+			{
+				cwd: options.cwd,
+				stdio: "pipe",
+			},
+		);
+	});
+
+	it("executes the package name when the package manager executes packages", async () => {
+		mockDetect.mockResolvedValueOnce({ agent: "npm", name: "npm" });
+		mockSpawn.mockReturnValueOnce(createMockChild({ stdout: formatted }));
+
+		await runPackageFormatterTextCommand(
+			{
+				args: () => ["format"],
+				command: "biome",
+				packageName: "@biomejs/biome",
+			},
+			options,
+		);
+
+		expect(mockSpawn).toHaveBeenCalledWith(
+			"npx",
+			["@biomejs/biome", "format"],
+			{
+				cwd: options.cwd,
+				stdio: "pipe",
+			},
+		);
+	});
 });
 
 describe("formatters formatText commands", () => {
