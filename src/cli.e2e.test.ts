@@ -80,6 +80,8 @@ async function linkPackage(packageName: string) {
 			"file",
 		);
 	}
+
+	return packageDirectory;
 }
 
 async function readFile(fileName: string) {
@@ -115,6 +117,26 @@ const denoAvailable = await isCommandAvailable("deno");
 describe("cli (end-to-end)", () => {
 	it("formats with Biome when a biome.json exists", async () => {
 		await linkPackage("@biomejs/biome");
+		await writeFile("biome.json", "{}\n");
+		await writeFile("index.js", unformatted);
+
+		const result = await runCli("index.js");
+
+		expect(result).toEqual({ code: 0, stdout: "Formatted with biome. 🧼\n" });
+		expect(await readFile("index.js")).toBe(formatted);
+	});
+
+	it("formats with Biome in a pnpm project", async () => {
+		// pnpm may verify installed dependencies before executing bins,
+		// so the linked package is declared the way pnpm would record it.
+		const biomeDirectory = await linkPackage("@biomejs/biome");
+		await writeFile(
+			"package.json",
+			JSON.stringify({
+				devDependencies: { "@biomejs/biome": `link:${biomeDirectory}` },
+			}),
+		);
+		await writeFile("pnpm-lock.yaml", "lockfileVersion: '9.0'\n");
 		await writeFile("biome.json", "{}\n");
 		await writeFile("index.js", unformatted);
 

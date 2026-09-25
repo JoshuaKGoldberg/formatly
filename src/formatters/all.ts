@@ -14,12 +14,14 @@ export const formatters = [
 	{
 		formatText: createFormatTextPackageCommand({
 			args: (filePath) => ["format", `--stdin-file-path=${filePath}`],
-			command: "@biomejs/biome",
+			command: "biome",
+			packageName: "@biomejs/biome",
 		}),
 		name: "biome",
 		runner: createRunPackageCommand({
 			args: ["format", "--write"],
-			command: "@biomejs/biome",
+			command: "biome",
+			packageName: "@biomejs/biome",
 		}),
 		testers: {
 			configFile: /biome\.json/,

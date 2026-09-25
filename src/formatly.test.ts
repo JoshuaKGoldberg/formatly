@@ -152,7 +152,7 @@ describe("formatly", () => {
 
 		expect(mockSpawn).toHaveBeenCalledWith(
 			"pnpm",
-			["exec", "@biomejs/biome", "format", "--write", ...patterns],
+			["exec", "biome", "format", "--write", ...patterns],
 			{ cwd },
 		);
 	});
