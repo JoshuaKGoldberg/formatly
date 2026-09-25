@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.9.1](https://github.com/JoshuaKGoldberg/formatly/compare/0.9.0...0.9.1) (2026-09-25)
+
+### Bug Fixes
+
+- run Biome by its bin name under pnpm and other package managers ([#634](https://github.com/JoshuaKGoldberg/formatly/issues/634)) ([ff59125](https://github.com/JoshuaKGoldberg/formatly/commit/ff591253c0e89504e7017f2c1db5d2bfdecda9ac)), closes [#624](https://github.com/JoshuaKGoldberg/formatly/issues/624)
+
 ## [0.9.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.8.0...0.9.0) (2026-09-21)
 
 ### Features
