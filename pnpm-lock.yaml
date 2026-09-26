@@ -46,8 +46,8 @@ importers:
         specifier: 0.9.0
         version: 0.9.0
       create-typescript-app:
-        specifier: 2.64.0
-        version: 2.64.0(bingo-systems@0.5.5)(typescript@5.9.3)
+        specifier: 2.65.0
+        version: 2.65.0(bingo-systems@0.5.5)(typescript@5.9.3)
       cspell:
         specifier: 10.3.0
         version: 10.3.0
@@ -2279,9 +2279,9 @@ packages:
     engines: {node: '>=22'}
     hasBin: true
 
-  create-typescript-app@2.64.0:
-    resolution: {integrity: sha512-xPTjQKVSmnzsWNZbYyu7oWDWNUzPClX7uM4F8Gyv327x3XBIC/B9AcBVmu0KyLvCjkxsEboqMXacVNR/eK7oaw==}
-    engines: {node: '>=20.19.0'}
+  create-typescript-app@2.65.0:
+    resolution: {integrity: sha512-7KZK7p7Yn/qvI/ybDoIcgL1DOiC1P8Uux0CPnDsh1hVq4gcUT/MSQIcaOhqMb7j2ceYDp7ynYBliP79ips1B0w==}
+    engines: {node: ^22.13.0 || ^24.11.0 || >=26.0.0}
     hasBin: true
 
   cross-spawn@7.0.6:
@@ -3029,10 +3029,6 @@ packages:
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
-
-  js-yaml@4.3.2:
-    resolution: {integrity: sha512-SFNOvSJ+Dgf/9An904Yx+CgSlIPCkIpao4qo51lpee25TIRejdH3rhR4EZMGoNx3/TP3O+wzWuiTFl4sqbltzA==}
-    hasBin: true
 
   js-yaml@5.2.3:
     resolution: {integrity: sha512-n+mUVyUX5bVv7G/G2zyIHOhdxfuU1dY2NOFzTQUWiMUbFss8b57NFlgCCaggU78wSw5KVS9cllzeLyzyR+n5nw==}
@@ -6174,7 +6170,7 @@ snapshots:
       conventional-commits-filter: 6.0.1
       conventional-commits-parser: 7.1.2
 
-  create-typescript-app@2.64.0(bingo-systems@0.5.5)(typescript@5.9.3):
+  create-typescript-app@2.65.0(bingo-systems@0.5.5)(typescript@5.9.3):
     dependencies:
       '@typescript-eslint/typescript-estree': 8.70.0(typescript@5.9.3)
       bingo: 0.9.3
@@ -6190,7 +6186,7 @@ snapshots:
       input-from-file: 0.5.8(bingo@0.9.3)
       input-from-file-json: 0.5.7(bingo@0.9.3)
       input-from-script: 0.5.8(bingo@0.9.3)
-      js-yaml: 4.3.2
+      js-yaml: 5.2.3
       json5: 2.2.3
       lazy-value: 3.0.0
       lodash: 4.18.1
@@ -7067,10 +7063,6 @@ snapshots:
   js-tokens@10.0.0: {}
 
   js-tokens@4.0.0: {}
-
-  js-yaml@4.3.2:
-    dependencies:
-      argparse: 2.0.1
 
   js-yaml@5.2.3:
     dependencies:
