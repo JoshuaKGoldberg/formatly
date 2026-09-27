@@ -383,6 +383,23 @@ describe("formatFiles (end-to-end)", () => {
 			},
 		);
 
+		it.skipIf(skip)(
+			"reports an error for files the formatter can't parse when check is true",
+			async () => {
+				await writeFile("broken.js", "const = = ;\n");
+
+				const report = await formatFiles(["broken.js", "unformatted.js"], {
+					check: true,
+					cwd: directory,
+				});
+
+				expect(report).toMatchObject({
+					error: expect.any(Error),
+					formatter: { name },
+				});
+			},
+		);
+
 		it.skipIf(name === "deno")(
 			"reports no changes for files the formatter doesn't support",
 			async () => {

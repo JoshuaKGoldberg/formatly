@@ -38,6 +38,14 @@ export const formatters = [
 					stdout.matchAll(/^::error title=format,file=([^,]+),/gm),
 					([, filePath]) => decodeURIComponent(filePath),
 				),
+			parseFailures: ({ stdout }) =>
+				Array.from(
+					stdout.matchAll(
+						/^::error title=(?!format,)[^,]+,file=([^,]+),[^:]*::(.*)$/gm,
+					),
+					([, filePath, message]) =>
+						`${decodeURIComponent(filePath)}: ${message}`,
+				),
 		}),
 		formatText: formatTextBiome,
 		name: "biome",
@@ -60,6 +68,13 @@ export const formatters = [
 				Array.from(
 					stripVTControlCharacters(stderr).matchAll(/^from (.+):$/gm),
 					([, filePath]) => filePath,
+				),
+			parseFailures: ({ stderr }) =>
+				Array.from(
+					stripVTControlCharacters(stderr).matchAll(
+						/^Error checking: (.+)\n[\t ]*(\S.*)$/gm,
+					),
+					([, filePath, message]) => `${filePath}: ${message}`,
 				),
 		}),
 		formatText: formatTextDeno,

@@ -36,6 +36,12 @@ export interface FormatCheckCommand {
 	 * Parses the command's output into the paths of unformatted files.
 	 */
 	parse: (output: SpawnedOutput) => string[];
+
+	/**
+	 * Parses the command's output into failures other than unformatted files,
+	 * for commands that also exit with the differences code on errors.
+	 */
+	parseFailures?: (output: SpawnedOutput) => string[];
 }
 
 /**
@@ -247,7 +253,8 @@ async function spawnFormatterCheckCommand(
 	{
 		differencesCode = 1,
 		parse,
-	}: Pick<FormatCheckCommand, "differencesCode" | "parse">,
+		parseFailures,
+	}: Pick<FormatCheckCommand, "differencesCode" | "parse" | "parseFailures">,
 	resolved: ResolvedCommand,
 	{ cwd, filePaths }: FormatterCheckerOptions,
 ): Promise<FormatFilesResult> {
@@ -258,6 +265,17 @@ async function spawnFormatterCheckCommand(
 	}
 
 	if (output.code === 0 || output.code === differencesCode) {
+		const failures = parseFailures?.(output) ?? [];
+
+		if (failures.length) {
+			return {
+				error: createOutputError(resolved.command, {
+					...output,
+					stderr: failures.join("\n"),
+				}),
+			};
+		}
+
 		const listed = new Set(
 			await resolveRealPaths(
 				parse(output).map((filePath) => path.resolve(cwd, filePath)),

@@ -160,8 +160,7 @@ Resolves with a `FormatFilesReport`, which is one of:
   - `formatter: Formatter`: as resolved by [`resolveFormatter`](#resolveformatter)
   - `ran: true`
 
-> Note: Biome and Deno exit with the same code for unformatted files as for files they fail to parse, so with `check`, files they fail to parse aren't reported as an error.
-> Deno also fails when none of the given files can be formatted without `check`, such as when they're all excluded.
+> Note: Deno fails when none of the given files can be formatted without `check`, such as when they're all excluded.
 
 #### `formatly`
 
