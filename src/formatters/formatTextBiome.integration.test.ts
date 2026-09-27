@@ -84,6 +84,21 @@ describe("formatTextBiome (integration)", () => {
 			expect(mockRunPackageFormatterTextCommand).not.toHaveBeenCalled();
 		});
 
+		it("leaves files excluded by files.includes unchanged", async () => {
+			await writeFile(
+				"biome.json",
+				JSON.stringify({ files: { includes: ["**", "!ignored"] } }),
+			);
+
+			const result = await formatTextBiome({
+				cwd: directory,
+				filePath: path.join(directory, "ignored", "index.ts"),
+				text,
+			});
+
+			expect(result).toEqual({ formatted: text });
+		});
+
 		it("resolves with the diagnostics for invalid text", async () => {
 			await writeFile("biome.json", "{}");
 

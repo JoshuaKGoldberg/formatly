@@ -104,7 +104,12 @@ describe("formatly", () => {
 			formatter: formatters.find((f) => f.name === formatter),
 			ran: true,
 			result: {
-				args: ["exec", formatter, ...patterns],
+				args: [
+					"exec",
+					formatter,
+					"--no-error-on-unmatched-pattern",
+					...patterns,
+				],
 				command: "pnpm",
 				runner: "dry-run",
 			},
@@ -143,7 +148,7 @@ describe("formatly", () => {
 
 		expect(mockSpawn).toHaveBeenCalledWith(
 			"pnpm",
-			["exec", formatter, ...patterns],
+			["exec", formatter, "--no-error-on-unmatched-pattern", ...patterns],
 			{ cwd: process.cwd() },
 		);
 	});
@@ -162,7 +167,14 @@ describe("formatly", () => {
 
 		expect(mockSpawn).toHaveBeenCalledWith(
 			"pnpm",
-			["exec", "biome", "format", "--write", ...patterns],
+			[
+				"exec",
+				"biome",
+				"format",
+				"--no-errors-on-unmatched",
+				"--write",
+				...patterns,
+			],
 			{ cwd },
 		);
 	});

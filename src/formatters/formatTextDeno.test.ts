@@ -58,13 +58,15 @@ describe("formatTextDeno", () => {
 		expect(getCommandArgs()).toEqual([["fmt", "--ext", "ts", "-"]]);
 	});
 
-	it("omits --ext when the file path has no extension", async () => {
-		mockAccess.mockRejectedValueOnce(new Error("ENOENT"));
-		mockRunFormatterTextCommand.mockResolvedValueOnce(formatted);
+	it("resolves with an error when the file path has no extension", async () => {
+		const result = await formatTextDeno({ ...options, filePath: "Dockerfile" });
 
-		await formatTextDeno({ ...options, filePath: "Dockerfile" });
-
-		expect(getCommandArgs()).toEqual([["fmt", "-"]]);
+		expect(result).toEqual({
+			error: new Error(
+				"deno fmt can't infer a file type without an extension: Dockerfile",
+			),
+		});
+		expect(mockRunFormatterTextCommand).not.toHaveBeenCalled();
 	});
 
 	it("returns the stdin result when Deno doesn't exclude the file", async () => {
