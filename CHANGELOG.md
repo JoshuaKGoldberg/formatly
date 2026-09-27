@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.11.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.10.0...0.11.0) (2026-09-27)
+
+### Features
+
+- add formatFiles to format or check many files in one invocation ([#643](https://github.com/JoshuaKGoldberg/formatly/issues/643)) ([ddef000](https://github.com/JoshuaKGoldberg/formatly/commit/ddef000eac9d16498d9cbec17e7d6ed5fcc6f68d)), closes [#631](https://github.com/JoshuaKGoldberg/formatly/issues/631)
+- format with Biome in-process via @biomejs/js-api when installed ([#645](https://github.com/JoshuaKGoldberg/formatly/issues/645)) ([55e5442](https://github.com/JoshuaKGoldberg/formatly/commit/55e5442b93fe0f2ef1e322f83099e405ab7c0d7e)), closes [#633](https://github.com/JoshuaKGoldberg/formatly/issues/633)
+- format with dprint through a long-lived editor-service process ([#644](https://github.com/JoshuaKGoldberg/formatly/issues/644)) ([f685796](https://github.com/JoshuaKGoldberg/formatly/commit/f685796f37060e7d8538bec23c69995453003cfa)), closes [#632](https://github.com/JoshuaKGoldberg/formatly/issues/632)
+
+### Bug Fixes
+
+- correct README formatly example and formatFiles failure type ([#652](https://github.com/JoshuaKGoldberg/formatly/issues/652)) ([16605a5](https://github.com/JoshuaKGoldberg/formatly/commit/16605a5316a84957ee4a28c1ebe8d6a9667ca2b9))
+- don't hang on formatter output or crash on spawn errors ([#649](https://github.com/JoshuaKGoldberg/formatly/issues/649)) ([7e059c4](https://github.com/JoshuaKGoldberg/formatly/commit/7e059c41976f83b92e9cf83265b26d44e3c08d40))
+- handle excluded and unsupported files consistently across formatters ([#651](https://github.com/JoshuaKGoldberg/formatly/issues/651)) ([5e4628a](https://github.com/JoshuaKGoldberg/formatly/commit/5e4628a7c38708d8788de2de8985991d7d0afa0b))
+- report in-process Prettier failures and skip unknown files ([#646](https://github.com/JoshuaKGoldberg/formatly/issues/646)) ([182deb7](https://github.com/JoshuaKGoldberg/formatly/commit/182deb72a1754c032f9c059a941339afe3a9f701)), closes [#636](https://github.com/JoshuaKGoldberg/formatly/issues/636)
+- support relative cwds and concurrent in-process Prettier runs ([#650](https://github.com/JoshuaKGoldberg/formatly/issues/650)) ([6adc23b](https://github.com/JoshuaKGoldberg/formatly/commit/6adc23b619c48fdaa6c696d604f2a39378751fb9))
+
 ## [0.10.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.9.1...0.10.0) (2026-09-27)
 
 ### Features
