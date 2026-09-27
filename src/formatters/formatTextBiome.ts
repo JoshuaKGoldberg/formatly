@@ -19,6 +19,17 @@ interface BiomeApi {
 			options: { filePath: string },
 		): { content: string; diagnostics: { description: string }[] };
 		openProject(path?: string): { projectKey: number };
+
+		/**
+		 * Private in the types, but how ignored files can be detected.
+		 */
+		workspace?: {
+			fileFeatures?(params: {
+				features: ["format"];
+				path: string;
+				projectKey: number;
+			}): { featuresSupported: { format: string } };
+		};
 	};
 }
 
@@ -44,7 +55,7 @@ const inProcessFormatters = new Map<
 async function createInProcessFormatter(
 	cwd: string,
 ): Promise<InProcessFormatter | undefined> {
-	const require = createRequire(path.join(cwd, "index.js"));
+	const require = createRequire(path.resolve(cwd, "index.js"));
 	const readVersion = (packageName: string) =>
 		wrapSafe(
 			() =>
@@ -77,8 +88,19 @@ async function createInProcessFormatter(
 	}
 
 	return (filePath, text) => {
+		const relativePath = path.relative(directory, filePath);
+		const features = biome.workspace?.fileFeatures?.({
+			features: ["format"],
+			path: relativePath,
+			projectKey,
+		});
+
+		if (features?.featuresSupported.format === "ignored") {
+			return { formatted: text };
+		}
+
 		const { content, diagnostics } = biome.formatContent(projectKey, text, {
-			filePath: path.relative(directory, filePath),
+			filePath: relativePath,
 		});
 
 		return diagnostics.length

@@ -26,7 +26,7 @@ type PrettierOptions = Record<string, unknown> & { filepath?: string };
 function requirePrettier(cwd: string) {
 	// Formatting with the project's own Prettier makes sure its version,
 	// plugins, and config resolution all match what the project uses.
-	const require = createRequire(path.join(cwd, "index.js"));
+	const require = createRequire(path.resolve(cwd, "index.js"));
 
 	return wrapSafe(() => require("prettier") as PrettierApi);
 }

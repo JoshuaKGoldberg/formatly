@@ -107,7 +107,9 @@ export function createOutputError(
 			: `was terminated by signal ${signal}`;
 
 	return new Error(
-		[`${command} ${reason}.`, stderr.trim()].filter(Boolean).join("\n"),
+		[`${path.basename(command)} ${reason}.`, stderr.trim()]
+			.filter(Boolean)
+			.join("\n"),
 	);
 }
 
@@ -281,7 +283,10 @@ async function spawnFormatterCommand(
 	}
 
 	return await new Promise((resolve, reject) => {
-		const child = spawn(command, args, { cwd });
+		const child = spawn(command, args, {
+			cwd,
+			stdio: ["ignore", "ignore", "inherit"],
+		});
 
 		child.on("error", reject);
 		child.on("exit", (code, signal) => {

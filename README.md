@@ -120,6 +120,7 @@ Biome is instead run in memory when the project installs [`@biomejs/js-api`](htt
 dprint is instead run through one long-lived `dprint editor-service` process per `cwd`, which doesn't keep the Node.js process alive while idle.
 
 > Note: `deno fmt` can only be told the file's extension, not its path, so per-path config overrides in `deno.json` don't apply to `format`.
+> `fmt.exclude` is honored by asking Deno about the file on disk, so it only applies to files that already exist.
 
 #### `formatFiles`
 
@@ -160,6 +161,7 @@ Resolves with a `FormatFilesReport`, which is one of:
   - `ran: true`
 
 > Note: Biome and Deno exit with the same code for unformatted files as for files they fail to parse, so with `check`, files they fail to parse aren't reported as an error.
+> Deno also fails when none of the given files can be formatted without `check`, such as when they're all excluded.
 
 #### `formatly`
 
@@ -197,6 +199,8 @@ Resolves with a `FormatlyReport`, which is either:
       - `command: string`: the command that would have run
     - `FormatlyReportVirtualResult` if the formatter was run in memory:
       - `code: number`: exit code the formatter would have exited with as a child process
+
+Spawned formatters' error output is passed through to the process's stderr, while their other output is ignored.
 
 For example, to run formatting on TypeScript source files in a child directory and check the result:
 
