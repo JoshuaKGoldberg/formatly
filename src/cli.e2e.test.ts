@@ -372,10 +372,10 @@ describe("formatFiles (end-to-end)", () => {
 		it.skipIf(name === "deno")(
 			"reports no changes for files the formatter doesn't support",
 			async () => {
-				await writeFile("notes.unknownext", "some notes\n");
+				await writeFile("notes.unsupported", "some notes\n");
 
 				for (const check of [true, false]) {
-					const report = await formatFiles(["notes.unknownext"], {
+					const report = await formatFiles(["notes.unsupported"], {
 						check,
 						cwd: directory,
 					});
