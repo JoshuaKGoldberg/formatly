@@ -8,6 +8,7 @@ import {
 	createRunCommand,
 	createRunPackageCommand,
 } from "./createRunCommand.js";
+import { formatTextBiome } from "./formatTextBiome.js";
 import { formatTextDeno } from "./formatTextDeno.js";
 import { formatTextDprint } from "./formatTextDprint.js";
 import { formatTextPrettier } from "./formatTextPrettier.js";
@@ -33,11 +34,7 @@ export const formatters = [
 					([, filePath]) => decodeURIComponent(filePath),
 				),
 		}),
-		formatText: createFormatTextPackageCommand({
-			args: (filePath) => ["format", `--stdin-file-path=${filePath}`],
-			command: "biome",
-			packageName: "@biomejs/biome",
-		}),
+		formatText: formatTextBiome,
 		name: "biome",
 		runner: createRunPackageCommand({
 			args: ["format", "--write"],

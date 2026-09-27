@@ -116,6 +116,7 @@ Resolves with a `FormatReport`, which is one of:
 
 Text is formatted by piping it through the formatter's CLI, so the formatter must be installed in the project.
 Prettier is instead run in memory using the project's own installed `prettier` package when it can be resolved from `cwd`.
+Biome is instead run in memory when the project installs [`@biomejs/js-api`](https://biomejs.dev/reference/js-api) along with a `@biomejs/wasm-nodejs` matching its `@biomejs/biome` version, unless its config uses `extends` or is a nested (`"root": false`) config.
 dprint is instead run through one long-lived `dprint editor-service` process per `cwd`, which doesn't keep the Node.js process alive while idle.
 
 > Note: `deno fmt` can only be told the file's extension, not its path, so per-path config overrides in `deno.json` don't apply to `format`.
