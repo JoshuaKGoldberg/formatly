@@ -67,6 +67,10 @@ Detected prettier. 🔍
 Would run: prettier --write --ignore-unknown src/**/*.ts
 ```
 
+#### `--help` and `--version`
+
+Pass `--help` (`-h`) to print usage information, or `--version` (`-v`) to print formatly's version.
+
 ### Node.js API
 
 ```shell

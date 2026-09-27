@@ -1,8 +1,33 @@
+import { createRequire } from "node:module";
+
 import { formatly } from "./formatly.js";
 
 const dryRunFlag = "--dry-run";
+const helpFlags = new Set(["--help", "-h"]);
+const versionFlags = new Set(["--version", "-v"]);
+
+const help = `Usage: formatly [--dry-run] <patterns...>
+
+Formats files with whatever formatter your project is already using.
+
+Options:
+  --dry-run      Report the detected formatter and command without formatting
+  -h, --help     Show this help message
+  -v, --version  Show formatly's version`;
 
 export async function cli(args: string[]) {
+	if (args.some((arg) => helpFlags.has(arg))) {
+		console.log(help);
+		return 0;
+	}
+
+	if (args.some((arg) => versionFlags.has(arg))) {
+		const require = createRequire(import.meta.url);
+		const { version } = require("../package.json") as { version: string };
+		console.log(version);
+		return 0;
+	}
+
 	const dryRun = args.includes(dryRunFlag);
 	const patterns = args.filter((arg) => arg !== dryRunFlag);
 

@@ -1,7 +1,12 @@
+import { createRequire } from "node:module";
 import { beforeEach } from "vitest";
 import { describe, expect, it, vi } from "vitest";
 
 import { cli } from "./cli.js";
+
+const { version } = createRequire(import.meta.url)("../package.json") as {
+	version: string;
+};
 
 const mockFormatly = vi.fn();
 
@@ -21,6 +26,34 @@ describe("cli", () => {
 		console.error = mockError;
 		console.log = mockLog;
 	});
+
+	it.each([
+		{ args: ["--help"] },
+		{ args: ["-h"] },
+		{ args: ["src", "--help"] },
+	])(
+		"returns 0 and logs usage without formatting when given $args",
+		async ({ args }) => {
+			const result = await cli(args);
+
+			expect(result).toBe(0);
+			expect(mockFormatly).not.toHaveBeenCalled();
+			expect(mockLog).toHaveBeenCalledWith(
+				expect.stringContaining("Usage: formatly"),
+			);
+		},
+	);
+
+	it.each([{ args: ["--version"] }, { args: ["-v"] }])(
+		"returns 0 and logs the version without formatting when given $args",
+		async ({ args }) => {
+			const result = await cli(args);
+
+			expect(result).toBe(0);
+			expect(mockFormatly).not.toHaveBeenCalled();
+			expect(mockLog).toHaveBeenCalledWith(version);
+		},
+	);
 
 	it("returns 0 and logs the formatter name when formatly runs", async () => {
 		mockFormatly.mockResolvedValueOnce({
