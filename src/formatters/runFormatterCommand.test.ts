@@ -222,6 +222,28 @@ describe("runFormatterCommand", () => {
 		);
 	});
 
+	it("uses the package manager without looking in node_modules/.bin on Windows", async () => {
+		const { platform } = process;
+		Object.defineProperty(process, "platform", { value: "win32" });
+		mockDetect.mockResolvedValueOnce({ agent: "pnpm", name: "pnpm" });
+
+		try {
+			await runPackageFormatterCommand(
+				{ args: ["fmt"], command: "dprint" },
+				options,
+			);
+		} finally {
+			Object.defineProperty(process, "platform", { value: platform });
+		}
+
+		expect(mockAccess).not.toHaveBeenCalled();
+		expect(mockSpawn).toHaveBeenCalledWith(
+			"pnpm",
+			["exec", "dprint", "fmt", ...options.patterns],
+			{ cwd: options.cwd },
+		);
+	});
+
 	it("runs non-package-manager commands directly", async () => {
 		await runFormatterCommand({ args: ["fmt"], command: "deno" }, options);
 
