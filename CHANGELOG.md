@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.11.2](https://github.com/JoshuaKGoldberg/formatly/compare/0.11.1...0.11.2) (2026-09-27)
+
+### Bug Fixes
+
+- throw a descriptive error when a directory cannot be read ([#656](https://github.com/JoshuaKGoldberg/formatly/issues/656)) ([f836a62](https://github.com/JoshuaKGoldberg/formatly/commit/f836a62aa2ae49245dc4b16e66b9a10a4b9929b2)), closes [#654](https://github.com/JoshuaKGoldberg/formatly/issues/654)
+
 ## [0.11.1](https://github.com/JoshuaKGoldberg/formatly/compare/0.11.0...0.11.1) (2026-09-27)
 
 ### Bug Fixes
