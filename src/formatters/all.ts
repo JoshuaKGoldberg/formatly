@@ -7,6 +7,7 @@ import {
 	createRunCommand,
 	createRunPackageCommand,
 } from "./createRunCommand.js";
+import { formatTextDprint } from "./formatTextDprint.js";
 import { formatTextPrettier } from "./formatTextPrettier.js";
 import { runPrettier } from "./runPrettier.js";
 
@@ -49,10 +50,7 @@ export const formatters = [
 		},
 	},
 	{
-		formatText: createFormatTextPackageCommand({
-			args: (filePath) => ["fmt", "--stdin", filePath],
-			command: "dprint",
-		}),
+		formatText: formatTextDprint,
 		name: "dprint",
 		runner: createRunPackageCommand({
 			args: ["fmt"],

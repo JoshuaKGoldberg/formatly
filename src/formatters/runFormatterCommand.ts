@@ -55,6 +55,24 @@ interface PackageCommandSource {
  */
 const agentsExecutingPackageNames = new Set<Agent>(["bun", "npm"]);
 
+export async function resolvePackageCommand(
+	{ command, packageName = command }: PackageCommandSource,
+	args: string[],
+	cwd: string,
+): Promise<ResolvedCommand> {
+	const agent = (await detect({ cwd }))?.agent ?? "npm";
+	const executable = agentsExecutingPackageNames.has(agent)
+		? packageName
+		: command;
+
+	return (
+		resolveCommand(agent, "execute-local", [executable, ...args]) ?? {
+			args: [packageName, ...args],
+			command: "npx",
+		}
+	);
+}
+
 export async function runFormatterCommand(
 	{ args, command }: ResolvedCommand,
 	{ cwd, dryRun, patterns }: FormatterRunnerOptions,
@@ -96,24 +114,6 @@ export async function runPackageFormatterTextCommand(
 		await resolvePackageCommand(source, args(filePath), cwd),
 		cwd,
 		text,
-	);
-}
-
-async function resolvePackageCommand(
-	{ command, packageName = command }: PackageCommandSource,
-	args: string[],
-	cwd: string,
-): Promise<ResolvedCommand> {
-	const agent = (await detect({ cwd }))?.agent ?? "npm";
-	const executable = agentsExecutingPackageNames.has(agent)
-		? packageName
-		: command;
-
-	return (
-		resolveCommand(agent, "execute-local", [executable, ...args]) ?? {
-			args: [packageName, ...args],
-			command: "npx",
-		}
 	);
 }
 
