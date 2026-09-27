@@ -75,7 +75,7 @@ describe("runFormatterCommand", () => {
 		expect(mockSpawn).toHaveBeenCalledWith(
 			"pnpm",
 			["exec", "dprint", "fmt", ...options.patterns],
-			{ cwd: options.cwd },
+			{ cwd: options.cwd, stdio: ["ignore", "ignore", "inherit"] },
 		);
 	});
 
@@ -90,7 +90,7 @@ describe("runFormatterCommand", () => {
 		expect(mockSpawn).toHaveBeenCalledWith(
 			"npx",
 			["dprint", "fmt", ...options.patterns],
-			{ cwd: options.cwd },
+			{ cwd: options.cwd, stdio: ["ignore", "ignore", "inherit"] },
 		);
 	});
 
@@ -109,7 +109,7 @@ describe("runFormatterCommand", () => {
 		expect(mockSpawn).toHaveBeenCalledWith(
 			"npx",
 			["dprint", "fmt", ...options.patterns],
-			{ cwd: options.cwd },
+			{ cwd: options.cwd, stdio: ["ignore", "ignore", "inherit"] },
 		);
 	});
 
@@ -161,7 +161,7 @@ describe("runFormatterCommand", () => {
 			expect(mockSpawn).toHaveBeenCalledWith(
 				command,
 				[...args, ...options.patterns],
-				{ cwd: options.cwd },
+				{ cwd: options.cwd, stdio: ["ignore", "ignore", "inherit"] },
 			);
 		},
 	);
@@ -185,7 +185,7 @@ describe("runFormatterCommand", () => {
 		expect(mockSpawn).toHaveBeenCalledWith(
 			"npx",
 			["@biomejs/biome", "format", "--write", ...options.patterns],
-			{ cwd: options.cwd },
+			{ cwd: options.cwd, stdio: ["ignore", "ignore", "inherit"] },
 		);
 	});
 
@@ -201,7 +201,7 @@ describe("runFormatterCommand", () => {
 		expect(mockSpawn).toHaveBeenCalledWith(
 			path.resolve(options.cwd, "node_modules", ".bin", "dprint"),
 			["fmt", ...options.patterns],
-			{ cwd: options.cwd },
+			{ cwd: options.cwd, stdio: ["ignore", "ignore", "inherit"] },
 		);
 	});
 
@@ -218,7 +218,7 @@ describe("runFormatterCommand", () => {
 		expect(mockSpawn).toHaveBeenCalledWith(
 			path.resolve("node_modules", ".bin", "dprint"),
 			["fmt", ...options.patterns],
-			{ cwd: options.cwd },
+			{ cwd: options.cwd, stdio: ["ignore", "ignore", "inherit"] },
 		);
 	});
 
@@ -240,7 +240,7 @@ describe("runFormatterCommand", () => {
 		expect(mockSpawn).toHaveBeenCalledWith(
 			"pnpm",
 			["exec", "dprint", "fmt", ...options.patterns],
-			{ cwd: options.cwd },
+			{ cwd: options.cwd, stdio: ["ignore", "ignore", "inherit"] },
 		);
 	});
 
@@ -251,7 +251,7 @@ describe("runFormatterCommand", () => {
 		expect(mockSpawn).toHaveBeenCalledWith(
 			"deno",
 			["fmt", ...options.patterns],
-			{ cwd: options.cwd },
+			{ cwd: options.cwd, stdio: ["ignore", "ignore", "inherit"] },
 		);
 	});
 

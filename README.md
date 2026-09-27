@@ -198,6 +198,8 @@ Resolves with a `FormatlyReport`, which is either:
     - `FormatlyReportVirtualResult` if the formatter was run in memory:
       - `code: number`: exit code the formatter would have exited with as a child process
 
+Spawned formatters' error output is passed through to the process's stderr, while their other output is ignored.
+
 For example, to run formatting on TypeScript source files in a child directory and check the result:
 
 ```ts

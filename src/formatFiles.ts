@@ -56,7 +56,13 @@ async function writeFiles(
 	filePaths: string[],
 ): Promise<FormatFilesResult> {
 	const before = await readFiles(filePaths);
-	const result = await formatter.runner({ cwd, patterns: filePaths });
+	const result = await formatter
+		.runner({ cwd, patterns: filePaths })
+		.catch((error: unknown) => error as Error);
+
+	if (result instanceof Error) {
+		return { error: result };
+	}
 
 	const signal = result.runner === "child_process" ? result.signal : null;
 

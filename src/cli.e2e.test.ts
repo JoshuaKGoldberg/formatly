@@ -129,6 +129,20 @@ describe("cli (end-to-end)", () => {
 		expect(await readFile("index.js")).toBe(formatted);
 	});
 
+	it("prints the formatter's errors when it fails", async () => {
+		await linkPackage("@biomejs/biome");
+		await writeFile("biome.json", "{}\n");
+		await writeFile("index.js", "const value   =\n");
+
+		const result = await runCli("index.js");
+
+		expect(result).toMatchObject({ code: 1 });
+		expect(result.stderr).toContain("index.js");
+		expect(result.stderr).toContain(
+			"Failed formatting with biome (exit code 1). 🛑",
+		);
+	});
+
 	it("formats with Biome in a pnpm project", async () => {
 		// pnpm may verify installed dependencies before executing bins,
 		// so the linked package is declared the way pnpm would record it.
