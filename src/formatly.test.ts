@@ -95,6 +95,17 @@ describe("formatly", () => {
 		});
 	});
 
+	it("throws an error when an unknown explicit formatter is passed", async () => {
+		const formatter = "unknown";
+
+		await expect(
+			formatly(patterns, { formatter: formatter as FormatterName }),
+		).rejects.toThrow(
+			"Unknown formatter name: unknown. Known formatters are biome, deno, dprint, oxfmt, prettier.",
+		);
+		expect(mockSpawn).not.toHaveBeenCalled();
+	});
+
 	it("resolves with the command that would run without spawning it when dryRun is true", async () => {
 		const formatter = "oxfmt";
 

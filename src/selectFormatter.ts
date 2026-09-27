@@ -6,7 +6,17 @@ export async function selectFormatter(
 	cwd: string,
 	{ formatter, order, stopDirectory }: FormatlyOptions,
 ) {
-	return formatter
-		? formatters.find((f) => f.name === formatter)
-		: await resolveFormatter(cwd, { order, stopDirectory });
+	if (!formatter) {
+		return await resolveFormatter(cwd, { order, stopDirectory });
+	}
+
+	const found = formatters.find((f) => f.name === formatter);
+
+	if (!found) {
+		throw new Error(
+			`Unknown formatter name: ${formatter}. Known formatters are ${formatters.map((formatter) => formatter.name).join(", ")}.`,
+		);
+	}
+
+	return found;
 }
