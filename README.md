@@ -300,21 +300,22 @@ Resolves with either:
 Formatters are detected based on the first match from, in order:
 
 1. Existence of the formatter's default supported config file name
-2. The formatter's name in a `package.json` `fmt` or `format` script
-3. Well-known root-level `package.json` key
+2. A `package.json` script running the formatter's format command, such as `deno fmt`
+3. A `package.json` script mentioning the formatter's name as a whole word, such as `deno task build`
+4. Well-known root-level `package.json` key
 
 Config files are only searched for in the working directory unless a [`stopDirectory`](#resolveformatter) is provided.
 `package.json` is always searched for in the working directory and its parent directories.
 
 ### Supported Formatters
 
-| Formatter                                                   | Config File                                                                                             | Package Key  | Script     |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------ | ---------- |
-| [Biome](https://biomejs.dev/formatter)                      | [Configure Biome](https://biomejs.dev/guides/configure-biome)                                           |              | `biome`    |
-| [deno fmt](https://docs.deno.com/runtime/reference/cli/fmt) | [Deno Configuration > Formatting](https://docs.deno.com/runtime/fundamentals/configuration/#formatting) |              | `deno`     |
-| [dprint](https://dprint.dev)                                | [dprint setup](https://dprint.dev/setup)                                                                |              | `dprint`   |
-| [Oxfmt](https://oxc.rs/docs/guide/usage/formatter)          | [Oxfmt Configuration](https://oxc.rs/docs/guide/usage/formatter/config.html)                            |              | `oxfmt`    |
-| [Prettier](https://prettier.io)                             | [Prettier Configuration File](https://prettier.io/docs/en/configuration)                                | `"prettier"` | `prettier` |
+| Formatter                                                   | Config File                                                                                             | Package Key  | Format Command                            |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------ | ----------------------------------------- |
+| [Biome](https://biomejs.dev/formatter)                      | [Configure Biome](https://biomejs.dev/guides/configure-biome)                                           |              | `biome check`, `biome ci`, `biome format` |
+| [deno fmt](https://docs.deno.com/runtime/reference/cli/fmt) | [Deno Configuration > Formatting](https://docs.deno.com/runtime/fundamentals/configuration/#formatting) |              | `deno fmt`                                |
+| [dprint](https://dprint.dev)                                | [dprint setup](https://dprint.dev/setup)                                                                |              | `dprint check`, `dprint fmt`              |
+| [Oxfmt](https://oxc.rs/docs/guide/usage/formatter)          | [Oxfmt Configuration](https://oxc.rs/docs/guide/usage/formatter/config.html)                            |              | `oxfmt`                                   |
+| [Prettier](https://prettier.io)                             | [Prettier Configuration File](https://prettier.io/docs/en/configuration)                                | `"prettier"` | `prettier`                                |
 
 > Want support for a formatter not mentioned here?
 > Great!

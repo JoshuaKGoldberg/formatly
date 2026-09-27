@@ -47,8 +47,9 @@ export const formatters = [
 			packageName: "@biomejs/biome",
 		}),
 		testers: {
-			configFile: /biome\.json/,
-			script: /biome\s+format/,
+			configFile: /^\.?biome\.jsonc?$/,
+			formatScript: /(?<![\w-])biome\s+(?:check|ci|format)\b/,
+			script: /(?<![\w-])biome(?![\w-])/,
 		},
 	},
 	{
@@ -68,8 +69,9 @@ export const formatters = [
 			command: "deno",
 		}),
 		testers: {
-			configFile: /deno\.json/,
-			script: /deno/,
+			configFile: /^deno\.jsonc?$/,
+			formatScript: /(?<![\w-])deno\s+fmt\b/,
+			script: /(?<![\w-])deno(?![\w-])/,
 		},
 	},
 	{
@@ -91,8 +93,9 @@ export const formatters = [
 			command: "dprint",
 		}),
 		testers: {
-			configFile: /dprint\.json/,
-			script: /dprint/,
+			configFile: /^\.?dprint\.jsonc?$/,
+			formatScript: /(?<![\w-])dprint\s+(?:check|fmt)\b/,
+			script: /(?<![\w-])dprint(?![\w-])/,
 		},
 	},
 	{
@@ -116,7 +119,8 @@ export const formatters = [
 		}),
 		testers: {
 			configFile: /^(?:\.oxfmtrc\.(?:json|jsonc)|oxfmt\.config\.(?:mts|ts))$/,
-			script: /oxfmt/,
+			formatScript: /(?<![\w-])oxfmt(?![\w-])/,
+			script: /(?<![\w-])oxfmt(?![\w-])/,
 		},
 	},
 	{
@@ -133,9 +137,11 @@ export const formatters = [
 		name: "prettier",
 		runner: runPrettier,
 		testers: {
-			configFile: /prettier(?:rc|\.)/,
+			configFile:
+				/^(?:\.prettierrc(?:\.(?:json5?|toml|ya?ml|[cm]?[jt]s))?|prettier\.config\.[cm]?[jt]s)$/,
+			formatScript: /(?<![\w-])prettier(?![\w-])/,
 			packageKey: "prettier",
-			script: /prettier/,
+			script: /(?<![\w-])prettier(?![\w-])/,
 		},
 	},
 ] as const satisfies Formatter[];

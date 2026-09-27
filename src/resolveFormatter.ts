@@ -35,10 +35,14 @@ export async function resolveFormatter(
 
 	const { scripts = {}, ...otherKeys } = packageData;
 
-	for (const formatter of orderedFormatters) {
-		for (const script of Object.values(scripts as object)) {
-			if (formatter.testers.script.test(script as string)) {
-				return formatter;
+	// Scripts running a format command are more telling than ones only
+	// mentioning a formatter, such as "deno test" in a Prettier project.
+	for (const tester of ["formatScript", "script"] as const) {
+		for (const formatter of orderedFormatters) {
+			for (const script of Object.values(scripts as object)) {
+				if (formatter.testers[tester].test(script as string)) {
+					return formatter;
+				}
 			}
 		}
 	}
