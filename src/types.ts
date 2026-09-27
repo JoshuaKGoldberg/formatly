@@ -1,3 +1,31 @@
+export interface FormatFilesOptions extends Omit<FormatlyOptions, "dryRun"> {
+	/**
+	 * Whether to report which files aren't formatted instead of formatting them.
+	 */
+	check?: boolean;
+}
+
+export type FormatFilesReport =
+	FormatFilesReportFailure | FormatFilesReportResult | FormatlyReportError;
+
+export interface FormatFilesReportFailure extends FormatTextResultError {
+	formatter: Formatter;
+	ran: true;
+}
+
+export interface FormatFilesReportResult extends FormatFilesResultChanged {
+	formatter: Formatter;
+	ran: true;
+}
+
+export type FormatFilesResult =
+	FormatFilesResultChanged | FormatTextResultError;
+
+export interface FormatFilesResultChanged {
+	changed: string[];
+	error?: never;
+}
+
 export interface FormatlyOptions extends ResolveFormatterOptions {
 	cwd?: string;
 
@@ -69,6 +97,7 @@ export interface FormatReportResult extends FormatTextResultFormatted {
 }
 
 export interface Formatter {
+	checker: FormatterChecker;
 	formatText: FormatterTextRunner;
 	name: FormatterName;
 	runner: FormatterRunner;
@@ -77,6 +106,19 @@ export interface Formatter {
 		packageKey?: string;
 		script: RegExp;
 	};
+}
+
+export type FormatterChecker = (
+	options: FormatterCheckerOptions,
+) => Promise<FormatFilesResult>;
+
+export interface FormatterCheckerOptions {
+	cwd: string;
+
+	/**
+	 * Absolute paths of the files to check.
+	 */
+	filePaths: string[];
 }
 
 export type FormatterName = "biome" | "deno" | "dprint" | "oxfmt" | "prettier";
