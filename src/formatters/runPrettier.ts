@@ -25,6 +25,12 @@ const prettierInternalCliModules = [
 	"prettier/internal/cli.mjs",
 ];
 
+/**
+ * Files Prettier has no parser for are skipped, as with patterns like "*".
+ * @see https://github.com/JoshuaKGoldberg/formatly/issues/636
+ */
+const args = ["--write", "--ignore-unknown"];
+
 function requirePrettierInternalCli(cwd: string) {
 	// The CLI module isn't in prettier's exports, but CJS require() doesn't respect those.
 	// See https://github.com/prettier/prettier/issues/17422
@@ -41,6 +47,15 @@ function requirePrettierInternalCli(cwd: string) {
 	}
 
 	return undefined;
+}
+
+/**
+ * Prettier's CLI reports failures by setting process.exitCode.
+ */
+function restoreExitCode(previousExitCode: typeof process.exitCode) {
+	const code = Number(process.exitCode ?? 0);
+	process.exitCode = previousExitCode;
+	return code;
 }
 
 export const runPrettier: FormatterRunner = async ({
@@ -60,22 +75,23 @@ export const runPrettier: FormatterRunner = async ({
 
 	if (!prettierCli) {
 		return await runPackageFormatterCommand(
-			{ args: ["--write"], command: "prettier" },
+			{ args, command: "prettier" },
 			{ cwd, dryRun, patterns },
 		);
 	}
 
 	if (dryRun) {
 		return {
-			args: ["--write", ...patterns],
+			args: [...args, ...patterns],
 			command: "prettier",
 			runner: "dry-run",
 		};
 	}
 
-	await prettierCli.run(["--log-level", "silent", "--write", ...patterns]);
+	const previousExitCode = process.exitCode;
+	process.exitCode = undefined;
 
-	return {
-		runner: "virtual",
-	};
+	await prettierCli.run(["--log-level", "warn", ...args, ...patterns]);
+
+	return { code: restoreExitCode(previousExitCode), runner: "virtual" };
 };

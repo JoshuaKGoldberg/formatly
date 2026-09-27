@@ -201,6 +201,32 @@ describe("cli (end-to-end)", () => {
 		expect(await readFile("index.js")).toBe(formatted);
 	});
 
+	it("skips files Prettier has no parser for", async () => {
+		await linkPackage("prettier");
+		await writeFile(".prettierrc", "{}\n");
+		await writeFile("data.bin", "some data\n");
+		await writeFile("index.js", unformatted);
+
+		const result = await runCli("*");
+
+		expect(result).toEqual({
+			code: 0,
+			stdout: "Formatted with prettier. 🧼\n",
+		});
+		expect(await readFile("index.js")).toBe(formatted);
+	});
+
+	it("exits with an error when Prettier fails to format a file", async () => {
+		await linkPackage("prettier");
+		await writeFile(".prettierrc", "{}\n");
+		await writeFile("index.js", "const value   =\n");
+
+		const result = await runCli("index.js");
+
+		expect(result).toMatchObject({ code: 2 });
+		expect(result.stderr).toContain("SyntaxError");
+	});
+
 	it("reports the command without formatting when --dry-run is passed", async () => {
 		await linkPackage("prettier");
 		await writeFile(".prettierrc", "{}\n");
@@ -210,7 +236,8 @@ describe("cli (end-to-end)", () => {
 
 		expect(result).toEqual({
 			code: 0,
-			stdout: "Detected prettier. 🔍\nWould run: prettier --write index.js\n",
+			stdout:
+				"Detected prettier. 🔍\nWould run: prettier --write --ignore-unknown index.js\n",
 		});
 		expect(await readFile("index.js")).toBe(unformatted);
 	});

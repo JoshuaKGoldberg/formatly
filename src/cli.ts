@@ -20,22 +20,20 @@ export async function cli(args: string[]) {
 		return 0;
 	}
 
-	if (result.result.runner === "child_process") {
-		const { code, signal } = result.result;
+	if (result.result.runner === "child_process" && result.result.signal) {
+		console.error(
+			`Failed formatting with ${result.formatter.name} (signal ${result.result.signal}). 🛑`,
+		);
+		return 1;
+	}
 
-		if (signal) {
-			console.error(
-				`Failed formatting with ${result.formatter.name} (signal ${signal}). 🛑`,
-			);
-			return 1;
-		}
+	const { code } = result.result;
 
-		if (code) {
-			console.error(
-				`Failed formatting with ${result.formatter.name} (exit code ${code.toString()}). 🛑`,
-			);
-			return code;
-		}
+	if (code) {
+		console.error(
+			`Failed formatting with ${result.formatter.name} (exit code ${code.toString()}). 🛑`,
+		);
+		return code;
 	}
 
 	console.log(`Formatted with ${result.formatter.name}. 🧼`);

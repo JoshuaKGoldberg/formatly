@@ -35,7 +35,7 @@ describe("runPrettier", () => {
 			["prettier/internal/cli.mjs"],
 		]);
 		expect(mockRunPackageFormatterCommand).toHaveBeenCalledWith(
-			{ args: ["--write"], command: "prettier" },
+			{ args: ["--write", "--ignore-unknown"], command: "prettier" },
 			options,
 		);
 	});
@@ -47,7 +47,7 @@ describe("runPrettier", () => {
 
 		expect(mockRequire).not.toHaveBeenCalled();
 		expect(mockRunPackageFormatterCommand).toHaveBeenCalledWith(
-			{ args: ["--write"], command: "prettier" },
+			{ args: ["--write", "--ignore-unknown"], command: "prettier" },
 			{ ...options, cwd },
 		);
 	});
@@ -66,10 +66,25 @@ describe("runPrettier", () => {
 		expect(mockRunPackageFormatterCommand).not.toHaveBeenCalled();
 		expect(mockPrettierCli.run).toHaveBeenCalledWith([
 			"--log-level",
-			"silent",
+			"warn",
 			"--write",
+			"--ignore-unknown",
 			...options.patterns,
 		]);
+	});
+
+	it("reports the exit code set by the internal CLI module and restores the previous one", async () => {
+		const mockPrettierCli = {
+			run: vi.fn(() => {
+				process.exitCode = 2;
+			}),
+		};
+		mockRequire.mockReturnValueOnce(mockPrettierCli);
+
+		const result = await runPrettier(options);
+
+		expect(result).toEqual({ code: 2, runner: "virtual" });
+		expect(process.exitCode).toBeUndefined();
 	});
 
 	it("formats with the internal pre-3.6 CLI module when requiring the legacy one fails", async () => {
@@ -91,8 +106,9 @@ describe("runPrettier", () => {
 		expect(mockRunPackageFormatterCommand).not.toHaveBeenCalled();
 		expect(mockPrettierCli.run).toHaveBeenCalledWith([
 			"--log-level",
-			"silent",
+			"warn",
 			"--write",
+			"--ignore-unknown",
 			...options.patterns,
 		]);
 	});
@@ -103,7 +119,7 @@ describe("runPrettier", () => {
 		await runPrettier({ ...options, cwd, dryRun: true });
 
 		expect(mockRunPackageFormatterCommand).toHaveBeenCalledWith(
-			{ args: ["--write"], command: "prettier" },
+			{ args: ["--write", "--ignore-unknown"], command: "prettier" },
 			{ ...options, cwd, dryRun: true },
 		);
 	});
@@ -117,7 +133,7 @@ describe("runPrettier", () => {
 		const result = await runPrettier({ ...options, dryRun: true });
 
 		expect(result).toEqual({
-			args: ["--write", ...options.patterns],
+			args: ["--write", "--ignore-unknown", ...options.patterns],
 			command: "prettier",
 			runner: "dry-run",
 		});
