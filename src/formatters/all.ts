@@ -9,6 +9,7 @@ import {
 	createRunPackageCommand,
 } from "./createRunCommand.js";
 import { formatTextDeno } from "./formatTextDeno.js";
+import { formatTextDprint } from "./formatTextDprint.js";
 import { formatTextPrettier } from "./formatTextPrettier.js";
 import { SpawnedOutput } from "./runFormatterCommand.js";
 import { runPrettier } from "./runPrettier.js";
@@ -76,10 +77,7 @@ export const formatters = [
 			differencesCode: 20,
 			parse: parseLines,
 		}),
-		formatText: createFormatTextPackageCommand({
-			args: (filePath) => ["fmt", "--stdin", filePath],
-			command: "dprint",
-		}),
+		formatText: formatTextDprint,
 		name: "dprint",
 		runner: createRunPackageCommand({
 			args: ["fmt"],

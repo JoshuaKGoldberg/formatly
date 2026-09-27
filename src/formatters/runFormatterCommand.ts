@@ -183,6 +183,30 @@ export async function runPackageFormatterTextCommand(
  * Windows is skipped because its bins are .cmd shims that need a shell.
  * @see https://github.com/JoshuaKGoldberg/formatly/issues/629
  */
+export async function resolvePackageCommand(
+	{ command, packageName = command }: PackageCommandSource,
+	args: string[],
+	cwd: string,
+): Promise<ResolvedCommand> {
+	const bin = await findLocalBin(command, cwd);
+
+	if (bin) {
+		return { args, command: bin };
+	}
+
+	const agent = (await detect({ cwd }))?.agent ?? "npm";
+	const executable = agentsExecutingPackageNames.has(agent)
+		? packageName
+		: command;
+
+	return (
+		resolveCommand(agent, "execute-local", [executable, ...args]) ?? {
+			args: [packageName, ...args],
+			command: "npx",
+		}
+	);
+}
+
 async function findLocalBin(command: string, cwd: string) {
 	if (process.platform === "win32") {
 		return undefined;
@@ -206,30 +230,6 @@ async function findLocalBin(command: string, cwd: string) {
 			directory = parent;
 		}
 	}
-}
-
-async function resolvePackageCommand(
-	{ command, packageName = command }: PackageCommandSource,
-	args: string[],
-	cwd: string,
-): Promise<ResolvedCommand> {
-	const bin = await findLocalBin(command, cwd);
-
-	if (bin) {
-		return { args, command: bin };
-	}
-
-	const agent = (await detect({ cwd }))?.agent ?? "npm";
-	const executable = agentsExecutingPackageNames.has(agent)
-		? packageName
-		: command;
-
-	return (
-		resolveCommand(agent, "execute-local", [executable, ...args]) ?? {
-			args: [packageName, ...args],
-			command: "npx",
-		}
-	);
 }
 
 /**
