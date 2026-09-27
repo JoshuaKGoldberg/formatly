@@ -21,6 +21,14 @@ vi.mock("node:child_process", () => ({
 	},
 }));
 
+const mockAccess = vi.fn().mockRejectedValue(new Error("ENOENT"));
+
+vi.mock("node:fs/promises", () => ({
+	get access() {
+		return mockAccess;
+	},
+}));
+
 const mockResolveFormatter = vi.fn();
 
 vi.mock("./resolveFormatter.js", () => ({

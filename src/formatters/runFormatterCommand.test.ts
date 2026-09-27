@@ -1,3 +1,4 @@
+import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
 import {
@@ -19,6 +20,14 @@ const mockSpawn = vi.fn(() => ({
 vi.mock("node:child_process", () => ({
 	get spawn() {
 		return mockSpawn;
+	},
+}));
+
+const mockAccess = vi.fn().mockRejectedValue(new Error("ENOENT"));
+
+vi.mock("node:fs/promises", () => ({
+	get access() {
+		return mockAccess;
 	},
 }));
 
@@ -176,6 +185,39 @@ describe("runFormatterCommand", () => {
 		expect(mockSpawn).toHaveBeenCalledWith(
 			"npx",
 			["@biomejs/biome", "format", "--write", ...options.patterns],
+			{ cwd: options.cwd },
+		);
+	});
+
+	it("spawns the bin from node_modules/.bin when it is installed", async () => {
+		mockAccess.mockResolvedValueOnce(undefined);
+
+		await runPackageFormatterCommand(
+			{ args: ["fmt"], command: "dprint" },
+			options,
+		);
+
+		expect(mockDetect).not.toHaveBeenCalled();
+		expect(mockSpawn).toHaveBeenCalledWith(
+			path.resolve(options.cwd, "node_modules", ".bin", "dprint"),
+			["fmt", ...options.patterns],
+			{ cwd: options.cwd },
+		);
+	});
+
+	it("spawns the bin from a parent directory's node_modules/.bin", async () => {
+		mockAccess
+			.mockRejectedValueOnce(new Error("ENOENT"))
+			.mockResolvedValueOnce(undefined);
+
+		await runPackageFormatterCommand(
+			{ args: ["fmt"], command: "dprint" },
+			options,
+		);
+
+		expect(mockSpawn).toHaveBeenCalledWith(
+			path.resolve("node_modules", ".bin", "dprint"),
+			["fmt", ...options.patterns],
 			{ cwd: options.cwd },
 		);
 	});
