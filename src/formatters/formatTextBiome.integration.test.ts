@@ -84,6 +84,19 @@ describe("formatTextBiome (integration)", () => {
 			expect(mockRunPackageFormatterTextCommand).not.toHaveBeenCalled();
 		});
 
+		it("formats in-process with a cwd relative to the process cwd", async () => {
+			await writeFile("biome.json", "{}");
+
+			const result = await formatTextBiome({
+				cwd: path.relative(process.cwd(), directory),
+				filePath: path.join(directory, "index.ts"),
+				text,
+			});
+
+			expect(result).toEqual({ formatted: "function f() {\n\treturn 1;\n}\n" });
+			expect(mockRunPackageFormatterTextCommand).not.toHaveBeenCalled();
+		});
+
 		it("resolves with the diagnostics for invalid text", async () => {
 			await writeFile("biome.json", "{}");
 

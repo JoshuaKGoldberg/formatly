@@ -58,6 +58,16 @@ describe("formatTextPrettier (integration)", () => {
 		expect(result).toEqual({ formatted: "const value = 'abc'\n" });
 	});
 
+	it("formats with a cwd relative to the process cwd", async () => {
+		const result = await formatTextPrettier({
+			cwd: path.relative(process.cwd(), directory),
+			filePath: path.join(directory, "index.ts"),
+			text: 'const value   =   "abc"\n',
+		});
+
+		expect(result).toEqual({ formatted: 'const value = "abc"\n' });
+	});
+
 	it("leaves ignored files unchanged", async () => {
 		const text = 'const value   =   "abc"\n';
 
