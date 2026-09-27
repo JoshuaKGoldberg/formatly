@@ -17,7 +17,7 @@ export async function resolveFormatter(
 	const orderedFormatters = orderFormatters(options.order);
 
 	for (const directory of walkUpDirectories(cwd, options)) {
-		const children = await fs.readdir(directory);
+		const children = await readDirectory(directory);
 
 		for (const formatter of orderedFormatters) {
 			for (const child of children) {
@@ -87,6 +87,17 @@ function orderFormatters(order: FormatterName[] = []) {
 	});
 
 	return [...new Set([...preferred, ...formatters])];
+}
+
+async function readDirectory(directory: string) {
+	try {
+		return await fs.readdir(directory);
+	} catch (error) {
+		throw new Error(
+			`Could not read directory searching for a formatter config file: ${path.resolve(directory)}.`,
+			{ cause: error },
+		);
+	}
 }
 
 function* walkUpDirectories(
