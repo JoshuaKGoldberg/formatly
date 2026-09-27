@@ -15,6 +15,12 @@ jobs:
       - env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         uses: JoshuaKGoldberg/release-it-action@8ee87d0d30f97b452ef5d8aa9f4d0490eed439aa # v0.4.0
+      # Publishing only after release-it's push succeeds keeps npm from getting ahead of main.
+      - run: |
+          version=$(npm pkg get version | tr -d '"')
+          if [ -z "$(npm view "formatly@$version" version 2>/dev/null)" ]; then
+            npm publish
+          fi
 
 name: Release
 

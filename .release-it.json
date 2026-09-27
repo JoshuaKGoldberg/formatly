@@ -1,10 +1,12 @@
 {
 	"git": {
 		"commitMessage": "chore: release v${version}",
+		"getLatestTagFromAllRefs": true,
+		"pushArgs": ["--atomic", "--follow-tags"],
 		"requireCommits": true
 	},
 	"github": { "release": true, "releaseName": "v${version}" },
-	"npm": { "skipChecks": true },
+	"npm": { "publish": false, "skipChecks": true },
 	"plugins": {
 		"@release-it/conventional-changelog": {
 			"infile": "CHANGELOG.md",
