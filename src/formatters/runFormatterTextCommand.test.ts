@@ -321,6 +321,25 @@ describe("runFormatterCheckCommand", () => {
 		});
 	});
 
+	it("resolves with an error when the differences output reports failures", async () => {
+		mockSpawn.mockReturnValueOnce(
+			createMockChild({ code: 1, stdout: "b.ts\nfailure: a.ts" }),
+		);
+
+		const result = await runFormatterCheckCommand(
+			{
+				...check,
+				parseFailures: ({ stdout }) =>
+					stdout.split("\n").filter((line) => line.startsWith("failure")),
+			},
+			checkOptions,
+		);
+
+		expect(result).toEqual({
+			error: new Error("prettier exited with code 1.\nfailure: a.ts"),
+		});
+	});
+
 	it("resolves with the error when the command cannot be spawned", async () => {
 		const error = new Error("spawn prettier ENOENT");
 		mockSpawn.mockReturnValueOnce(createMockChild({ error }));
