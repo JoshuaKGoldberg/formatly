@@ -1,6 +1,8 @@
 import type { Socket } from "node:net";
 
 import { execFile, spawn } from "node:child_process";
+import * as fs from "node:fs/promises";
+import path from "node:path";
 import { promisify } from "node:util";
 
 import {
@@ -19,10 +21,17 @@ import {
 const editorServiceSchemaVersion = 5;
 
 const messageKinds = {
+	canFormat: 4,
+	canFormatResponse: 5,
 	error: 1,
 	formatFile: 6,
 	formatFileResponse: 7,
 };
+
+interface EditorServiceResponse {
+	body: Buffer;
+	kind: number;
+}
 
 const successBytes = Buffer.from([255, 255, 255, 255]);
 
@@ -97,7 +106,10 @@ async function startEditorService(
 	});
 	const pending = new Map<
 		number,
-		{ resolve: (result: FormatTextResult) => void; text: string }
+		{
+			reject: (error: Error) => void;
+			resolve: (response: EditorServiceResponse) => void;
+		}
 	>();
 	let buffer = Buffer.alloc(0);
 	let nextId = 0;
@@ -115,8 +127,8 @@ async function startEditorService(
 	function stop(error: Error) {
 		editorServices.delete(cwd);
 
-		for (const { resolve } of pending.values()) {
-			resolve({ error });
+		for (const { reject } of pending.values()) {
+			reject(error);
 		}
 
 		pending.clear();
@@ -124,6 +136,7 @@ async function startEditorService(
 
 	function handleMessage(kind: number, body: Buffer) {
 		if (
+			kind !== messageKinds.canFormatResponse &&
 			kind !== messageKinds.error &&
 			kind !== messageKinds.formatFileResponse
 		) {
@@ -139,16 +152,17 @@ async function startEditorService(
 
 		pending.delete(requestId);
 		updateRef();
+		request.resolve({ body, kind });
+	}
 
-		request.resolve(
-			kind === messageKinds.error
-				? { error: new Error(body.subarray(8).toString()) }
-				: {
-						formatted: body.readUInt32BE(4)
-							? body.subarray(12).toString()
-							: request.text,
-					},
-		);
+	async function request(kind: number, body: Buffer) {
+		return await new Promise<EditorServiceResponse>((resolve, reject) => {
+			const id = nextId++;
+
+			pending.set(id, { reject, resolve });
+			updateRef();
+			child.stdin.write(encodeMessage(id, kind, body));
+		});
 	}
 
 	child.on("error", stop);
@@ -177,28 +191,41 @@ async function startEditorService(
 
 	updateRef();
 
-	return async ({ filePath, text }) =>
-		await new Promise((resolve) => {
-			const id = nextId++;
-			const textBuffer = Buffer.from(text);
+	const realCwd = await fs.realpath(cwd).catch(() => path.resolve(cwd));
 
-			pending.set(id, { resolve, text });
-			updateRef();
+	return async ({ filePath: rawFilePath, text }) => {
+		const filePath = path.join(realCwd, path.relative(cwd, rawFilePath));
+		const canFormat = await request(
+			messageKinds.canFormat,
+			encodeString(filePath),
+		);
 
-			child.stdin.write(
-				encodeMessage(
-					id,
-					messageKinds.formatFile,
-					Buffer.concat([
-						encodeString(filePath),
-						encodeU32(0),
-						encodeU32(textBuffer.length),
-						encodeString(""),
-						encodeString(textBuffer),
-					]),
-				),
-			);
-		});
+		if (!canFormat.body.readUInt32BE(4)) {
+			return { formatted: text };
+		}
+
+		const textBuffer = Buffer.from(text);
+		const response = await request(
+			messageKinds.formatFile,
+			Buffer.concat([
+				encodeString(filePath),
+				encodeU32(0),
+				encodeU32(textBuffer.length),
+				encodeString(""),
+				encodeString(textBuffer),
+			]),
+		);
+
+		if (response.kind === messageKinds.error) {
+			return { error: new Error(response.body.subarray(8).toString()) };
+		}
+
+		return {
+			formatted: response.body.readUInt32BE(4)
+				? response.body.subarray(12).toString()
+				: text,
+		};
+	};
 }
 
 /**
@@ -209,13 +236,19 @@ async function startEditorService(
 export const formatTextDprint: FormatterTextRunner = async (options) => {
 	const editorService = await getEditorService(options.cwd);
 
-	return editorService
-		? await editorService(options)
-		: await runPackageFormatterTextCommand(
-				{
-					args: (filePath) => ["fmt", "--stdin", filePath],
-					command: "dprint",
-				},
-				options,
-			);
+	if (editorService) {
+		try {
+			return await editorService(options);
+		} catch (error) {
+			return { error: error as Error };
+		}
+	}
+
+	return await runPackageFormatterTextCommand(
+		{
+			args: (filePath) => ["fmt", "--stdin", filePath],
+			command: "dprint",
+		},
+		options,
+	);
 };
