@@ -1,5 +1,3 @@
-import path from "node:path";
-
 import { Formatter } from "../types.js";
 import {
 	createFormatTextCommand,
@@ -7,6 +5,7 @@ import {
 	createRunCommand,
 	createRunPackageCommand,
 } from "./createRunCommand.js";
+import { formatTextDeno } from "./formatTextDeno.js";
 import { formatTextPrettier } from "./formatTextPrettier.js";
 import { runPrettier } from "./runPrettier.js";
 
@@ -29,15 +28,7 @@ export const formatters = [
 		},
 	},
 	{
-		// deno fmt reads stdin as "-" and can only be told the file's extension,
-		// not its path, so per-path config overrides don't apply.
-		formatText: createFormatTextCommand({
-			args: (filePath) => {
-				const extension = path.extname(filePath).slice(1);
-				return ["fmt", ...(extension ? ["--ext", extension] : []), "-"];
-			},
-			command: "deno",
-		}),
+		formatText: formatTextDeno,
 		name: "deno",
 		runner: createRunCommand({
 			args: ["fmt"],
