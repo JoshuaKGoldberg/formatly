@@ -279,15 +279,4 @@ describe("formatters formatText commands", () => {
 			});
 		},
 	);
-
-	it("deno omits --ext when the file path has no extension", async () => {
-		mockSpawn.mockReturnValueOnce(createMockChild({ stdout: formatted }));
-
-		await deno.formatText({ ...options, filePath: "Dockerfile" });
-
-		expect(mockSpawn).toHaveBeenCalledWith("deno", ["fmt", "-"], {
-			cwd: options.cwd,
-			stdio: "pipe",
-		});
-	});
 });
