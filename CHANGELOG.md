@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.11.4](https://github.com/JoshuaKGoldberg/formatly/compare/0.11.3...0.11.4) (2026-09-27)
+
+### Bug Fixes
+
+- format with Biome's CLI when its config uses an ignore file ([#663](https://github.com/JoshuaKGoldberg/formatly/issues/663)) ([32914bf](https://github.com/JoshuaKGoldberg/formatly/commit/32914bf9390cea25bcc57128e8d0a454ac9a3563)), closes [#659](https://github.com/JoshuaKGoldberg/formatly/issues/659)
+- handle --help and --version in the CLI ([#664](https://github.com/JoshuaKGoldberg/formatly/issues/664)) ([11a7caf](https://github.com/JoshuaKGoldberg/formatly/commit/11a7caf5e799d4f2a363deb2a3b3ccb81613bed3)), closes [#660](https://github.com/JoshuaKGoldberg/formatly/issues/660)
+- report parse errors from Biome and Deno checkers ([#662](https://github.com/JoshuaKGoldberg/formatly/issues/662)) ([013f7d2](https://github.com/JoshuaKGoldberg/formatly/commit/013f7d224f70ced595f6c72301160eb014719353)), closes [#658](https://github.com/JoshuaKGoldberg/formatly/issues/658)
+
 ## [0.11.3](https://github.com/JoshuaKGoldberg/formatly/compare/0.11.2...0.11.3) (2026-09-27)
 
 ### Bug Fixes
