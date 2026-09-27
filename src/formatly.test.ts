@@ -104,8 +104,8 @@ describe("formatly", () => {
 			formatter: formatters.find((f) => f.name === formatter),
 			ran: true,
 			result: {
-				args: [formatter, ...patterns],
-				command: "npx",
+				args: ["exec", formatter, ...patterns],
+				command: "pnpm",
 				runner: "dry-run",
 			},
 		});
@@ -136,14 +136,16 @@ describe("formatly", () => {
 		});
 	});
 
-	it("runs oxfmt with npx", async () => {
+	it("runs oxfmt with the project's package manager", async () => {
 		const formatter = "oxfmt";
 
 		await formatly(patterns, { formatter });
 
-		expect(mockSpawn).toHaveBeenCalledWith("npx", [formatter, ...patterns], {
-			cwd: process.cwd(),
-		});
+		expect(mockSpawn).toHaveBeenCalledWith(
+			"pnpm",
+			["exec", formatter, ...patterns],
+			{ cwd: process.cwd() },
+		);
 	});
 
 	it("uses provided cwd to resolve formatter and spawn process", async () => {

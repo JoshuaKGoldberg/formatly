@@ -1,5 +1,6 @@
 import { spawn } from "child_process";
 import * as fs from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import {
 	type Agent,
@@ -15,6 +16,7 @@ import {
 	FormatterTextRunnerOptions,
 	FormatTextResult,
 } from "../types.js";
+import { limitConcurrency } from "./limitConcurrency.js";
 
 /**
  * A command that formats text piped in through stdin and prints to stdout.
@@ -179,7 +181,16 @@ async function spawnFormatterCommand(
 	});
 }
 
-async function spawnFormatterTextCommand(
+/**
+ * Formatting many files at once would otherwise spawn a process tree per file.
+ * @see https://github.com/JoshuaKGoldberg/formatly/issues/628
+ */
+const spawnFormatterTextCommand = limitConcurrency(
+	spawnFormatterTextProcess,
+	os.availableParallelism(),
+);
+
+async function spawnFormatterTextProcess(
 	{ args, command }: ResolvedCommand,
 	cwd: string,
 	text: string,
