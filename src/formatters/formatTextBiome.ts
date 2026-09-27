@@ -44,7 +44,7 @@ const inProcessFormatters = new Map<
 async function createInProcessFormatter(
 	cwd: string,
 ): Promise<InProcessFormatter | undefined> {
-	const require = createRequire(path.join(cwd, "index.js"));
+	const require = createRequire(path.resolve(cwd, "index.js"));
 	const readVersion = (packageName: string) =>
 		wrapSafe(
 			() =>

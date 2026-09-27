@@ -65,4 +65,14 @@ describe("runPrettier (integration)", () => {
 
 		mockWrite.mockRestore();
 	});
+
+	it("formats in-memory when cwd is a relative path to the process cwd", async () => {
+		const filePath = path.join(directory, "index.js");
+		await fs.writeFile(filePath, "const value   =   1\n");
+
+		const result = await runPrettier({ cwd: ".", patterns: [filePath] });
+
+		expect(result).toEqual({ code: 0, runner: "virtual" });
+		expect(await fs.readFile(filePath, "utf8")).toBe("const value = 1;\n");
+	});
 });

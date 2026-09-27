@@ -87,6 +87,42 @@ describe("runPrettier", () => {
 		expect(process.exitCode).toBeUndefined();
 	});
 
+	it("keeps exit codes separate for concurrent runs", async () => {
+		const mockPrettierCli = {
+			run: vi.fn(async (rawArguments: string[]) => {
+				await Promise.resolve();
+				if (rawArguments.includes("bad.ts")) {
+					process.exitCode = 2;
+				}
+			}),
+		};
+		mockRequire.mockReturnValue(mockPrettierCli);
+
+		const results = await Promise.all([
+			runPrettier({ ...options, patterns: ["bad.ts"] }),
+			runPrettier({ ...options, patterns: ["good.ts"] }),
+		]);
+
+		expect(results).toEqual([
+			{ code: 2, runner: "virtual" },
+			{ code: 0, runner: "virtual" },
+		]);
+		mockRequire.mockReset();
+	});
+
+	it("restores the previous exit code when the internal CLI module throws", async () => {
+		const error = new Error("Oops");
+		mockRequire.mockReturnValueOnce({
+			run: vi.fn(() => {
+				process.exitCode = 2;
+				throw error;
+			}),
+		});
+
+		await expect(runPrettier(options)).rejects.toBe(error);
+		expect(process.exitCode).toBeUndefined();
+	});
+
 	it("formats with the internal pre-3.6 CLI module when requiring the legacy one fails", async () => {
 		const mockPrettierCli = {
 			run: vi.fn(),
