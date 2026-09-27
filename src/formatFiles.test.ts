@@ -132,4 +132,16 @@ describe("formatFiles", () => {
 			ran: true,
 		});
 	});
+
+	it("resolves with the error when the formatter can't be spawned", async () => {
+		const error = new Error("spawn deno ENOENT");
+		const formatter = createMockFormatter();
+		formatter.runner.mockRejectedValueOnce(error);
+		mockSelectFormatter.mockResolvedValueOnce(formatter);
+		mockReadFile.mockResolvedValue("");
+
+		const report = await formatFiles(filePaths, { cwd });
+
+		expect(report).toEqual({ error, formatter, ran: true });
+	});
 });

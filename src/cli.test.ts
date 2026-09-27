@@ -131,4 +131,16 @@ describe("cli", () => {
 		expect(mockError).toHaveBeenCalledWith(message);
 		expect(mockLog).not.toHaveBeenCalled();
 	});
+
+	it("returns 1 and logs an error when formatly throws", async () => {
+		mockFormatly.mockRejectedValueOnce(new Error("spawn deno ENOENT"));
+
+		const result = await cli(patterns);
+
+		expect(result).toBe(1);
+		expect(mockError).toHaveBeenCalledWith(
+			"Failed running formatly: Error: spawn deno ENOENT 🛑",
+		);
+		expect(mockLog).not.toHaveBeenCalled();
+	});
 });
