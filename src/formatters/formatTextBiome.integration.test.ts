@@ -177,6 +177,27 @@ describe("formatTextBiome (integration)", () => {
 			expect(result).toEqual({ formatted: text });
 			expect(mockRunPackageFormatterTextCommand).toHaveBeenCalled();
 		});
+
+		it("formats with the command when the config uses an ignore file", async () => {
+			await writeFile(
+				"biome.json",
+				JSON.stringify({
+					vcs: { clientKind: "git", enabled: true, useIgnoreFile: true },
+				}),
+			);
+			mockRunPackageFormatterTextCommand.mockResolvedValueOnce({
+				formatted: text,
+			});
+
+			const result = await formatTextBiome({
+				cwd: directory,
+				filePath: path.join(directory, "index.ts"),
+				text,
+			});
+
+			expect(result).toEqual({ formatted: text });
+			expect(mockRunPackageFormatterTextCommand).toHaveBeenCalled();
+		});
 	});
 
 	it("formats with the command when @biomejs/wasm-nodejs isn't installed", async () => {

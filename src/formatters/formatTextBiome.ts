@@ -36,6 +36,7 @@ interface BiomeApi {
 interface BiomeConfiguration {
 	extends?: unknown;
 	root?: boolean;
+	vcs?: { enabled?: boolean; useIgnoreFile?: boolean };
 }
 
 type InProcessFormatter = (filePath: string, text: string) => FormatTextResult;
@@ -71,10 +72,14 @@ async function createInProcessFormatter(
 	const api = wrapSafe(() => require("@biomejs/js-api/nodejs") as BiomeApi);
 	const config = await findConfiguration(cwd);
 
+	// The in-process workspace can't read the project's ignore files,
+	// so only Biome's CLI can tell whether they ignore a file.
 	if (
 		!api ||
 		config?.configuration.extends ||
-		config?.configuration.root === false
+		config?.configuration.root === false ||
+		(config?.configuration.vcs?.enabled &&
+			config.configuration.vcs.useIgnoreFile)
 	) {
 		return undefined;
 	}
