@@ -1,6 +1,5 @@
 import { Formatter } from "../types.js";
 import {
-	createFormatTextCommand,
 	createFormatTextPackageCommand,
 	createRunCommand,
 	createRunPackageCommand,
