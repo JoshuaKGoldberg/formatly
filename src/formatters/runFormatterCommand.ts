@@ -148,7 +148,7 @@ async function spawnFormatterCommand(
  */
 const spawnFormatterTextCommand = limitConcurrency(
 	spawnFormatterTextProcess,
-	Math.max(os.cpus().length, 1),
+	os.availableParallelism(),
 );
 
 async function spawnFormatterTextProcess(
