@@ -117,4 +117,19 @@ describe("formatFiles", () => {
 			ran: true,
 		});
 	});
+
+	it("resolves with an error when the formatter fails in memory", async () => {
+		const formatter = createMockFormatter();
+		formatter.runner.mockResolvedValueOnce({ code: 2, runner: "virtual" });
+		mockSelectFormatter.mockResolvedValueOnce(formatter);
+		mockReadFile.mockResolvedValue("");
+
+		const report = await formatFiles(filePaths, { cwd });
+
+		expect(report).toEqual({
+			error: new Error("biome exited with code 2."),
+			formatter,
+			ran: true,
+		});
+	});
 });

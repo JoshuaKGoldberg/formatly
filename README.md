@@ -64,7 +64,7 @@ npx formatly --dry-run "src/**/*.ts"
 
 ```plaintext
 Detected prettier. 🔍
-Would run: prettier --write src/**/*.ts
+Would run: prettier --write --ignore-unknown src/**/*.ts
 ```
 
 ### Node.js API
@@ -195,7 +195,8 @@ Resolves with a `FormatlyReport`, which is either:
     - `FormatlyReportDryRunResult` if `dryRun` was passed:
       - `args: string[]`: arguments of the command that would have run
       - `command: string`: the command that would have run
-    - `FormatlyReportVirtualResult` if the formatter was run in memory
+    - `FormatlyReportVirtualResult` if the formatter was run in memory:
+      - `code: number`: exit code the formatter would have exited with as a child process
 
 For example, to run formatting on TypeScript source files in a child directory and check the result:
 

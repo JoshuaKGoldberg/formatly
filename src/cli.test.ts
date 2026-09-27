@@ -69,11 +69,27 @@ describe("cli", () => {
 		expect(mockLog).not.toHaveBeenCalled();
 	});
 
+	it("returns the exit code and logs an error when the formatter fails virtually", async () => {
+		mockFormatly.mockResolvedValueOnce({
+			formatter: { name: "prettier" },
+			ran: true,
+			result: { code: 2, runner: "virtual" },
+		});
+
+		const result = await cli(patterns);
+
+		expect(result).toBe(2);
+		expect(mockError).toHaveBeenCalledWith(
+			"Failed formatting with prettier (exit code 2). 🛑",
+		);
+		expect(mockLog).not.toHaveBeenCalled();
+	});
+
 	it("returns 0 and logs the formatter name when formatly runs virtually", async () => {
 		mockFormatly.mockResolvedValueOnce({
 			formatter: { name: "prettier" },
 			ran: true,
-			result: { runner: "virtual" },
+			result: { code: 0, runner: "virtual" },
 		});
 
 		const result = await cli(patterns);

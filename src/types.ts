@@ -72,6 +72,10 @@ export interface FormatlyReportResult {
 }
 
 export interface FormatlyReportVirtualResult {
+	/**
+	 * Exit code the formatter would have exited with as a process.
+	 */
+	code: number;
 	runner: "virtual";
 }
 

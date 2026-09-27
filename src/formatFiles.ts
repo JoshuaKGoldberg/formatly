@@ -58,8 +58,12 @@ async function writeFiles(
 	const before = await readFiles(filePaths);
 	const result = await formatter.runner({ cwd, patterns: filePaths });
 
-	if (result.runner === "child_process" && (result.code || result.signal)) {
-		return { error: createOutputError(formatter.name, result) };
+	const signal = result.runner === "child_process" ? result.signal : null;
+
+	if (result.runner !== "dry-run" && (result.code || signal)) {
+		return {
+			error: createOutputError(formatter.name, { code: result.code, signal }),
+		};
 	}
 
 	const after = await readFiles(filePaths);
