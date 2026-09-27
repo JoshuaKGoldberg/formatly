@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.11.3](https://github.com/JoshuaKGoldberg/formatly/compare/0.11.2...0.11.3) (2026-09-27)
+
+### Bug Fixes
+
+- prefer format command scripts and anchor config file testers ([#661](https://github.com/JoshuaKGoldberg/formatly/issues/661)) ([572cb43](https://github.com/JoshuaKGoldberg/formatly/commit/572cb43d79c9624cdb5f4b0f8e4cbc5c3e11b3a0)), closes [#657](https://github.com/JoshuaKGoldberg/formatly/issues/657)
+
 ## [0.11.2](https://github.com/JoshuaKGoldberg/formatly/compare/0.11.1...0.11.2) (2026-09-27)
 
 ### Bug Fixes
