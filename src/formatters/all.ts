@@ -1,15 +1,37 @@
+import { stripVTControlCharacters } from "node:util";
+
 import { Formatter } from "../types.js";
 import {
+	createCheckCommand,
+	createCheckPackageCommand,
 	createFormatTextPackageCommand,
 	createRunCommand,
 	createRunPackageCommand,
 } from "./createRunCommand.js";
 import { formatTextDeno } from "./formatTextDeno.js";
 import { formatTextPrettier } from "./formatTextPrettier.js";
+import { SpawnedOutput } from "./runFormatterCommand.js";
 import { runPrettier } from "./runPrettier.js";
+
+function parseLines({ stdout }: SpawnedOutput) {
+	return stdout
+		.split("\n")
+		.map((line) => line.trim())
+		.filter(Boolean);
+}
 
 export const formatters = [
 	{
+		checker: createCheckPackageCommand({
+			args: (filePaths) => ["format", "--reporter=github", ...filePaths],
+			command: "biome",
+			packageName: "@biomejs/biome",
+			parse: ({ stdout }) =>
+				Array.from(
+					stdout.matchAll(/^::error title=format,file=([^,]+),/gm),
+					([, filePath]) => decodeURIComponent(filePath),
+				),
+		}),
 		formatText: createFormatTextPackageCommand({
 			args: (filePath) => ["format", `--stdin-file-path=${filePath}`],
 			command: "biome",
@@ -27,6 +49,15 @@ export const formatters = [
 		},
 	},
 	{
+		checker: createCheckCommand({
+			args: (filePaths) => ["fmt", "--check", ...filePaths],
+			command: "deno",
+			parse: ({ stderr }) =>
+				Array.from(
+					stripVTControlCharacters(stderr).matchAll(/^from (.+):$/gm),
+					([, filePath]) => filePath,
+				),
+		}),
 		formatText: formatTextDeno,
 		name: "deno",
 		runner: createRunCommand({
@@ -39,6 +70,12 @@ export const formatters = [
 		},
 	},
 	{
+		checker: createCheckPackageCommand({
+			args: (filePaths) => ["check", "--list-different", ...filePaths],
+			command: "dprint",
+			differencesCode: 20,
+			parse: parseLines,
+		}),
 		formatText: createFormatTextPackageCommand({
 			args: (filePath) => ["fmt", "--stdin", filePath],
 			command: "dprint",
@@ -54,6 +91,11 @@ export const formatters = [
 		},
 	},
 	{
+		checker: createCheckPackageCommand({
+			args: (filePaths) => ["--list-different", ...filePaths],
+			command: "oxfmt",
+			parse: parseLines,
+		}),
 		formatText: createFormatTextPackageCommand({
 			args: (filePath) => ["--stdin-filepath", filePath],
 			command: "oxfmt",
@@ -69,6 +111,11 @@ export const formatters = [
 		},
 	},
 	{
+		checker: createCheckPackageCommand({
+			args: (filePaths) => ["--list-different", ...filePaths],
+			command: "prettier",
+			parse: parseLines,
+		}),
 		formatText: formatTextPrettier,
 		name: "prettier",
 		runner: runPrettier,

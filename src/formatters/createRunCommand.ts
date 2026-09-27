@@ -1,13 +1,34 @@
 import type { ResolvedCommand } from "package-manager-detector";
 
-import { FormatterRunner, FormatterTextRunner } from "../types.js";
 import {
+	FormatterChecker,
+	FormatterRunner,
+	FormatterTextRunner,
+} from "../types.js";
+import {
+	FormatCheckCommand,
+	FormatCheckPackageCommand,
 	FormatTextPackageCommand,
 	PackageCommand,
+	runFormatterCheckCommand,
 	runFormatterCommand,
+	runPackageFormatterCheckCommand,
 	runPackageFormatterCommand,
 	runPackageFormatterTextCommand,
 } from "./runFormatterCommand.js";
+
+export function createCheckCommand(
+	command: FormatCheckCommand,
+): FormatterChecker {
+	return async (options) => await runFormatterCheckCommand(command, options);
+}
+
+export function createCheckPackageCommand(
+	command: FormatCheckPackageCommand,
+): FormatterChecker {
+	return async (options) =>
+		await runPackageFormatterCheckCommand(command, options);
+}
 
 export function createFormatTextPackageCommand(
 	command: FormatTextPackageCommand,

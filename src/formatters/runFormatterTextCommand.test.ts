@@ -4,7 +4,9 @@ import { describe, expect, it, vi } from "vitest";
 
 import { formatters } from "./all.js";
 import {
+	runFormatterCheckCommand,
 	runFormatterTextCommand,
+	runPackageFormatterCheckCommand,
 	runPackageFormatterTextCommand,
 } from "./runFormatterCommand.js";
 
@@ -63,6 +65,7 @@ vi.mock("node:fs/promises", () => ({
 	get access() {
 		return mockAccess;
 	},
+	realpath: (filePath: string) => Promise.resolve(filePath),
 }));
 
 const mockDetect = vi.fn();
@@ -262,6 +265,82 @@ describe("runPackageFormatterTextCommand", () => {
 			path.resolve(options.cwd, "node_modules", ".bin", "biome"),
 			["format"],
 			{ cwd: options.cwd, stdio: "pipe" },
+		);
+	});
+});
+
+describe("runFormatterCheckCommand", () => {
+	const checkOptions = {
+		cwd: path.resolve("project"),
+		filePaths: ["a.ts", "b.ts"].map((filePath) =>
+			path.resolve("project", filePath),
+		),
+	};
+
+	const check = {
+		args: (filePaths: string[]) => ["--list-different", ...filePaths],
+		command: "prettier",
+		parse: ({ stdout }: { stdout: string }) => stdout.split("\n"),
+	};
+
+	it("resolves with the listed files when the command reports differences", async () => {
+		mockSpawn.mockReturnValueOnce(createMockChild({ code: 1, stdout: "b.ts" }));
+
+		const result = await runFormatterCheckCommand(check, checkOptions);
+
+		expect(result).toEqual({ changed: [checkOptions.filePaths[1]] });
+		expect(mockSpawn).toHaveBeenCalledWith(
+			"prettier",
+			["--list-different", ...checkOptions.filePaths],
+			{ cwd: checkOptions.cwd, stdio: "pipe" },
+		);
+	});
+
+	it("resolves with the listed files for a custom differences exit code", async () => {
+		mockSpawn.mockReturnValueOnce(
+			createMockChild({ code: 20, stdout: checkOptions.filePaths[0] }),
+		);
+
+		const result = await runFormatterCheckCommand(
+			{ ...check, differencesCode: 20 },
+			checkOptions,
+		);
+
+		expect(result).toEqual({ changed: [checkOptions.filePaths[0]] });
+	});
+
+	it("resolves with an error when the command fails otherwise", async () => {
+		mockSpawn.mockReturnValueOnce(
+			createMockChild({ code: 2, stderr: "SyntaxError" }),
+		);
+
+		const result = await runFormatterCheckCommand(check, checkOptions);
+
+		expect(result).toEqual({
+			error: new Error("prettier exited with code 2.\nSyntaxError"),
+		});
+	});
+
+	it("resolves with the error when the command cannot be spawned", async () => {
+		const error = new Error("spawn prettier ENOENT");
+		mockSpawn.mockReturnValueOnce(createMockChild({ error }));
+
+		const result = await runFormatterCheckCommand(check, checkOptions);
+
+		expect(result).toEqual({ error });
+	});
+
+	it("uses the detected package manager for package commands", async () => {
+		mockDetect.mockResolvedValueOnce({ agent: "pnpm", name: "pnpm" });
+		mockSpawn.mockReturnValueOnce(createMockChild({}));
+
+		const result = await runPackageFormatterCheckCommand(check, checkOptions);
+
+		expect(result).toEqual({ changed: [] });
+		expect(mockSpawn).toHaveBeenCalledWith(
+			"pnpm",
+			["exec", "prettier", "--list-different", ...checkOptions.filePaths],
+			{ cwd: checkOptions.cwd, stdio: "pipe" },
 		);
 	});
 });
