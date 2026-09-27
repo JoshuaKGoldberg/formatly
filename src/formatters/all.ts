@@ -25,7 +25,12 @@ function parseLines({ stdout }: SpawnedOutput) {
 export const formatters = [
 	{
 		checker: createCheckPackageCommand({
-			args: (filePaths) => ["format", "--reporter=github", ...filePaths],
+			args: (filePaths) => [
+				"format",
+				"--no-errors-on-unmatched",
+				"--reporter=github",
+				...filePaths,
+			],
 			command: "biome",
 			packageName: "@biomejs/biome",
 			parse: ({ stdout }) =>
@@ -37,7 +42,7 @@ export const formatters = [
 		formatText: formatTextBiome,
 		name: "biome",
 		runner: createRunPackageCommand({
-			args: ["format", "--write"],
+			args: ["format", "--no-errors-on-unmatched", "--write"],
 			command: "biome",
 			packageName: "@biomejs/biome",
 		}),
@@ -69,7 +74,12 @@ export const formatters = [
 	},
 	{
 		checker: createCheckPackageCommand({
-			args: (filePaths) => ["check", "--list-different", ...filePaths],
+			args: (filePaths) => [
+				"check",
+				"--allow-no-files",
+				"--list-different",
+				...filePaths,
+			],
 			command: "dprint",
 			differencesCode: 20,
 			parse: parseLines,
@@ -77,7 +87,7 @@ export const formatters = [
 		formatText: formatTextDprint,
 		name: "dprint",
 		runner: createRunPackageCommand({
-			args: ["fmt"],
+			args: ["fmt", "--allow-no-files"],
 			command: "dprint",
 		}),
 		testers: {
@@ -87,7 +97,11 @@ export const formatters = [
 	},
 	{
 		checker: createCheckPackageCommand({
-			args: (filePaths) => ["--list-different", ...filePaths],
+			args: (filePaths) => [
+				"--list-different",
+				"--no-error-on-unmatched-pattern",
+				...filePaths,
+			],
 			command: "oxfmt",
 			parse: parseLines,
 		}),
@@ -97,7 +111,7 @@ export const formatters = [
 		}),
 		name: "oxfmt",
 		runner: createRunPackageCommand({
-			args: [],
+			args: ["--no-error-on-unmatched-pattern"],
 			command: "oxfmt",
 		}),
 		testers: {
@@ -107,7 +121,11 @@ export const formatters = [
 	},
 	{
 		checker: createCheckPackageCommand({
-			args: (filePaths) => ["--list-different", ...filePaths],
+			args: (filePaths) => [
+				"--ignore-unknown",
+				"--list-different",
+				...filePaths,
+			],
 			command: "prettier",
 			parse: parseLines,
 		}),

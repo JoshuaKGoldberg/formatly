@@ -2,6 +2,7 @@ import { createRequire } from "node:module";
 import path from "node:path";
 
 import { FormatterRunner } from "../types.js";
+import { limitConcurrency } from "./limitConcurrency.js";
 import { runPackageFormatterCommand } from "./runFormatterCommand.js";
 import { wrapSafe } from "./wrapSafe.js";
 
@@ -34,7 +35,7 @@ const args = ["--write", "--ignore-unknown"];
 function requirePrettierInternalCli(cwd: string) {
 	// The CLI module isn't in prettier's exports, but CJS require() doesn't respect those.
 	// See https://github.com/prettier/prettier/issues/17422
-	const require = createRequire(path.join(cwd, "index.js"));
+	const require = createRequire(path.resolve(cwd, "index.js"));
 
 	for (const moduleName of prettierInternalCliModules) {
 		const prettierCli = wrapSafe(
@@ -50,12 +51,26 @@ function requirePrettierInternalCli(cwd: string) {
 }
 
 /**
- * Prettier's CLI reports failures by setting process.exitCode.
+ * Prettier's CLI reports failures by setting the global process.exitCode,
+ * so in-process runs go one at a time to keep their exit codes apart.
  */
-function restoreExitCode(previousExitCode: typeof process.exitCode) {
-	const code = Number(process.exitCode ?? 0);
-	process.exitCode = previousExitCode;
-	return code;
+const runPrettierCli = limitConcurrency(
+	async (prettierCli: PrettierInternalCLI, rawArguments: string[]) => {
+		const previousExitCode = process.exitCode;
+		process.exitCode = undefined;
+
+		try {
+			await prettierCli.run(rawArguments);
+			return readExitCode();
+		} finally {
+			process.exitCode = previousExitCode;
+		}
+	},
+	1,
+);
+
+function readExitCode() {
+	return Number(process.exitCode ?? 0);
 }
 
 export const runPrettier: FormatterRunner = async ({
@@ -88,10 +103,13 @@ export const runPrettier: FormatterRunner = async ({
 		};
 	}
 
-	const previousExitCode = process.exitCode;
-	process.exitCode = undefined;
-
-	await prettierCli.run(["--log-level", "warn", ...args, ...patterns]);
-
-	return { code: restoreExitCode(previousExitCode), runner: "virtual" };
+	return {
+		code: await runPrettierCli(prettierCli, [
+			"--log-level",
+			"warn",
+			...args,
+			...patterns,
+		]),
+		runner: "virtual",
+	};
 };

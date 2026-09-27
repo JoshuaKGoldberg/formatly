@@ -129,6 +129,20 @@ describe("cli (end-to-end)", () => {
 		expect(await readFile("index.js")).toBe(formatted);
 	});
 
+	it("prints the formatter's errors when it fails", async () => {
+		await linkPackage("@biomejs/biome");
+		await writeFile("biome.json", "{}\n");
+		await writeFile("index.js", "const value   =\n");
+
+		const result = await runCli("index.js");
+
+		expect(result).toMatchObject({ code: 1 });
+		expect(result.stderr).toContain("index.js");
+		expect(result.stderr).toContain(
+			"Failed formatting with biome (exit code 1). 🛑",
+		);
+	});
+
 	it("formats with Biome in a pnpm project", async () => {
 		// pnpm may verify installed dependencies before executing bins,
 		// so the linked package is declared the way pnpm would record it.
@@ -284,6 +298,24 @@ describe("formatTextDprint (end-to-end)", () => {
 		expect(results).toEqual(Array(20).fill({ formatted }));
 	});
 
+	it("leaves files excluded by the dprint config unchanged", async () => {
+		await writeFile(
+			"dprint.json",
+			JSON.stringify({
+				excludes: ["excluded"],
+				plugins: ["./node_modules/@dprint/typescript/plugin.wasm"],
+			}),
+		);
+
+		const result = await formatTextDprint({
+			cwd: directory,
+			filePath: path.join(directory, "excluded", "index.ts"),
+			text: unformatted,
+		});
+
+		expect(result).toEqual({ formatted: unformatted });
+	});
+
 	it("resolves with the error for invalid text", async () => {
 		const result = await formatTextDprint({
 			cwd: directory,
@@ -348,6 +380,22 @@ describe("formatFiles (end-to-end)", () => {
 					formatter: { name },
 				});
 				expect(await readFile("unformatted.js")).toBe(unformatted);
+			},
+		);
+
+		it.skipIf(name === "deno")(
+			"reports no changes for files the formatter doesn't support",
+			async () => {
+				await writeFile("notes.unsupported", "some notes\n");
+
+				for (const check of [true, false]) {
+					const report = await formatFiles(["notes.unsupported"], {
+						check,
+						cwd: directory,
+					});
+
+					expect(report).toMatchObject({ changed: [] });
+				}
 			},
 		);
 

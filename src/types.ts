@@ -8,7 +8,7 @@ export interface FormatFilesOptions extends Omit<FormatlyOptions, "dryRun"> {
 export type FormatFilesReport =
 	FormatFilesReportFailure | FormatFilesReportResult | FormatlyReportError;
 
-export interface FormatFilesReportFailure extends FormatTextResultError {
+export interface FormatFilesReportFailure extends FormatFilesResultError {
 	formatter: Formatter;
 	ran: true;
 }
@@ -19,11 +19,16 @@ export interface FormatFilesReportResult extends FormatFilesResultChanged {
 }
 
 export type FormatFilesResult =
-	FormatFilesResultChanged | FormatTextResultError;
+	FormatFilesResultChanged | FormatFilesResultError;
 
 export interface FormatFilesResultChanged {
 	changed: string[];
 	error?: never;
+}
+
+export interface FormatFilesResultError {
+	changed?: never;
+	error: Error;
 }
 
 export interface FormatlyOptions extends ResolveFormatterOptions {

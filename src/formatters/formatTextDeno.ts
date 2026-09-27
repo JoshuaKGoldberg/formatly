@@ -29,13 +29,18 @@ async function isExcludedByDeno(options: FormatterTextRunnerOptions) {
 export const formatTextDeno: FormatterTextRunner = async (options) => {
 	const extension = path.extname(options.filePath).slice(1);
 
+	if (!extension) {
+		return {
+			error: new Error(
+				`deno fmt can't infer a file type without an extension: ${options.filePath}`,
+			),
+		};
+	}
+
 	const [excluded, result] = await Promise.all([
 		isExcludedByDeno(options),
 		runFormatterTextCommand(
-			{
-				args: () => ["fmt", ...(extension ? ["--ext", extension] : []), "-"],
-				command: "deno",
-			},
+			{ args: () => ["fmt", "--ext", extension, "-"], command: "deno" },
 			options,
 		),
 	]);
