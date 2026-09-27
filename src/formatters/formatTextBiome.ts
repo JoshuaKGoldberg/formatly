@@ -148,9 +148,7 @@ export const formatTextBiome: FormatterTextRunner = async (options) => {
 		try {
 			return format(options.filePath, options.text);
 		} catch (error) {
-			return {
-				error: error instanceof Error ? error : new Error(String(error)),
-			};
+			return { error: (error as { stackTrace: Error }).stackTrace };
 		}
 	}
 

@@ -97,6 +97,43 @@ describe("formatTextBiome (integration)", () => {
 			expect(result.formatted).toBeUndefined();
 		});
 
+		it("formats in-process with the default config when there is no config file", async () => {
+			const result = await formatTextBiome({
+				cwd: directory,
+				filePath: path.join(directory, "index.ts"),
+				text,
+			});
+
+			expect(result).toEqual({ formatted: "function f() {\n\treturn 1;\n}\n" });
+			expect(mockRunPackageFormatterTextCommand).not.toHaveBeenCalled();
+		});
+
+		it("resolves with an error when Biome can't format the file type", async () => {
+			const result = await formatTextBiome({
+				cwd: directory,
+				filePath: path.join(directory, "data.unknown"),
+				text,
+			});
+
+			expect(result.error?.message).toContain("data.unknown");
+			expect(mockRunPackageFormatterTextCommand).not.toHaveBeenCalled();
+		});
+
+		it("formats with the command when the config is nested", async () => {
+			await writeFile("biome.json", JSON.stringify({ root: false }));
+			mockRunPackageFormatterTextCommand.mockResolvedValueOnce({
+				formatted: text,
+			});
+
+			await formatTextBiome({
+				cwd: directory,
+				filePath: path.join(directory, "index.ts"),
+				text,
+			});
+
+			expect(mockRunPackageFormatterTextCommand).toHaveBeenCalled();
+		});
+
 		it("formats with the command when the config extends another", async () => {
 			await writeFile("biome.json", JSON.stringify({ extends: ["base.json"] }));
 			mockRunPackageFormatterTextCommand.mockResolvedValueOnce({
