@@ -1,5 +1,7 @@
 import { spawn } from "child_process";
+import * as fs from "node:fs/promises";
 import os from "node:os";
+import path from "node:path";
 import {
 	type Agent,
 	detect,
@@ -101,11 +103,48 @@ export async function runPackageFormatterTextCommand(
 	);
 }
 
+/**
+ * Finds a bin installed in node_modules/.bin of cwd or any of its parents.
+ * Spawning it directly skips the package manager's startup cost.
+ * Windows is skipped because its bins are .cmd shims that need a shell.
+ * @see https://github.com/JoshuaKGoldberg/formatly/issues/629
+ */
+async function findLocalBin(command: string, cwd: string) {
+	if (process.platform === "win32") {
+		return undefined;
+	}
+
+	let directory = path.resolve(cwd);
+
+	while (true) {
+		const bin = path.join(directory, "node_modules", ".bin", command);
+
+		try {
+			await fs.access(bin);
+			return bin;
+		} catch {
+			const parent = path.dirname(directory);
+
+			if (parent === directory) {
+				return undefined;
+			}
+
+			directory = parent;
+		}
+	}
+}
+
 async function resolvePackageCommand(
 	{ command, packageName = command }: PackageCommandSource,
 	args: string[],
 	cwd: string,
 ): Promise<ResolvedCommand> {
+	const bin = await findLocalBin(command, cwd);
+
+	if (bin) {
+		return { args, command: bin };
+	}
+
 	const agent = (await detect({ cwd }))?.agent ?? "npm";
 	const executable = agentsExecutingPackageNames.has(agent)
 		? packageName
