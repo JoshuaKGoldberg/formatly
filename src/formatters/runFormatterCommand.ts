@@ -1,4 +1,7 @@
 import { spawn } from "child_process";
+import * as fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import {
 	type Agent,
 	detect,
@@ -7,12 +10,39 @@ import {
 import { resolveCommand } from "package-manager-detector/commands";
 
 import {
+	FormatFilesResult,
 	FormatlyReportChildProcessResult,
 	FormatlyReportDryRunResult,
+	FormatterCheckerOptions,
 	FormatterRunnerOptions,
 	FormatterTextRunnerOptions,
 	FormatTextResult,
 } from "../types.js";
+import { limitConcurrency } from "./limitConcurrency.js";
+
+/**
+ * A command that lists which of the given files aren't formatted.
+ */
+export interface FormatCheckCommand {
+	args: (filePaths: string[]) => string[];
+	command: string;
+
+	/**
+	 * Exit code the command uses to report unformatted files, if not 1.
+	 */
+	differencesCode?: number;
+
+	/**
+	 * Parses the command's output into the paths of unformatted files.
+	 */
+	parse: (output: SpawnedOutput) => string[];
+}
+
+/**
+ * A {@link FormatCheckCommand} run through the project's package manager.
+ */
+export interface FormatCheckPackageCommand
+	extends FormatCheckCommand, PackageCommandSource {}
 
 /**
  * A command that formats text piped in through stdin and prints to stdout.
@@ -55,21 +85,40 @@ interface PackageCommandSource {
  */
 const agentsExecutingPackageNames = new Set<Agent>(["bun", "npm"]);
 
-export async function resolvePackageCommand(
-	{ command, packageName = command }: PackageCommandSource,
-	args: string[],
-	cwd: string,
-): Promise<ResolvedCommand> {
-	const agent = (await detect({ cwd }))?.agent ?? "npm";
-	const executable = agentsExecutingPackageNames.has(agent)
-		? packageName
-		: command;
+export interface SpawnedOutput {
+	code: null | number;
+	error?: never;
+	signal: NodeJS.Signals | null;
+	stderr: string;
+	stdout: string;
+}
 
-	return (
-		resolveCommand(agent, "execute-local", [executable, ...args]) ?? {
-			args: [packageName, ...args],
-			command: "npx",
-		}
+export function createOutputError(
+	command: string,
+	{
+		code,
+		signal,
+		stderr = "",
+	}: Pick<SpawnedOutput, "code" | "signal"> & { stderr?: string },
+) {
+	const reason =
+		signal === null
+			? `exited with code ${String(code)}`
+			: `was terminated by signal ${signal}`;
+
+	return new Error(
+		[`${command} ${reason}.`, stderr.trim()].filter(Boolean).join("\n"),
+	);
+}
+
+export async function runFormatterCheckCommand(
+	{ args, ...check }: FormatCheckCommand,
+	{ cwd, filePaths }: FormatterCheckerOptions,
+): Promise<FormatFilesResult> {
+	return await spawnFormatterCheckCommand(
+		check,
+		{ args: args(filePaths), command: check.command },
+		{ cwd, filePaths },
 	);
 }
 
@@ -95,6 +144,17 @@ export async function runFormatterTextCommand(
 	);
 }
 
+export async function runPackageFormatterCheckCommand(
+	{ args, command, packageName, ...check }: FormatCheckPackageCommand,
+	{ cwd, filePaths }: FormatterCheckerOptions,
+): Promise<FormatFilesResult> {
+	return await spawnFormatterCheckCommand(
+		check,
+		await resolvePackageCommand({ command, packageName }, args(filePaths), cwd),
+		{ cwd, filePaths },
+	);
+}
+
 export async function runPackageFormatterCommand(
 	{ args, ...source }: PackageCommand,
 	{ cwd, dryRun, patterns }: FormatterRunnerOptions,
@@ -115,6 +175,100 @@ export async function runPackageFormatterTextCommand(
 		cwd,
 		text,
 	);
+}
+
+/**
+ * Finds a bin installed in node_modules/.bin of cwd or any of its parents.
+ * Spawning it directly skips the package manager's startup cost.
+ * Windows is skipped because its bins are .cmd shims that need a shell.
+ * @see https://github.com/JoshuaKGoldberg/formatly/issues/629
+ */
+export async function resolvePackageCommand(
+	{ command, packageName = command }: PackageCommandSource,
+	args: string[],
+	cwd: string,
+): Promise<ResolvedCommand> {
+	const bin = await findLocalBin(command, cwd);
+
+	if (bin) {
+		return { args, command: bin };
+	}
+
+	const agent = (await detect({ cwd }))?.agent ?? "npm";
+	const executable = agentsExecutingPackageNames.has(agent)
+		? packageName
+		: command;
+
+	return (
+		resolveCommand(agent, "execute-local", [executable, ...args]) ?? {
+			args: [packageName, ...args],
+			command: "npx",
+		}
+	);
+}
+
+async function findLocalBin(command: string, cwd: string) {
+	if (process.platform === "win32") {
+		return undefined;
+	}
+
+	let directory = path.resolve(cwd);
+
+	while (true) {
+		const bin = path.join(directory, "node_modules", ".bin", command);
+
+		try {
+			await fs.access(bin);
+			return bin;
+		} catch {
+			const parent = path.dirname(directory);
+
+			if (parent === directory) {
+				return undefined;
+			}
+
+			directory = parent;
+		}
+	}
+}
+
+/**
+ * Formatters may list files by their real paths, so both sides are compared that way.
+ */
+async function resolveRealPaths(filePaths: string[]) {
+	return await Promise.all(
+		filePaths.map((filePath) => fs.realpath(filePath).catch(() => filePath)),
+	);
+}
+
+async function spawnFormatterCheckCommand(
+	{
+		differencesCode = 1,
+		parse,
+	}: Pick<FormatCheckCommand, "differencesCode" | "parse">,
+	resolved: ResolvedCommand,
+	{ cwd, filePaths }: FormatterCheckerOptions,
+): Promise<FormatFilesResult> {
+	const output = await spawnOutput(resolved, cwd);
+
+	if (output.error) {
+		return { error: output.error };
+	}
+
+	if (output.code === 0 || output.code === differencesCode) {
+		const listed = new Set(
+			await resolveRealPaths(
+				parse(output).map((filePath) => path.resolve(cwd, filePath)),
+			),
+		);
+		const realFilePaths = await resolveRealPaths(filePaths);
+
+		return {
+			changed: filePaths.filter((_, index) => listed.has(realFilePaths[index])),
+		};
+	}
+
+	return { error: createOutputError(resolved.command, output) };
 }
 
 async function spawnFormatterCommand(
@@ -140,11 +294,38 @@ async function spawnFormatterCommand(
 	});
 }
 
-async function spawnFormatterTextCommand(
-	{ args, command }: ResolvedCommand,
+/**
+ * Formatting many files at once would otherwise spawn a process tree per file.
+ * @see https://github.com/JoshuaKGoldberg/formatly/issues/628
+ */
+const spawnFormatterTextCommand = limitConcurrency(
+	spawnFormatterTextProcess,
+	os.availableParallelism(),
+);
+
+async function spawnFormatterTextProcess(
+	resolved: ResolvedCommand,
 	cwd: string,
 	text: string,
 ): Promise<FormatTextResult> {
+	const output = await spawnOutput(resolved, cwd, text);
+
+	if (output.error) {
+		return { error: output.error };
+	}
+
+	if (output.code === 0) {
+		return { formatted: output.stdout };
+	}
+
+	return { error: createOutputError(resolved.command, output) };
+}
+
+async function spawnOutput(
+	{ args, command }: ResolvedCommand,
+	cwd: string,
+	text = "",
+): Promise<SpawnedOutput | { error: Error }> {
 	return await new Promise((resolve) => {
 		const child = spawn(command, args, { cwd, stdio: "pipe" });
 		const stderr: Buffer[] = [];
@@ -157,22 +338,11 @@ async function spawnFormatterTextCommand(
 			resolve({ error });
 		});
 		child.on("close", (code, signal) => {
-			if (code === 0) {
-				resolve({ formatted: Buffer.concat(stdout).toString() });
-				return;
-			}
-
-			const reason =
-				signal === null
-					? `exited with code ${String(code)}`
-					: `was terminated by signal ${signal}`;
-
 			resolve({
-				error: new Error(
-					[`${command} ${reason}.`, Buffer.concat(stderr).toString().trim()]
-						.filter(Boolean)
-						.join("\n"),
-				),
+				code,
+				signal,
+				stderr: Buffer.concat(stderr).toString(),
+				stdout: Buffer.concat(stdout).toString(),
 			});
 		});
 

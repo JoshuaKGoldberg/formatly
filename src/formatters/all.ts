@@ -1,18 +1,38 @@
-import path from "node:path";
+import { stripVTControlCharacters } from "node:util";
 
 import { Formatter } from "../types.js";
 import {
-	createFormatTextCommand,
+	createCheckCommand,
+	createCheckPackageCommand,
 	createFormatTextPackageCommand,
 	createRunCommand,
 	createRunPackageCommand,
 } from "./createRunCommand.js";
+import { formatTextDeno } from "./formatTextDeno.js";
 import { formatTextDprint } from "./formatTextDprint.js";
 import { formatTextPrettier } from "./formatTextPrettier.js";
+import { SpawnedOutput } from "./runFormatterCommand.js";
 import { runPrettier } from "./runPrettier.js";
+
+function parseLines({ stdout }: SpawnedOutput) {
+	return stdout
+		.split("\n")
+		.map((line) => line.trim())
+		.filter(Boolean);
+}
 
 export const formatters = [
 	{
+		checker: createCheckPackageCommand({
+			args: (filePaths) => ["format", "--reporter=github", ...filePaths],
+			command: "biome",
+			packageName: "@biomejs/biome",
+			parse: ({ stdout }) =>
+				Array.from(
+					stdout.matchAll(/^::error title=format,file=([^,]+),/gm),
+					([, filePath]) => decodeURIComponent(filePath),
+				),
+		}),
 		formatText: createFormatTextPackageCommand({
 			args: (filePath) => ["format", `--stdin-file-path=${filePath}`],
 			command: "biome",
@@ -30,15 +50,16 @@ export const formatters = [
 		},
 	},
 	{
-		// deno fmt reads stdin as "-" and can only be told the file's extension,
-		// not its path, so per-path config overrides don't apply.
-		formatText: createFormatTextCommand({
-			args: (filePath) => {
-				const extension = path.extname(filePath).slice(1);
-				return ["fmt", ...(extension ? ["--ext", extension] : []), "-"];
-			},
+		checker: createCheckCommand({
+			args: (filePaths) => ["fmt", "--check", ...filePaths],
 			command: "deno",
+			parse: ({ stderr }) =>
+				Array.from(
+					stripVTControlCharacters(stderr).matchAll(/^from (.+):$/gm),
+					([, filePath]) => filePath,
+				),
 		}),
+		formatText: formatTextDeno,
 		name: "deno",
 		runner: createRunCommand({
 			args: ["fmt"],
@@ -50,6 +71,12 @@ export const formatters = [
 		},
 	},
 	{
+		checker: createCheckPackageCommand({
+			args: (filePaths) => ["check", "--list-different", ...filePaths],
+			command: "dprint",
+			differencesCode: 20,
+			parse: parseLines,
+		}),
 		formatText: formatTextDprint,
 		name: "dprint",
 		runner: createRunPackageCommand({
@@ -62,14 +89,19 @@ export const formatters = [
 		},
 	},
 	{
-		formatText: createFormatTextCommand({
-			args: (filePath) => ["oxfmt", "--stdin-filepath", filePath],
-			command: "npx",
+		checker: createCheckPackageCommand({
+			args: (filePaths) => ["--list-different", ...filePaths],
+			command: "oxfmt",
+			parse: parseLines,
+		}),
+		formatText: createFormatTextPackageCommand({
+			args: (filePath) => ["--stdin-filepath", filePath],
+			command: "oxfmt",
 		}),
 		name: "oxfmt",
-		runner: createRunCommand({
-			args: ["oxfmt"],
-			command: "npx",
+		runner: createRunPackageCommand({
+			args: [],
+			command: "oxfmt",
 		}),
 		testers: {
 			configFile: /^(?:\.oxfmtrc\.(?:json|jsonc)|oxfmt\.config\.(?:mts|ts))$/,
@@ -77,6 +109,11 @@ export const formatters = [
 		},
 	},
 	{
+		checker: createCheckPackageCommand({
+			args: (filePaths) => ["--list-different", ...filePaths],
+			command: "prettier",
+			parse: parseLines,
+		}),
 		formatText: formatTextPrettier,
 		name: "prettier",
 		runner: runPrettier,
