@@ -179,7 +179,7 @@ Parameters:
 2. `options: FormatlyOptions` _(optional)_:
    - `cwd: string` _(optional)_: working directory, if not `"."`
    - `dryRun: boolean` _(optional)_: whether to resolve the command that would run without running it
-   - `formatter: FormatterName` _(optional)_: explicit formatter to use instead of detecting one, supports `"biome"`, `"deno"`, `"dprint"`, and `"prettier"`
+   - `formatter: FormatterName` _(optional)_: explicit formatter to use instead of detecting one, supports `"biome"`, `"deno"`, `"dprint"`, `"oxfmt"`, and `"prettier"`
    - `order: FormatterName[]` _(optional)_: formatters to detect first, in order, as used by [`resolveFormatter`](#resolveformatter)
    - `stopDirectory: StopDirectory` _(optional)_: directory to stop searching parent directories for a config file at, as used by [`resolveFormatter`](#resolveformatter)
 
@@ -216,8 +216,8 @@ if (!report.ran) {
 
 const { formatter, result } = report;
 
-if (result.code) {
-	console.error(`Error running ${formatter.runner}:`, result.stderr);
+if ("code" in result && result.code) {
+	console.error(`${formatter.name} exited with code ${result.code}.`);
 } else {
 	console.log(`Formatted with ${formatter.name}! 🧼`);
 }
