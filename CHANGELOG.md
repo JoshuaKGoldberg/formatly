@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.11.1](https://github.com/JoshuaKGoldberg/formatly/compare/0.11.0...0.11.1) (2026-09-27)
+
+### Bug Fixes
+
+- throw a descriptive error for unknown formatter option names ([#655](https://github.com/JoshuaKGoldberg/formatly/issues/655)) ([6312bf3](https://github.com/JoshuaKGoldberg/formatly/commit/6312bf335ab343d13b1b127196ddc1f66886744c)), closes [#653](https://github.com/JoshuaKGoldberg/formatly/issues/653)
+
 ## [0.11.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.10.0...0.11.0) (2026-09-27)
 
 ### Features
