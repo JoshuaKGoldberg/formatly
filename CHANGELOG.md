@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.10.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.9.0...0.10.0) (2026-09-27)
+
+### Features
+
+- spawn formatters from node_modules/.bin before the package manager ([#642](https://github.com/JoshuaKGoldberg/formatly/issues/642)) ([b59de83](https://github.com/JoshuaKGoldberg/formatly/commit/b59de83b8e0ce51bed9b77aa2bce286f29b60df6)), closes [#629](https://github.com/JoshuaKGoldberg/formatly/issues/629)
+
+### Bug Fixes
+
+- exit with an error when the formatter process fails ([#635](https://github.com/JoshuaKGoldberg/formatly/issues/635)) ([6fcabfb](https://github.com/JoshuaKGoldberg/formatly/commit/6fcabfbf74b2449b66ab58768290890a89d84e2b)), closes [#625](https://github.com/JoshuaKGoldberg/formatly/issues/625)
+- honor Deno's fmt.exclude in formatText ([#639](https://github.com/JoshuaKGoldberg/formatly/issues/639)) ([ea9d5df](https://github.com/JoshuaKGoldberg/formatly/commit/ea9d5dfce2ba36acaea83764d07d8d2f740669f8)), closes [#626](https://github.com/JoshuaKGoldberg/formatly/issues/626)
+- limit concurrent formatText child processes ([#641](https://github.com/JoshuaKGoldberg/formatly/issues/641)) ([8c52ac7](https://github.com/JoshuaKGoldberg/formatly/commit/8c52ac76f804cc58e90681cf4dd196386549a1e0)), closes [#628](https://github.com/JoshuaKGoldberg/formatly/issues/628)
+- run Biome by its bin name under pnpm and other package managers ([#634](https://github.com/JoshuaKGoldberg/formatly/issues/634)) ([ff59125](https://github.com/JoshuaKGoldberg/formatly/commit/ff591253c0e89504e7017f2c1db5d2bfdecda9ac)), closes [#624](https://github.com/JoshuaKGoldberg/formatly/issues/624)
+- run oxfmt through the project's package manager ([#640](https://github.com/JoshuaKGoldberg/formatly/issues/640)) ([340998a](https://github.com/JoshuaKGoldberg/formatly/commit/340998a6bf96b00aa1cd4281d9c5b4b899455024)), closes [#627](https://github.com/JoshuaKGoldberg/formatly/issues/627)
+
 ## [0.9.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.8.0...0.9.0) (2026-09-21)
 
 ### Features
