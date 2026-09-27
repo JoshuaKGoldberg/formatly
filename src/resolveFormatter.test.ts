@@ -43,6 +43,19 @@ describe("resolveFormatter", () => {
 			expect(mockReaddir).toHaveBeenCalledWith(cwd);
 			expect(mockFindPackage).toHaveBeenCalledWith(cwd);
 		});
+
+		it("throws an error when the cwd cannot be read", async () => {
+			const cwd = "does/not/exist";
+			const cause = new Error("ENOENT: no such file or directory");
+			mockReaddir.mockRejectedValueOnce(cause);
+
+			const promise = resolveFormatter(cwd);
+
+			await expect(promise).rejects.toThrow(
+				`Could not read directory searching for a formatter config file: ${path.resolve(cwd)}.`,
+			);
+			await expect(promise).rejects.toMatchObject({ cause });
+		});
 	});
 
 	describe("stopDirectory", () => {
