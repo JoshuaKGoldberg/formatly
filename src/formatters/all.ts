@@ -1,15 +1,14 @@
-import path from "node:path";
 import { stripVTControlCharacters } from "node:util";
 
 import { Formatter } from "../types.js";
 import {
 	createCheckCommand,
 	createCheckPackageCommand,
-	createFormatTextCommand,
 	createFormatTextPackageCommand,
 	createRunCommand,
 	createRunPackageCommand,
 } from "./createRunCommand.js";
+import { formatTextDeno } from "./formatTextDeno.js";
 import { formatTextPrettier } from "./formatTextPrettier.js";
 import { SpawnedOutput } from "./runFormatterCommand.js";
 import { runPrettier } from "./runPrettier.js";
@@ -59,15 +58,7 @@ export const formatters = [
 					([, filePath]) => filePath,
 				),
 		}),
-		// deno fmt reads stdin as "-" and can only be told the file's extension,
-		// not its path, so per-path config overrides don't apply.
-		formatText: createFormatTextCommand({
-			args: (filePath) => {
-				const extension = path.extname(filePath).slice(1);
-				return ["fmt", ...(extension ? ["--ext", extension] : []), "-"];
-			},
-			command: "deno",
-		}),
+		formatText: formatTextDeno,
 		name: "deno",
 		runner: createRunCommand({
 			args: ["fmt"],
@@ -100,19 +91,19 @@ export const formatters = [
 		},
 	},
 	{
-		checker: createCheckCommand({
-			args: (filePaths) => ["oxfmt", "--list-different", ...filePaths],
-			command: "npx",
+		checker: createCheckPackageCommand({
+			args: (filePaths) => ["--list-different", ...filePaths],
+			command: "oxfmt",
 			parse: parseLines,
 		}),
-		formatText: createFormatTextCommand({
-			args: (filePath) => ["oxfmt", "--stdin-filepath", filePath],
-			command: "npx",
+		formatText: createFormatTextPackageCommand({
+			args: (filePath) => ["--stdin-filepath", filePath],
+			command: "oxfmt",
 		}),
 		name: "oxfmt",
-		runner: createRunCommand({
-			args: ["oxfmt"],
-			command: "npx",
+		runner: createRunPackageCommand({
+			args: [],
+			command: "oxfmt",
 		}),
 		testers: {
 			configFile: /^(?:\.oxfmtrc\.(?:json|jsonc)|oxfmt\.config\.(?:mts|ts))$/,

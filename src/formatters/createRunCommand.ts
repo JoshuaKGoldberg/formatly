@@ -8,12 +8,10 @@ import {
 import {
 	FormatCheckCommand,
 	FormatCheckPackageCommand,
-	FormatTextCommand,
 	FormatTextPackageCommand,
 	PackageCommand,
 	runFormatterCheckCommand,
 	runFormatterCommand,
-	runFormatterTextCommand,
 	runPackageFormatterCheckCommand,
 	runPackageFormatterCommand,
 	runPackageFormatterTextCommand,
@@ -30,12 +28,6 @@ export function createCheckPackageCommand(
 ): FormatterChecker {
 	return async (options) =>
 		await runPackageFormatterCheckCommand(command, options);
-}
-
-export function createFormatTextCommand(
-	command: FormatTextCommand,
-): FormatterTextRunner {
-	return async (options) => await runFormatterTextCommand(command, options);
 }
 
 export function createFormatTextPackageCommand(

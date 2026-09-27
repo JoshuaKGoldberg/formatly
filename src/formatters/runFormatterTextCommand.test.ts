@@ -59,6 +59,15 @@ vi.mock("node:child_process", () => ({
 	},
 }));
 
+const mockAccess = vi.fn().mockRejectedValue(new Error("ENOENT"));
+
+vi.mock("node:fs/promises", () => ({
+	get access() {
+		return mockAccess;
+	},
+	realpath: (filePath: string) => Promise.resolve(filePath),
+}));
+
 const mockDetect = vi.fn();
 
 vi.mock("package-manager-detector", () => ({
@@ -236,6 +245,28 @@ describe("runPackageFormatterTextCommand", () => {
 			},
 		);
 	});
+
+	it("spawns the bin from node_modules/.bin when it is installed", async () => {
+		mockAccess.mockResolvedValueOnce(undefined);
+		mockSpawn.mockReturnValueOnce(createMockChild({ stdout: formatted }));
+
+		const result = await runPackageFormatterTextCommand(
+			{
+				args: () => ["format"],
+				command: "biome",
+				packageName: "@biomejs/biome",
+			},
+			options,
+		);
+
+		expect(result).toEqual({ formatted });
+		expect(mockDetect).not.toHaveBeenCalled();
+		expect(mockSpawn).toHaveBeenCalledWith(
+			path.resolve(options.cwd, "node_modules", ".bin", "biome"),
+			["format"],
+			{ cwd: options.cwd, stdio: "pipe" },
+		);
+	});
 });
 
 describe("runFormatterCheckCommand", () => {
@@ -357,15 +388,4 @@ describe("formatters formatText commands", () => {
 			});
 		},
 	);
-
-	it("deno omits --ext when the file path has no extension", async () => {
-		mockSpawn.mockReturnValueOnce(createMockChild({ stdout: formatted }));
-
-		await deno.formatText({ ...options, filePath: "Dockerfile" });
-
-		expect(mockSpawn).toHaveBeenCalledWith("deno", ["fmt", "-"], {
-			cwd: options.cwd,
-			stdio: "pipe",
-		});
-	});
 });
