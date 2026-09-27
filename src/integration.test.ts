@@ -46,6 +46,7 @@ describe("formatly + resolveFormatter", () => {
 
 		expect(mockSpawn).toHaveBeenCalledWith("deno", ["fmt", ...patterns], {
 			cwd,
+			stdio: ["ignore", "ignore", "inherit"],
 		});
 	});
 });
