@@ -1,5 +1,4 @@
-import { formatters } from "./formatters/all.js";
-import { resolveFormatter } from "./resolveFormatter.js";
+import { selectFormatter } from "./selectFormatter.js";
 import { FormatlyOptions, FormatlyReport } from "./types.js";
 
 export async function formatly(
@@ -13,11 +12,9 @@ export async function formatly(
 		};
 	}
 
-	const { cwd = process.cwd(), dryRun, order, stopDirectory } = options;
+	const { cwd = process.cwd(), dryRun } = options;
 
-	const formatter = options.formatter
-		? formatters.find((f) => f.name === options.formatter)
-		: await resolveFormatter(cwd, { order, stopDirectory });
+	const formatter = await selectFormatter(cwd, options);
 
 	if (!formatter) {
 		return { message: "Could not detect a formatter.", ran: false };

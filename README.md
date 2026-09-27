@@ -73,7 +73,7 @@ Would run: prettier --write --ignore-unknown src/**/*.ts
 npm i formatly
 ```
 
-The `formatly` package exports the functions used by the `formatly` CLI, as well as a `format` function for formatting text in memory.
+The `formatly` package exports the functions used by the `formatly` CLI, as well as a `format` function for formatting text in memory and a `formatFiles` function for formatting or checking files on disk.
 
 #### `format`
 
@@ -116,8 +116,50 @@ Resolves with a `FormatReport`, which is one of:
 
 Text is formatted by piping it through the formatter's CLI, so the formatter must be installed in the project.
 Prettier is instead run in memory using the project's own installed `prettier` package when it can be resolved from `cwd`.
+Biome is instead run in memory when the project installs [`@biomejs/js-api`](https://biomejs.dev/reference/js-api) along with a `@biomejs/wasm-nodejs` matching its `@biomejs/biome` version, unless its config uses `extends` or is a nested (`"root": false`) config.
+dprint is instead run through one long-lived `dprint editor-service` process per `cwd`, which doesn't keep the Node.js process alive while idle.
 
 > Note: `deno fmt` can only be told the file's extension, not its path, so per-path config overrides in `deno.json` don't apply to `format`.
+
+#### `formatFiles`
+
+Formats, or checks the formatting of, any number of files on disk in a single formatter invocation.
+
+```ts
+import { formatFiles } from "formatly";
+
+const report = await formatFiles(["src/a.ts", "src/b.ts"], { check: true });
+
+if (report.ran && !report.error) {
+	console.log("Unformatted files:", report.changed);
+}
+```
+
+Parameters:
+
+1. `filePaths: string[]` _(required)_: paths of the files to format, relative to `cwd`
+2. `options: FormatFilesOptions` _(optional)_:
+   - `check: boolean` _(optional)_: whether to report which files aren't formatted instead of formatting them
+   - `cwd: string` _(optional)_: working directory, if not `"."`
+   - `formatter: FormatterName` _(optional)_: explicit formatter to use instead of detecting one, as in [`formatly`](#formatly)
+   - `order: FormatterName[]` _(optional)_: formatters to detect first, in order, as used by [`resolveFormatter`](#resolveformatter)
+   - `stopDirectory: StopDirectory` _(optional)_: directory to stop searching parent directories for a config file at, as used by [`resolveFormatter`](#resolveformatter)
+
+Resolves with a `FormatFilesReport`, which is one of:
+
+- `FormatlyReportError` if a formatter could not be determined, which is an object containing:
+  - `message: string`
+  - `ran: false`
+- `FormatFilesReportFailure` if the formatter ran but failed, which is an object containing:
+  - `error: Error`: the failure, including any output the formatter printed to stderr when checking
+  - `formatter: Formatter`: as resolved by [`resolveFormatter`](#resolveformatter)
+  - `ran: true`
+- `FormatFilesReportResult` if the formatter succeeded, which is an object containing:
+  - `changed: string[]`: absolute paths of the files that were changed, or with `check`, that would be changed
+  - `formatter: Formatter`: as resolved by [`resolveFormatter`](#resolveformatter)
+  - `ran: true`
+
+> Note: Biome and Deno exit with the same code for unformatted files as for files they fail to parse, so with `check`, files they fail to parse aren't reported as an error.
 
 #### `formatly`
 
@@ -187,6 +229,7 @@ import { resolveFormatter } from "formatly";
 const formatter = await resolveFormatter();
 
 // {
+//   checker: [Function],
 //   formatText: [Function],
 //   name: "prettier",
 //   runner: [Function],
@@ -243,6 +286,7 @@ Resolves with either:
 - `undefined` if a formatter could not be detected
 - `Formatter` if one can be found, which is an object containing:
   - `name: string`: English name of the formatter
+  - `checker: FormatterChecker`: the function used to list which files aren't formatted
   - `formatText: FormatterTextRunner`: the function used to format text in memory
   - `runner: FormatterRunner`: the function used to run the formatter on files
   - `testers: object`: strings and regular expressions used to test for the formatter

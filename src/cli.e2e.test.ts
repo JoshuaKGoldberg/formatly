@@ -6,6 +6,9 @@ import path from "node:path";
 import { promisify } from "node:util";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
+import { formatFiles } from "./formatFiles.js";
+import { formatTextDprint } from "./formatters/formatTextDprint.js";
+
 const require = createRequire(import.meta.url);
 const bin = path.join(import.meta.dirname, "..", "bin", "index.mjs");
 const lib = path.join(import.meta.dirname, "..", "lib", "cli.js");
@@ -252,5 +255,110 @@ describe("cli (end-to-end)", () => {
 			stderr: "Could not detect a formatter.\n",
 		});
 		expect(await readFile("index.js")).toBe(unformatted);
+	});
+});
+
+describe("formatTextDprint (end-to-end)", () => {
+	beforeEach(async () => {
+		await linkPackage("dprint");
+		await linkPackage("@dprint/typescript");
+		await writeFile(
+			"dprint.json",
+			JSON.stringify({
+				plugins: ["./node_modules/@dprint/typescript/plugin.wasm"],
+			}),
+		);
+	});
+
+	it("formats many files concurrently through the editor service", async () => {
+		const results = await Promise.all(
+			Array.from({ length: 20 }, (_, index) =>
+				formatTextDprint({
+					cwd: directory,
+					filePath: path.join(directory, `file${String(index)}.ts`),
+					text: index % 2 ? formatted : unformatted,
+				}),
+			),
+		);
+
+		expect(results).toEqual(Array(20).fill({ formatted }));
+	});
+
+	it("resolves with the error for invalid text", async () => {
+		const result = await formatTextDprint({
+			cwd: directory,
+			filePath: path.join(directory, "index.ts"),
+			text: "const value   =\n",
+		});
+
+		expect(result.error).toBeInstanceOf(Error);
+		expect(result.formatted).toBeUndefined();
+	});
+});
+
+describe("formatFiles (end-to-end)", () => {
+	const setups = {
+		biome: async () => {
+			await linkPackage("@biomejs/biome");
+			await writeFile("biome.json", "{}\n");
+		},
+		deno: async () => {
+			await writeFile("deno.json", "{}\n");
+		},
+		dprint: async () => {
+			await linkPackage("dprint");
+			await linkPackage("@dprint/typescript");
+			await writeFile(
+				"dprint.json",
+				JSON.stringify({
+					plugins: ["./node_modules/@dprint/typescript/plugin.wasm"],
+				}),
+			);
+		},
+		oxfmt: async () => {
+			await linkPackage("oxfmt");
+			await writeFile(".oxfmtrc.json", "{}\n");
+		},
+		prettier: async () => {
+			await linkPackage("prettier");
+			await writeFile(".prettierrc", "{}\n");
+		},
+	};
+
+	describe.each(Object.entries(setups))("%s", (name, setup) => {
+		beforeEach(async () => {
+			await setup();
+			await writeFile("formatted.js", formatted);
+			await writeFile("unformatted.js", unformatted);
+		});
+
+		const filePaths = ["formatted.js", "unformatted.js"];
+		const skip = name === "deno" && !denoAvailable && !process.env.CI;
+
+		it.skipIf(skip)(
+			"reports unformatted files without writing when check is true",
+			async () => {
+				const report = await formatFiles(filePaths, {
+					check: true,
+					cwd: directory,
+				});
+
+				expect(report).toMatchObject({
+					changed: [path.join(directory, "unformatted.js")],
+					formatter: { name },
+				});
+				expect(await readFile("unformatted.js")).toBe(unformatted);
+			},
+		);
+
+		it.skipIf(skip)("formats files and reports which changed", async () => {
+			const report = await formatFiles(filePaths, { cwd: directory });
+
+			expect(report).toMatchObject({
+				changed: [path.join(directory, "unformatted.js")],
+				formatter: { name },
+			});
+			expect(await readFile("unformatted.js")).toBe(formatted);
+		});
 	});
 });

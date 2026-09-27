@@ -18,6 +18,12 @@ importers:
       '@biomejs/biome':
         specifier: 2.5.14
         version: 2.5.14
+      '@biomejs/js-api':
+        specifier: 6.0.0
+        version: 6.0.0(@biomejs/wasm-nodejs@2.5.14)
+      '@biomejs/wasm-nodejs':
+        specifier: 2.5.14
+        version: 2.5.14
       '@dprint/typescript':
         specifier: 0.96.1
         version: 0.96.1
@@ -109,8 +115,8 @@ importers:
         specifier: 3.0.2
         version: 3.0.2(prettier@3.9.6)
       prettier-plugin-sh:
-        specifier: 0.19.0
-        version: 0.19.0(prettier@3.9.6)
+        specifier: 0.20.0
+        version: 0.20.0(prettier@3.9.6)
       release-it:
         specifier: 21.1.0
         version: 21.1.0(@types/node@26.6.1)(magicast@0.5.5)
@@ -216,6 +222,23 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
+
+  '@biomejs/js-api@6.0.0':
+    resolution: {integrity: sha512-8HP7wexjQo5Np1J9h0B2x8L5G0GZpCacgjykxLHtvLPvF0hNqSG754oh8bxo+OSFDpVGMfSjmLO+ZY/5KbfjmQ==}
+    peerDependencies:
+      '@biomejs/wasm-bundler': ^2.5.0
+      '@biomejs/wasm-nodejs': ^2.5.0
+      '@biomejs/wasm-web': ^2.5.0
+    peerDependenciesMeta:
+      '@biomejs/wasm-bundler':
+        optional: true
+      '@biomejs/wasm-nodejs':
+        optional: true
+      '@biomejs/wasm-web':
+        optional: true
+
+  '@biomejs/wasm-nodejs@2.5.14':
+    resolution: {integrity: sha512-Iq/p5C8C/vl/cglAWYeSb3HZX9pKJAYQE8hgj3WJd25Ez3AFEiAHZtJMUJ5uKsZzRM9xnQllcOoHMjrPEHxYZg==}
 
   '@cacheable/memory@2.2.0':
     resolution: {integrity: sha512-CTLKqLItRCEixEAewD3/j9DB3/o96gpTPD4eJ1v+DGOlxZRZncRQkGYqqnAGCscYd6RNeXfGeiuCphsPtqyIfQ==}
@@ -3712,8 +3735,8 @@ packages:
       prettier:
         optional: true
 
-  prettier-plugin-sh@0.19.0:
-    resolution: {integrity: sha512-39VXFZH/cOGtcuu8aeSvqp/hhwomOR4QroZUj+jBz2cNb3os9s0sqFZSNlYts6jdtLLDU7D2YT3Z1+abtb7adQ==}
+  prettier-plugin-sh@0.20.0:
+    resolution: {integrity: sha512-z2LxwlQWP5qon1d16tAWjIKuMNeEiT6CjkG4lCBAxnRS0SmDkw2463wVxNGlbnpDfq0OTcB77T3bI91uTv9xmA==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       prettier: ^3.6.0
@@ -3884,8 +3907,8 @@ packages:
     engines: {node: '>=18.3.0'}
     hasBin: true
 
-  sh-syntax@0.6.0:
-    resolution: {integrity: sha512-52VK6z/cdZHv7UURjIcwfBUQZrAhIEEe0bY4lrkfypjnFIKsDZdD3Uaz/dBiw/sF8BeX0Mssv140s8EnrsJ9dQ==}
+  sh-syntax@0.7.0:
+    resolution: {integrity: sha512-sgMyAxpHiGgAaNg+gD3ad41vha24CzIjjghD4mdiON1lUafZPLJNYknyjcXmU4geilPstd69zCKkpccY0YvajA==}
     engines: {node: '>=16.0.0'}
 
   shebang-command@2.0.0:
@@ -4499,6 +4522,12 @@ snapshots:
 
   '@biomejs/cli-win32-x64@2.5.14':
     optional: true
+
+  '@biomejs/js-api@6.0.0(@biomejs/wasm-nodejs@2.5.14)':
+    optionalDependencies:
+      '@biomejs/wasm-nodejs': 2.5.14
+
+  '@biomejs/wasm-nodejs@2.5.14': {}
 
   '@cacheable/memory@2.2.0':
     dependencies:
@@ -7901,11 +7930,11 @@ snapshots:
     optionalDependencies:
       prettier: 3.9.6
 
-  prettier-plugin-sh@0.19.0(prettier@3.9.6):
+  prettier-plugin-sh@0.20.0(prettier@3.9.6):
     dependencies:
       '@reteps/dockerfmt': 0.5.4
       prettier: 3.9.6
-      sh-syntax: 0.6.0
+      sh-syntax: 0.7.0
 
   prettier@3.9.6: {}
 
@@ -8129,7 +8158,7 @@ snapshots:
       throttled-queue: 2.1.4
       zod: 4.6.5
 
-  sh-syntax@0.6.0: {}
+  sh-syntax@0.7.0: {}
 
   shebang-command@2.0.0:
     dependencies:
