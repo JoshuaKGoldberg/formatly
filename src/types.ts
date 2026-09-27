@@ -112,7 +112,17 @@ export interface Formatter {
 	runner: FormatterRunner;
 	testers: {
 		configFile: RegExp;
+
+		/**
+		 * Matches a package.json script running the formatter's format command.
+		 * Checked across all formatters before the looser `script`.
+		 */
+		formatScript: RegExp;
 		packageKey?: string;
+
+		/**
+		 * Matches a package.json script mentioning the formatter's name.
+		 */
 		script: RegExp;
 	};
 }

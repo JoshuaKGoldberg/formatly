@@ -256,8 +256,17 @@ describe("resolveFormatter", () => {
 			["oxfmt", ".oxfmtrc.jsonc", [".git", ".oxfmtrc.jsonc", "src"]],
 			["oxfmt", "oxfmt.config.ts", [".git", "oxfmt.config.ts", "src"]],
 			["oxfmt", "oxfmt.config.mts", [".git", "oxfmt.config.mts", "src"]],
+			["biome", "biome.jsonc", [".git", "biome.jsonc", "src"]],
+			["deno", "deno.jsonc", [".git", "deno.jsonc", "src"]],
+			["dprint", ".dprint.jsonc", [".git", ".dprint.jsonc", "src"]],
 			["prettier", ".prettierrc", [".git", ".prettierrc", "src"]],
-			["prettier", "prettier.config.js", [".git", ".prettierrc", "src"]],
+			["prettier", ".prettierrc.yaml", [".git", ".prettierrc.yaml", "src"]],
+			["prettier", "prettier.config.js", [".git", "prettier.config.js", "src"]],
+			[
+				"oxfmt",
+				".oxfmtrc.json and deno.jsonc.bak",
+				[".oxfmtrc.json", "deno.jsonc.bak", "prettier.md"],
+			],
 		])(
 			"resolves with %s when %s exist(s)",
 			async (formatterName, _, children) => {
@@ -284,10 +293,14 @@ describe("resolveFormatter", () => {
 
 		it.each([
 			["biome", "biome format"],
+			["biome", "biome check --write"],
 			["deno", "deno fmt"],
+			["deno", "deno task build"],
 			["dprint", "dprint"],
+			["dprint", "dprint fmt"],
 			["oxfmt", "oxfmt"],
 			["prettier", "prettier"],
+			["prettier", "npx prettier --write ."],
 		])(
 			"resolves with %s when %s exists in a script",
 			async (formatterName, scriptValue) => {
@@ -303,6 +316,41 @@ describe("resolveFormatter", () => {
 				expect(formatter).toBe(
 					formatters.find((formatter) => formatter.name === formatterName),
 				);
+			},
+		);
+
+		it.each([
+			["prettier", { format: "prettier --write .", test: "deno test" }],
+			["dprint", { build: "biome lint", format: "dprint fmt" }],
+			["deno", { format: "deno fmt", lint: "eslint-plugin-prettier" }],
+		])(
+			"resolves with %s when its format command runs in a script before other formatters are mentioned",
+			async (formatterName, scripts) => {
+				mockReaddir.mockResolvedValueOnce([]);
+				mockFindPackage.mockResolvedValueOnce({ scripts });
+
+				const formatter = await resolveFormatter();
+
+				expect(formatter).toBe(
+					formatters.find((formatter) => formatter.name === formatterName),
+				);
+			},
+		);
+
+		it.each([
+			"node scripts/denormalize.js",
+			"eslint-config-prettier",
+			"prettier-check",
+			"biomes format",
+		])(
+			"resolves with undefined when %s only contains a formatter name within another word",
+			async (script) => {
+				mockReaddir.mockResolvedValueOnce([]);
+				mockFindPackage.mockResolvedValueOnce({ scripts: { script } });
+
+				const formatter = await resolveFormatter();
+
+				expect(formatter).toBeUndefined();
 			},
 		);
 
