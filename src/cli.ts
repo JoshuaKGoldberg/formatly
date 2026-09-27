@@ -6,7 +6,14 @@ export async function cli(args: string[]) {
 	const dryRun = args.includes(dryRunFlag);
 	const patterns = args.filter((arg) => arg !== dryRunFlag);
 
-	const result = await formatly(patterns, { dryRun });
+	let result;
+
+	try {
+		result = await formatly(patterns, { dryRun });
+	} catch (error) {
+		console.error(`Failed running formatly: ${String(error)} 🛑`);
+		return 1;
+	}
 
 	if (!result.ran) {
 		console.error(result.message);

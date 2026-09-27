@@ -149,7 +149,7 @@ describe("formatly", () => {
 		expect(mockSpawn).toHaveBeenCalledWith(
 			"pnpm",
 			["exec", formatter, "--no-error-on-unmatched-pattern", ...patterns],
-			{ cwd: process.cwd() },
+			{ cwd: process.cwd(), stdio: ["ignore", "ignore", "inherit"] },
 		);
 	});
 
@@ -175,7 +175,7 @@ describe("formatly", () => {
 				"--write",
 				...patterns,
 			],
-			{ cwd },
+			{ cwd, stdio: ["ignore", "ignore", "inherit"] },
 		);
 	});
 });
