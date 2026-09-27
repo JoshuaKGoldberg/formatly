@@ -55,14 +55,14 @@ export const formatters = [
 		},
 	},
 	{
-		formatText: createFormatTextCommand({
-			args: (filePath) => ["oxfmt", "--stdin-filepath", filePath],
-			command: "npx",
+		formatText: createFormatTextPackageCommand({
+			args: (filePath) => ["--stdin-filepath", filePath],
+			command: "oxfmt",
 		}),
 		name: "oxfmt",
-		runner: createRunCommand({
-			args: ["oxfmt"],
-			command: "npx",
+		runner: createRunPackageCommand({
+			args: [],
+			command: "oxfmt",
 		}),
 		testers: {
 			configFile: /^(?:\.oxfmtrc\.(?:json|jsonc)|oxfmt\.config\.(?:mts|ts))$/,
