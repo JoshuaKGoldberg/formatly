@@ -21,7 +21,7 @@ vi.mock("fd-package-json", () => ({
 	},
 }));
 
-describe("resolveFormatter", () => {
+describe(resolveFormatter, () => {
 	describe("cwd", () => {
 		it("defaults cwd to . when not provided", async () => {
 			mockReaddir.mockResolvedValueOnce(["totally", "unrelated"]);

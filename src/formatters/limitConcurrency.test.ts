@@ -21,7 +21,7 @@ async function flush() {
 	await new Promise((resolve) => setImmediate(resolve));
 }
 
-describe("limitConcurrency", () => {
+describe(limitConcurrency, () => {
 	it("runs no more than the maximum tasks at once", async () => {
 		const { resolvers, results, started } = createDeferredTasks(4);
 
@@ -46,6 +46,7 @@ describe("limitConcurrency", () => {
 			if (shouldReject) {
 				throw new Error("Oops");
 			}
+
 			return "ok";
 		}, 1);
 

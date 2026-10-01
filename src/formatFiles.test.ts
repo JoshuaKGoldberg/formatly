@@ -31,7 +31,7 @@ function createMockFormatter() {
 	};
 }
 
-describe("formatFiles", () => {
+describe(formatFiles, () => {
 	it("resolves with a report error when no file paths are provided", async () => {
 		const report = await formatFiles([]);
 

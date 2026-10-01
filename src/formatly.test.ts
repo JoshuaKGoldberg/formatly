@@ -39,7 +39,7 @@ vi.mock("./resolveFormatter.js", () => ({
 
 const patterns = ["*"];
 
-describe("formatly", () => {
+describe(formatly, () => {
 	it("resolves with a report error when no patterns are provided", async () => {
 		const report = await formatly([" "]);
 

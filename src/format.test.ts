@@ -25,7 +25,7 @@ const text = "const a   =  1";
 
 const [, , , , prettier] = formatters;
 
-describe("format", () => {
+describe(format, () => {
 	it("resolves with a report error when no file path is provided", async () => {
 		const report = await format(text, { filePath: " " });
 

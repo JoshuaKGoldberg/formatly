@@ -59,7 +59,7 @@ const options = {
 	patterns: ["src/**/*.ts"],
 };
 
-describe("runFormatterCommand", () => {
+describe(runFormatterCommand, () => {
 	it("uses the detected package manager to execute local packages", async () => {
 		mockDetect.mockResolvedValueOnce({
 			agent: "pnpm",

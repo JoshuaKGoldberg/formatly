@@ -1,9 +1,11 @@
 body:
   - attributes:
       description: If any of these required steps are not taken, we may not be able to review your issue. Help us to help you!
-      label: Feature Request Checklist
+      label: Tooling Report Checklist
       options:
-        - label: I have pulled the latest `main` branch of the repository.
+        - label: I have tried restarting my IDE and the issue persists.
+          required: true
+        - label: I have pulled in the newest version of the project.
           required: true
         - label: I have [searched for related issues](https://github.com/JoshuaKGoldberg/formatly/issues?q=is%3Aissue) and found none that matched my issue.
           required: true
@@ -19,11 +21,11 @@ body:
       label: Additional Info
     type: textarea
 
-description: Request that a new feature be added or an existing feature improved
+description: Report a bug or request an enhancement in repository tooling
 
 labels:
-  - "type: feature"
+  - "area: tooling"
 
-name: 🚀 Feature
+name: 🛠 Tooling
 
-title: "🚀 Feature: <short description of the feature>"
+title: "🛠 Tooling: <short description of the change>"

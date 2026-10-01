@@ -84,7 +84,7 @@ const options = {
 
 const formatted = "const a = 1;\n";
 
-describe("runFormatterTextCommand", () => {
+describe(runFormatterTextCommand, () => {
 	it("pipes the text through the command and resolves with its output", async () => {
 		const child = createMockChild({ stdout: formatted });
 		mockSpawn.mockReturnValueOnce(child);
@@ -165,7 +165,7 @@ describe("runFormatterTextCommand", () => {
 	});
 });
 
-describe("runPackageFormatterTextCommand", () => {
+describe(runPackageFormatterTextCommand, () => {
 	it("uses the detected package manager to execute local packages", async () => {
 		mockDetect.mockResolvedValueOnce({ agent: "pnpm", name: "pnpm" });
 		mockSpawn.mockReturnValueOnce(createMockChild({ stdout: formatted }));
@@ -269,7 +269,7 @@ describe("runPackageFormatterTextCommand", () => {
 	});
 });
 
-describe("runFormatterCheckCommand", () => {
+describe(runFormatterCheckCommand, () => {
 	const checkOptions = {
 		cwd: path.resolve("project"),
 		filePaths: ["a.ts", "b.ts"].map((filePath) =>

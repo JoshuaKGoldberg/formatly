@@ -47,7 +47,7 @@ function mockCheckError(stderr: string) {
 	);
 }
 
-describe("formatTextDeno", () => {
+describe(formatTextDeno, () => {
 	it("formats stdin without checking exclusion when the file doesn't exist", async () => {
 		mockAccess.mockRejectedValueOnce(new Error("ENOENT"));
 		mockRunFormatterTextCommand.mockResolvedValueOnce(formatted);

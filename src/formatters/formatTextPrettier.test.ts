@@ -36,7 +36,7 @@ function createMockPrettier(
 	};
 }
 
-describe("formatTextPrettier", () => {
+describe(formatTextPrettier, () => {
 	it("formats with the command when requiring prettier fails", async () => {
 		const result = { formatted: "const a = 1;\n" };
 		mockRequire.mockImplementation(() => {

@@ -22,7 +22,7 @@ const options = {
 	patterns: ["."],
 };
 
-describe("runPrettier", () => {
+describe(runPrettier, () => {
 	it("formats with the command when requiring the internal CLI modules fails", async () => {
 		mockRequire.mockImplementation(() => {
 			throw new Error("Module not found");

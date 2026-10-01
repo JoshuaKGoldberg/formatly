@@ -21,7 +21,7 @@ const mockLog = vi.fn();
 
 const patterns = ["*"];
 
-describe("cli", () => {
+describe(cli, () => {
 	beforeEach(() => {
 		console.error = mockError;
 		console.log = mockLog;

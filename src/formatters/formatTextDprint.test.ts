@@ -62,7 +62,7 @@ function mockEditorInfo(schemaVersion: number) {
 	);
 }
 
-describe("formatTextDprint", () => {
+describe(formatTextDprint, () => {
 	it("formats with the stdin command when dprint editor-info fails", async () => {
 		mockExecFile.mockImplementationOnce(
 			(_command, _args, _options, callback: (error: Error) => void) => {
