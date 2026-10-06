@@ -32,6 +32,7 @@ describe("cli", () => {
 		{ args: ["--help"] },
 		{ args: ["-h"] },
 		{ args: ["src", "--help"] },
+		{ args: ["-hv"] },
 	])(
 		"returns 0 and logs usage without formatting when given $args",
 		async ({ args }) => {
@@ -52,14 +53,17 @@ describe("cli", () => {
 		expect(mockLog.mock.calls).toMatchInlineSnapshot(`
 			[
 			  [
-			    "Usage: formatly [options] <patterns...>
+			    "Usage: formatly [--dry-run] <patterns...>
 
 			Formats files with whatever formatter your project is already using.
+
+			Arguments:
+			  <patterns...>  Glob patterns of files to pass to the formatter
 
 			Options:
 			      --dry-run  Report the detected formatter and command without formatting
 			  -h, --help     Show this help message
-			  -v, --version  Show the version number",
+			  -v, --version  Show formatly's version",
 			  ],
 			]
 		`);
@@ -178,6 +182,8 @@ describe("cli", () => {
 
 	it.each([
 		{ args: ["--dry-run=false", ...patterns], dryRun: false },
+		{ args: ["--dry-run", "false", ...patterns], dryRun: false },
+		{ args: ["--dry-run", "true", ...patterns], dryRun: true },
 		{ args: ["--no-dry-run", ...patterns], dryRun: false },
 		{ args: [...patterns, "--dry-run"], dryRun: true },
 	])(
@@ -225,6 +231,23 @@ describe("cli", () => {
 			patterns: ["src", "--", "a", "--", "b"],
 		},
 		{ args: ["src", "--"], dryRun: false, patterns: ["src", "--"] },
+		{
+			args: ["--dry-run", "--", "-weird.js"],
+			dryRun: true,
+			patterns: ["--", "-weird.js"],
+		},
+		{
+			args: ["src", "--dry-run", "--", "a", "--", "b"],
+			dryRun: true,
+			patterns: ["src", "--", "a", "--", "b"],
+		},
+		{ args: ["--", "--", "a"], dryRun: false, patterns: ["--", "--", "a"] },
+		{
+			args: ["--", "--dry-run"],
+			dryRun: false,
+			patterns: ["--", "--dry-run"],
+		},
+		{ args: ["--", "--help"], dryRun: false, patterns: ["--", "--help"] },
 	])(
 		"passes $patterns to formatly when given $args",
 		async ({ args, dryRun, patterns }) => {
@@ -263,11 +286,11 @@ describe("cli", () => {
 		},
 		{
 			args: ["-x", ...patterns],
-			text: "Unknown flag: -x\nRun 'formatly --help' for usage.",
+			text: 'Unknown flag: -x. Arguments starting with "-" can be passed after "--".\nRun \'formatly --help\' for usage.',
 		},
 		{
 			args: ["--dry-run=yes", ...patterns],
-			text: "--dry-run does not take a value.\nRun 'formatly --help' for usage.",
+			text: "--dry-run: Expected true or false, received \"yes\".\nRun 'formatly --help' for usage.",
 		},
 	])(
 		"returns 1 and logs an error without formatting when given $args",

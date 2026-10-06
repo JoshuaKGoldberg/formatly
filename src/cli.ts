@@ -18,8 +18,12 @@ const formatlyCli = createCli({
 			.default(false)
 			.describe("Report the detected formatter and command without formatting"),
 	}),
-	positionals: z.array(z.string()).meta({ placeholder: "patterns" }),
-	version,
+	positionals: z
+		.array(z.string())
+		.describe("Glob patterns of files to pass to the formatter"),
+	positionalsUsage: "<patterns...>",
+	usage: "[--dry-run] <patterns...>",
+	version: { description: "Show formatly's version", version },
 });
 
 export async function cli(args: string[]) {
@@ -36,8 +40,8 @@ export async function cli(args: string[]) {
 			return 0;
 	}
 
-	const { positionals, values } = parsed;
-	const patterns = withOptionTerminator(args, positionals);
+	const { positionals, terminatorIndex, values } = parsed;
+	const patterns = withOptionTerminator(positionals, terminatorIndex);
 
 	let result;
 
@@ -81,25 +85,23 @@ export async function cli(args: string[]) {
 }
 
 /**
- * Re-inserts a `--` option terminator into patterns where it was in the raw args,
+ * Re-inserts a `--` option terminator into patterns where it was in the args,
  * so it continues to be passed through to the formatter.
- * @param args Raw command-line args.
  * @param positionals Positionals parsed from the args, without the terminator.
+ * @param terminatorIndex How many positionals came before the terminator, if any.
  * @returns The positionals, with `--` before any that came after it in the args.
  */
-function withOptionTerminator(args: string[], positionals: string[]) {
-	const terminatorIndex = args.indexOf("--");
-
-	if (terminatorIndex === -1) {
+function withOptionTerminator(
+	positionals: string[],
+	terminatorIndex: number | undefined,
+) {
+	if (terminatorIndex === undefined) {
 		return positionals;
 	}
 
-	// Everything after the terminator is a positional.
-	const insertIndex = positionals.length - (args.length - terminatorIndex - 1);
-
 	return [
-		...positionals.slice(0, insertIndex),
+		...positionals.slice(0, terminatorIndex),
 		"--",
-		...positionals.slice(insertIndex),
+		...positionals.slice(terminatorIndex),
 	];
 }
