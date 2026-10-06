@@ -203,13 +203,43 @@ describe("cli", () => {
 			result: { code: 0, runner: "virtual" },
 		});
 
-		const result = await cli(["src", "*.md", "--", "-dashed.ts"]);
+		const result = await cli(["src", "*.md"]);
 
 		expect(result).toBe(0);
-		expect(mockFormatly).toHaveBeenCalledWith(["src", "*.md", "-dashed.ts"], {
+		expect(mockFormatly).toHaveBeenCalledWith(["src", "*.md"], {
 			dryRun: false,
 		});
 	});
+
+	it.each([
+		{ args: ["--"], dryRun: false, patterns: ["--"] },
+		{ args: ["--", "-weird"], dryRun: false, patterns: ["--", "-weird"] },
+		{
+			args: ["src", "--dry-run", "--", "-weird", "--help"],
+			dryRun: true,
+			patterns: ["src", "--", "-weird", "--help"],
+		},
+		{
+			args: ["src", "--", "a", "--", "b"],
+			dryRun: false,
+			patterns: ["src", "--", "a", "--", "b"],
+		},
+		{ args: ["src", "--"], dryRun: false, patterns: ["src", "--"] },
+	])(
+		"passes $patterns to formatly when given $args",
+		async ({ args, dryRun, patterns }) => {
+			mockFormatly.mockResolvedValueOnce({
+				formatter: { name: "prettier" },
+				ran: true,
+				result: { code: 0, runner: "virtual" },
+			});
+
+			const result = await cli(args);
+
+			expect(result).toBe(0);
+			expect(mockFormatly).toHaveBeenCalledWith(patterns, { dryRun });
+		},
+	);
 
 	it("passes no patterns to formatly when none are given", async () => {
 		const message = "No file patterns were provided to formatly.";

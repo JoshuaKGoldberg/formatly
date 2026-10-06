@@ -36,7 +36,8 @@ export async function cli(args: string[]) {
 			return 0;
 	}
 
-	const { positionals: patterns, values } = parsed;
+	const { positionals, values } = parsed;
+	const patterns = withOptionTerminator(args, positionals);
 
 	let result;
 
@@ -77,4 +78,28 @@ export async function cli(args: string[]) {
 
 	console.log(`Formatted with ${result.formatter.name}. 🧼`);
 	return 0;
+}
+
+/**
+ * Re-inserts a `--` option terminator into patterns where it was in the raw args,
+ * so it continues to be passed through to the formatter.
+ * @param args Raw command-line args.
+ * @param positionals Positionals parsed from the args, without the terminator.
+ * @returns The positionals, with `--` before any that came after it in the args.
+ */
+function withOptionTerminator(args: string[], positionals: string[]) {
+	const terminatorIndex = args.indexOf("--");
+
+	if (terminatorIndex === -1) {
+		return positionals;
+	}
+
+	// Everything after the terminator is a positional.
+	const insertIndex = positionals.length - (args.length - terminatorIndex - 1);
+
+	return [
+		...positionals.slice(0, insertIndex),
+		"--",
+		...positionals.slice(insertIndex),
+	];
 }
