@@ -1,3 +1,4 @@
+// cspell:ignore dryrun
 import { createRequire } from "node:module";
 import { beforeEach } from "vitest";
 import { describe, expect, it, vi } from "vitest";
@@ -31,6 +32,7 @@ describe("cli", () => {
 		{ args: ["--help"] },
 		{ args: ["-h"] },
 		{ args: ["src", "--help"] },
+		{ args: ["-hv"] },
 	])(
 		"returns 0 and logs usage without formatting when given $args",
 		async ({ args }) => {
@@ -43,6 +45,30 @@ describe("cli", () => {
 			);
 		},
 	);
+
+	it("logs help with usage, description, and options", async () => {
+		const result = await cli(["--help"]);
+
+		expect(result).toBe(0);
+		expect(mockLog.mock.calls).toMatchInlineSnapshot(`
+			[
+			  [
+			    "Usage: formatly [--dry-run] <patterns...>
+
+			Formats files with whatever formatter your project is already using.
+
+			Arguments:
+			  <patterns...>  Glob patterns of files to pass to the formatter
+
+			Options:
+			      --dry-run  Report the detected formatter and command without formatting
+			  -h, --help     Show this help message
+			  -v, --version  Show formatly's version",
+			  ],
+			]
+		`);
+		expect(mockError).not.toHaveBeenCalled();
+	});
 
 	it.each([{ args: ["--version"] }, { args: ["-v"] }])(
 		"returns 0 and logs the version without formatting when given $args",
@@ -152,6 +178,141 @@ describe("cli", () => {
 			["Would run: pnpm exec prettier --write *"],
 		]);
 		expect(mockError).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		{ args: ["--dry-run=false", ...patterns], dryRun: false },
+		{ args: ["--dry-run", "false", ...patterns], dryRun: false },
+		{ args: ["--dry-run", "true", ...patterns], dryRun: true },
+		{ args: ["--no-dry-run", ...patterns], dryRun: false },
+		{ args: [...patterns, "--dry-run"], dryRun: true },
+	])(
+		"passes dryRun: $dryRun to formatly when given $args",
+		async ({ args, dryRun }) => {
+			mockFormatly.mockResolvedValueOnce({
+				formatter: { name: "prettier" },
+				ran: true,
+				result: { code: 0, runner: "virtual" },
+			});
+
+			const result = await cli(args);
+
+			expect(result).toBe(0);
+			expect(mockFormatly).toHaveBeenCalledWith(patterns, { dryRun });
+		},
+	);
+
+	it("passes all positionals to formatly as patterns", async () => {
+		mockFormatly.mockResolvedValueOnce({
+			formatter: { name: "prettier" },
+			ran: true,
+			result: { code: 0, runner: "virtual" },
+		});
+
+		const result = await cli(["src", "*.md"]);
+
+		expect(result).toBe(0);
+		expect(mockFormatly).toHaveBeenCalledWith(["src", "*.md"], {
+			dryRun: false,
+		});
+	});
+
+	it.each([
+		{ args: ["--"], dryRun: false, patterns: ["--"] },
+		{ args: ["--", "-weird"], dryRun: false, patterns: ["--", "-weird"] },
+		{
+			args: ["src", "--dry-run", "--", "-weird", "--help"],
+			dryRun: true,
+			patterns: ["src", "--", "-weird", "--help"],
+		},
+		{
+			args: ["src", "--", "a", "--", "b"],
+			dryRun: false,
+			patterns: ["src", "--", "a", "--", "b"],
+		},
+		{ args: ["src", "--"], dryRun: false, patterns: ["src", "--"] },
+		{
+			args: ["--dry-run", "--", "-weird.js"],
+			dryRun: true,
+			patterns: ["--", "-weird.js"],
+		},
+		{
+			args: ["src", "--dry-run", "--", "a", "--", "b"],
+			dryRun: true,
+			patterns: ["src", "--", "a", "--", "b"],
+		},
+		{ args: ["--", "--", "a"], dryRun: false, patterns: ["--", "--", "a"] },
+		{
+			args: ["--", "--dry-run"],
+			dryRun: false,
+			patterns: ["--", "--dry-run"],
+		},
+		{ args: ["--", "--help"], dryRun: false, patterns: ["--", "--help"] },
+	])(
+		"passes $patterns to formatly when given $args",
+		async ({ args, dryRun, patterns }) => {
+			mockFormatly.mockResolvedValueOnce({
+				formatter: { name: "prettier" },
+				ran: true,
+				result: { code: 0, runner: "virtual" },
+			});
+
+			const result = await cli(args);
+
+			expect(result).toBe(0);
+			expect(mockFormatly).toHaveBeenCalledWith(patterns, { dryRun });
+		},
+	);
+
+	it("passes no patterns to formatly when none are given", async () => {
+		const message = "No file patterns were provided to formatly.";
+		mockFormatly.mockResolvedValueOnce({ message, ran: false });
+
+		const result = await cli([]);
+
+		expect(result).toBe(1);
+		expect(mockFormatly).toHaveBeenCalledWith([], { dryRun: false });
+		expect(mockError).toHaveBeenCalledWith(message);
+	});
+
+	it.each([
+		{
+			args: ["--foo", ...patterns],
+			text: "Unknown flag: --foo\nRun 'formatly --help' for usage.",
+		},
+		{
+			args: ["--dryrun", ...patterns],
+			text: "Unknown flag: --dryrun (did you mean --dry-run?)\nRun 'formatly --help' for usage.",
+		},
+		{
+			args: ["-x", ...patterns],
+			text: 'Unknown flag: -x. Arguments starting with "-" can be passed after "--".\nRun \'formatly --help\' for usage.',
+		},
+		{
+			args: ["--dry-run=yes", ...patterns],
+			text: "--dry-run: Expected true or false, received \"yes\".\nRun 'formatly --help' for usage.",
+		},
+	])(
+		"returns 1 and logs an error without formatting when given $args",
+		async ({ args, text }) => {
+			const result = await cli(args);
+
+			expect(result).toBe(1);
+			expect(mockFormatly).not.toHaveBeenCalled();
+			expect(mockError).toHaveBeenCalledWith(text);
+			expect(mockLog).not.toHaveBeenCalled();
+		},
+	);
+
+	it("returns 0 and logs usage when given --help alongside an unknown flag", async () => {
+		const result = await cli(["--foo", "--help"]);
+
+		expect(result).toBe(0);
+		expect(mockFormatly).not.toHaveBeenCalled();
+		expect(mockError).not.toHaveBeenCalled();
+		expect(mockLog).toHaveBeenCalledWith(
+			expect.stringContaining("Usage: formatly"),
+		);
 	});
 
 	it("returns 1 and logs an error when formatly does not run", async () => {
