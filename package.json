@@ -79,7 +79,7 @@
 		"sentences-per-line": "0.3.0",
 		"tsup": "9.0.0",
 		"typescript": "5.9.3",
-		"typescript-eslint": "8.71.0",
+		"typescript-eslint": "8.72.0",
 		"vitest": "5.0.0"
 	},
 	"packageManager": "pnpm@10.34.0",
