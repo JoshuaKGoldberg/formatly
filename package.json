@@ -43,7 +43,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.5.14",
 		"@biomejs/js-api": "6.1.0",
-		"@biomejs/wasm-nodejs": "2.5.14",
+		"@biomejs/wasm-nodejs": "2.6.2",
 		"@dprint/typescript": "0.96.1",
 		"@eslint-community/eslint-plugin-eslint-comments": "4.8.0",
 		"@eslint/js": "10.0.1",
