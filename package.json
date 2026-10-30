@@ -70,7 +70,7 @@
 		"lint-staged": "17.6.0",
 		"markdownlint": "0.42.0",
 		"markdownlint-cli": "0.50.0",
-		"oxfmt": "0.74.0",
+		"oxfmt": "0.75.0",
 		"prettier": "3.9.6",
 		"prettier-plugin-curly": "0.4.1",
 		"prettier-plugin-packagejson": "3.0.2",
