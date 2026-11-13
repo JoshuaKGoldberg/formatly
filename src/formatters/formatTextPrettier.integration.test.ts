@@ -26,9 +26,31 @@ beforeEach(async () => {
 	await fs.writeFile(
 		path.join(directory, ".prettierrc"),
 		JSON.stringify({
-			overrides: [{ files: "src/**", options: { singleQuote: true } }],
+			overrides: [
+				{ files: "src/**", options: { singleQuote: true } },
+				{ files: "*.custom", options: { parser: "babel" } },
+			],
+			plugins: ["./plugin.mjs"],
 			semi: false,
 		}),
+	);
+	await fs.writeFile(
+		path.join(directory, "plugin.mjs"),
+		`export const languages = [{ name: "upper", extensions: [".upper"], parsers: ["upper"] }];
+export const parsers = {
+	upper: {
+		astFormat: "upper",
+		locEnd: (node) => node.text.length,
+		locStart: () => 0,
+		parse: (text) => ({ text, type: "root" }),
+	},
+};
+export const printers = { upper: { print: (path) => path.node.text.toUpperCase() } };
+`,
+	);
+	await fs.writeFile(
+		path.join(directory, ".editorconfig"),
+		"root = true\n\n[*.ts]\nindent_style = tab\n",
 	);
 	await fs.writeFile(path.join(directory, ".prettierignore"), "ignored.js\n");
 });
@@ -56,6 +78,50 @@ describe("formatTextPrettier (integration)", () => {
 		});
 
 		expect(result).toEqual({ formatted: "const value = 'abc'\n" });
+	});
+
+	it("uses a parser set by a config override", async () => {
+		const result = await formatTextPrettier({
+			cwd: directory,
+			filePath: path.join(directory, "file.custom"),
+			text: 'const value   =   "abc"\n',
+		});
+
+		expect(result).toEqual({ formatted: 'const value = "abc"\n' });
+	});
+
+	it("infers a parser from a language added by a config plugin", async () => {
+		const result = await formatTextPrettier({
+			cwd: directory,
+			filePath: path.join(directory, "file.upper"),
+			text: "abc",
+		});
+
+		expect(result).toEqual({ formatted: "ABC" });
+	});
+
+	it("applies options from EditorConfig", async () => {
+		const result = await formatTextPrettier({
+			cwd: directory,
+			filePath: path.join(directory, "index.ts"),
+			text: "if (value) {\n  run()\n}\n",
+		});
+
+		expect(result).toEqual({ formatted: "if (value) {\n\trun()\n}\n" });
+	});
+
+	it("resolves with an error when no parser can be inferred", async () => {
+		const filePath = path.join(directory, "file.unknown");
+
+		const result = await formatTextPrettier({
+			cwd: directory,
+			filePath,
+			text: "abc",
+		});
+
+		expect(result).toEqual({
+			error: new Error(`No parser could be inferred for file: ${filePath}`),
+		});
 	});
 
 	it("formats with a cwd relative to the process cwd", async () => {
