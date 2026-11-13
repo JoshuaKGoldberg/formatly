@@ -14,6 +14,12 @@ importers:
       package-manager-detector:
         specifier: ^1.8.0
         version: 1.9.0
+      parse-standard-args:
+        specifier: link:../parse-standard-args
+        version: link:../parse-standard-args
+      zod:
+        specifier: ^4.6.5
+        version: 4.6.5
     devDependencies:
       '@biomejs/biome':
         specifier: 2.5.14

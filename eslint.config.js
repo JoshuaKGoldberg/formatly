@@ -65,6 +65,11 @@ export default defineConfig(
 		},
 	},
 	{
+		// TODO: Remove once parse-standard-args is published and no longer a link: dependency.
+		files: ["package.json"],
+		rules: { "package-json/valid-dependencies": "off" },
+	},
+	{
 		extends: [tseslint.configs.disableTypeChecked],
 		files: ["**/*.md/*.ts"],
 		rules: { "n/no-missing-import": "off" },

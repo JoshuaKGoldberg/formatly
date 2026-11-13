@@ -1,3 +1,4 @@
+// cspell:ignore dryrun
 import { execFile } from "node:child_process";
 import fs from "node:fs/promises";
 import { createRequire } from "node:module";
@@ -255,6 +256,36 @@ describe("cli (end-to-end)", () => {
 			code: 0,
 			stdout:
 				"Detected prettier. 🔍\nWould run: prettier --write --ignore-unknown index.js\n",
+		});
+		expect(await readFile("index.js")).toBe(unformatted);
+	});
+
+	it("passes an option terminator through to the formatter", async () => {
+		await linkPackage("prettier");
+		await writeFile(".prettierrc", "{}\n");
+		await writeFile("index.js", unformatted);
+
+		const result = await runCli("--dry-run", "--", "index.js");
+
+		expect(result).toEqual({
+			code: 0,
+			stdout:
+				"Detected prettier. 🔍\nWould run: prettier --write --ignore-unknown -- index.js\n",
+		});
+		expect(await readFile("index.js")).toBe(unformatted);
+	});
+
+	it("exits with an error without formatting when given an unknown flag", async () => {
+		await linkPackage("prettier");
+		await writeFile(".prettierrc", "{}\n");
+		await writeFile("index.js", unformatted);
+
+		const result = await runCli("--dryrun", "index.js");
+
+		expect(result).toEqual({
+			code: 1,
+			stderr:
+				"Unknown flag: --dryrun (did you mean --dry-run?)\nRun 'formatly --help' for usage.\n",
 		});
 		expect(await readFile("index.js")).toBe(unformatted);
 	});
