@@ -76,8 +76,9 @@ describe("formatTextPrettier", () => {
 				path.join(options.cwd, ".prettierignore"),
 				path.join(options.cwd, ".gitignore"),
 			],
-			resolveConfig: true,
+			resolveConfig: false,
 		});
+		expect(mockPrettier.resolveConfig).toHaveBeenCalledTimes(1);
 		expect(mockPrettier.resolveConfig).toHaveBeenCalledWith(options.filePath, {
 			editorconfig: true,
 		});
