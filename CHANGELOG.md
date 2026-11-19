@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.12.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.11.4...0.12.0) (2026-11-19)
+
+### Features
+
+- use parse-standard-args for CLI parsing ([#680](https://github.com/JoshuaKGoldberg/formatly/issues/680)) ([99a97b4](https://github.com/JoshuaKGoldberg/formatly/commit/99a97b40e7f0ef7684b6290c137edd37f3162bd0)), closes [#679](https://github.com/JoshuaKGoldberg/formatly/issues/679), references [#679](https://github.com/JoshuaKGoldberg/formatly/issues/679)
+
 ## [0.11.4](https://github.com/JoshuaKGoldberg/formatly/compare/0.11.3...0.11.4) (2026-09-27)
 
 ### Bug Fixes
