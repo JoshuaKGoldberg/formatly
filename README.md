@@ -54,6 +54,13 @@ To match only `.ts` files in `src/`:
 npx formatly "src/**/*.ts"
 ```
 
+Unknown flags are rejected rather than passed to the formatter.
+To pass formatter flags or patterns that start with `-`, put them after `--`:
+
+```shell
+npx formatly -- --check src
+```
+
 #### `--dry-run`
 
 Pass `--dry-run` to report which formatter was detected and the command that would run, without formatting anything:
