@@ -1,5 +1,5 @@
 import { createRequire } from "node:module";
-import { createCli } from "parse-standard-args";
+import { parseStandardArgv } from "parse-standard-args";
 import { z } from "zod";
 
 import { formatly } from "./formatly.js";
@@ -8,7 +8,7 @@ const { version } = createRequire(import.meta.url)("../package.json") as {
 	version: string;
 };
 
-const formatlyCli = createCli({
+const settings = {
 	description:
 		"Formats files with whatever formatter your project is already using.",
 	name: "formatly",
@@ -24,10 +24,10 @@ const formatlyCli = createCli({
 	positionalsUsage: "<patterns...>",
 	usage: "[--dry-run] <patterns...>",
 	version: { description: "Show formatly's version", version },
-});
+};
 
 export async function cli(args: string[]) {
-	const parsed = await formatlyCli.parse(args);
+	const parsed = parseStandardArgv(args, settings);
 
 	switch (parsed.type) {
 		case "error":
