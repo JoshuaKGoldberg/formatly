@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.12.2](https://github.com/JoshuaKGoldberg/formatly/compare/0.12.1...0.12.2) (2026-11-19)
+
+### Performance Improvements
+
+- resolve Prettier config once per file in formatText ([#733](https://github.com/JoshuaKGoldberg/formatly/issues/733)) ([1571888](https://github.com/JoshuaKGoldberg/formatly/commit/1571888950fb246ba104844f0fe643ca73674f91)), closes [#000](https://github.com/JoshuaKGoldberg/formatly/issues/000), references [flint-fyi/flint#3519](https://github.com/flint-fyi/flint/issues/3519) [editorconfig/editorconfig-core-js#164](https://github.com/editorconfig/editorconfig-core-js/issues/164) [fisker/editorconfig-core-js-without-wasm#4](https://github.com/fisker/editorconfig-core-js-without-wasm/issues/4)
+
 ## [0.12.1](https://github.com/JoshuaKGoldberg/formatly/compare/0.12.0...0.12.1) (2026-11-19)
 
 ### Bug Fixes
