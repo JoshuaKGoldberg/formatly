@@ -51,8 +51,8 @@ jobs:
       - uses: ./.github/actions/prepare
       - run: pnpm format --list-different
   test:
-    name: Test
-    runs-on: ubuntu-latest
+    name: Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/prepare
@@ -61,8 +61,12 @@ jobs:
       - run: pnpm run test --coverage
       - env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        if: always()
+        if: always() && matrix.os == 'ubuntu-latest'
         uses: codecov/codecov-action@v3
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
   type_check:
     name: Type Check
     runs-on: ubuntu-latest
