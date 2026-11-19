@@ -59,6 +59,20 @@ const options = {
 	patterns: ["src/**/*.ts"],
 };
 
+async function withPlatform<T>(
+	platform: NodeJS.Platform,
+	callback: () => Promise<T>,
+) {
+	const original = process.platform;
+	Object.defineProperty(process, "platform", { value: platform });
+
+	try {
+		return await callback();
+	} finally {
+		Object.defineProperty(process, "platform", { value: original });
+	}
+}
+
 describe("runFormatterCommand", () => {
 	it("uses the detected package manager to execute local packages", async () => {
 		mockDetect.mockResolvedValueOnce({
@@ -192,9 +206,8 @@ describe("runFormatterCommand", () => {
 	it("spawns the bin from node_modules/.bin when it is installed", async () => {
 		mockAccess.mockResolvedValueOnce(undefined);
 
-		await runPackageFormatterCommand(
-			{ args: ["fmt"], command: "dprint" },
-			options,
+		await withPlatform("linux", () =>
+			runPackageFormatterCommand({ args: ["fmt"], command: "dprint" }, options),
 		);
 
 		expect(mockDetect).not.toHaveBeenCalled();
@@ -210,9 +223,8 @@ describe("runFormatterCommand", () => {
 			.mockRejectedValueOnce(new Error("ENOENT"))
 			.mockResolvedValueOnce(undefined);
 
-		await runPackageFormatterCommand(
-			{ args: ["fmt"], command: "dprint" },
-			options,
+		await withPlatform("linux", () =>
+			runPackageFormatterCommand({ args: ["fmt"], command: "dprint" }, options),
 		);
 
 		expect(mockSpawn).toHaveBeenCalledWith(
@@ -223,18 +235,11 @@ describe("runFormatterCommand", () => {
 	});
 
 	it("uses the package manager without looking in node_modules/.bin on Windows", async () => {
-		const { platform } = process;
-		Object.defineProperty(process, "platform", { value: "win32" });
 		mockDetect.mockResolvedValueOnce({ agent: "pnpm", name: "pnpm" });
 
-		try {
-			await runPackageFormatterCommand(
-				{ args: ["fmt"], command: "dprint" },
-				options,
-			);
-		} finally {
-			Object.defineProperty(process, "platform", { value: platform });
-		}
+		await withPlatform("win32", () =>
+			runPackageFormatterCommand({ args: ["fmt"], command: "dprint" }, options),
+		);
 
 		expect(mockAccess).not.toHaveBeenCalled();
 		expect(mockSpawn).toHaveBeenCalledWith(

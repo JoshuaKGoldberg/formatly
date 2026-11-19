@@ -51,6 +51,20 @@ function createMockChild({
 	return child;
 }
 
+async function withPlatform<T>(
+	platform: NodeJS.Platform,
+	callback: () => Promise<T>,
+) {
+	const original = process.platform;
+	Object.defineProperty(process, "platform", { value: platform });
+
+	try {
+		return await callback();
+	} finally {
+		Object.defineProperty(process, "platform", { value: original });
+	}
+}
+
 const mockSpawn = vi.fn();
 
 vi.mock("node:child_process", () => ({
@@ -250,13 +264,15 @@ describe("runPackageFormatterTextCommand", () => {
 		mockAccess.mockResolvedValueOnce(undefined);
 		mockSpawn.mockReturnValueOnce(createMockChild({ stdout: formatted }));
 
-		const result = await runPackageFormatterTextCommand(
-			{
-				args: () => ["format"],
-				command: "biome",
-				packageName: "@biomejs/biome",
-			},
-			options,
+		const result = await withPlatform("linux", () =>
+			runPackageFormatterTextCommand(
+				{
+					args: () => ["format"],
+					command: "biome",
+					packageName: "@biomejs/biome",
+				},
+				options,
+			),
 		);
 
 		expect(result).toEqual({ formatted });
