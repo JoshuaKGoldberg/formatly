@@ -87,9 +87,6 @@ export async function cli(args: string[]) {
 /**
  * Re-inserts a `--` option terminator into patterns where it was in the args,
  * so it continues to be passed through to the formatter.
- * @param positionals Positionals parsed from the args, without the terminator.
- * @param terminatorIndex How many positionals came before the terminator, if any.
- * @returns The positionals, with `--` before any that came after it in the args.
  */
 function withOptionTerminator(
 	positionals: string[],

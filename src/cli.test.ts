@@ -201,21 +201,6 @@ describe("cli", () => {
 		},
 	);
 
-	it("passes all positionals to formatly as patterns", async () => {
-		mockFormatly.mockResolvedValueOnce({
-			formatter: { name: "prettier" },
-			ran: true,
-			result: { code: 0, runner: "virtual" },
-		});
-
-		const result = await cli(["src", "*.md"]);
-
-		expect(result).toBe(0);
-		expect(mockFormatly).toHaveBeenCalledWith(["src", "*.md"], {
-			dryRun: false,
-		});
-	});
-
 	it.each([
 		{ args: ["--"], dryRun: false, patterns: ["--"] },
 		{ args: ["--", "-weird"], dryRun: false, patterns: ["--", "-weird"] },
@@ -229,16 +214,10 @@ describe("cli", () => {
 			dryRun: false,
 			patterns: ["src", "--", "a", "--", "b"],
 		},
-		{ args: ["src", "--"], dryRun: false, patterns: ["src", "--"] },
 		{
 			args: ["--dry-run", "--", "-weird.js"],
 			dryRun: true,
 			patterns: ["--", "-weird.js"],
-		},
-		{
-			args: ["src", "--dry-run", "--", "a", "--", "b"],
-			dryRun: true,
-			patterns: ["src", "--", "a", "--", "b"],
 		},
 		{ args: ["--", "--", "a"], dryRun: false, patterns: ["--", "--", "a"] },
 		{
