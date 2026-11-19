@@ -1,4 +1,3 @@
-// cspell:ignore dryrun
 import { execFile } from "node:child_process";
 import fs from "node:fs/promises";
 import { createRequire } from "node:module";

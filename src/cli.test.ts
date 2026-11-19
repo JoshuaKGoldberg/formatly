@@ -1,4 +1,3 @@
-// cspell:ignore dryrun
 import { createRequire } from "node:module";
 import { beforeEach } from "vitest";
 import { describe, expect, it, vi } from "vitest";
