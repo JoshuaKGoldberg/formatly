@@ -38,7 +38,9 @@
 	},
 	"dependencies": {
 		"fd-package-json": "^2.0.0",
-		"package-manager-detector": "^1.8.0"
+		"package-manager-detector": "^1.8.0",
+		"parse-standard-args": "^0.3.0",
+		"zod": "^4.2.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.14",

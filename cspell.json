@@ -17,6 +17,7 @@
 		"devDependencies",
 		"directory",
 		"dprint",
+		"dryrun",
 		"formatly",
 		"joshuakgoldberg",
 		"markdownlintignore",
