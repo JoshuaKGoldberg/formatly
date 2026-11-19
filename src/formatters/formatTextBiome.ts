@@ -93,7 +93,10 @@ async function createInProcessFormatter(
 	}
 
 	return (filePath, text) => {
-		const relativePath = path.relative(directory, filePath);
+		// @biomejs/js-api only matches config globs against forward-slash paths.
+		const relativePath = path
+			.relative(directory, filePath)
+			.replaceAll(path.sep, "/");
 		const features = biome.workspace?.fileFeatures?.({
 			features: ["format"],
 			path: relativePath,
