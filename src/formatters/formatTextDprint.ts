@@ -1,9 +1,7 @@
 import type { Socket } from "node:net";
 
-import { execFile, spawn } from "node:child_process";
 import * as fs from "node:fs/promises";
 import path from "node:path";
-import { promisify } from "node:util";
 
 import {
 	FormatterTextRunner,
@@ -13,7 +11,9 @@ import {
 import {
 	resolvePackageCommand,
 	runPackageFormatterTextCommand,
+	spawnOutput,
 } from "./runFormatterCommand.js";
+import { spawnCommand } from "./spawnCommand.js";
 
 /**
  * @see https://github.com/dprint/dprint/blob/main/docs/editor-extension-development.md
@@ -82,11 +82,16 @@ async function startEditorService(
 		cwd,
 	);
 
+	const output = await spawnOutput(info, cwd);
+
+	if (output.error || output.code !== 0) {
+		return undefined;
+	}
+
 	try {
-		const { stdout } = await promisify(execFile)(info.command, info.args, {
-			cwd,
-		});
-		const { schemaVersion } = JSON.parse(stdout) as { schemaVersion: number };
+		const { schemaVersion } = JSON.parse(output.stdout) as {
+			schemaVersion: number;
+		};
 
 		if (schemaVersion !== editorServiceSchemaVersion) {
 			return undefined;
@@ -100,7 +105,7 @@ async function startEditorService(
 		["editor-service", "--parent-pid", String(process.pid)],
 		cwd,
 	);
-	const child = spawn(command, args, {
+	const child = spawnCommand(command, args, {
 		cwd,
 		stdio: ["pipe", "pipe", "ignore"],
 	});

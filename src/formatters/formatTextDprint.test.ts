@@ -3,19 +3,16 @@ import { describe, expect, it, vi } from "vitest";
 
 import { formatTextDprint } from "./formatTextDprint.js";
 
-const mockExecFile = vi.fn();
 const mockSpawn = vi.fn();
 
 vi.mock("node:child_process", () => ({
-	get execFile() {
-		return mockExecFile;
-	},
 	get spawn() {
 		return mockSpawn;
 	},
 }));
 
 const mockRunPackageFormatterTextCommand = vi.fn();
+const mockSpawnOutput = vi.fn();
 
 vi.mock("./runFormatterCommand.js", () => ({
 	resolvePackageCommand: (_: unknown, args: string[]) => ({
@@ -24,6 +21,9 @@ vi.mock("./runFormatterCommand.js", () => ({
 	}),
 	get runPackageFormatterTextCommand() {
 		return mockRunPackageFormatterTextCommand;
+	},
+	get spawnOutput() {
+		return mockSpawnOutput;
 	},
 }));
 
@@ -50,36 +50,72 @@ function encodeMessage(id: number, kind: number, body: number[]) {
 }
 
 function mockEditorInfo(schemaVersion: number) {
-	mockExecFile.mockImplementationOnce(
-		(
-			_command,
-			_args,
-			_options,
-			callback: (error: null, result: { stdout: string }) => void,
-		) => {
-			callback(null, { stdout: JSON.stringify({ schemaVersion }) });
-		},
-	);
+	mockSpawnOutput.mockResolvedValueOnce({
+		code: 0,
+		signal: null,
+		stderr: "",
+		stdout: JSON.stringify({ schemaVersion }),
+	});
 }
 
 describe("formatTextDprint", () => {
 	it("formats with the stdin command when dprint editor-info fails", async () => {
-		mockExecFile.mockImplementationOnce(
-			(_command, _args, _options, callback: (error: Error) => void) => {
-				callback(new Error("spawn dprint ENOENT"));
-			},
-		);
+		mockSpawnOutput.mockResolvedValueOnce({
+			error: new Error("spawn dprint ENOENT"),
+		});
 		mockRunPackageFormatterTextCommand.mockResolvedValueOnce(formatted);
 		const options = { cwd: "failing", filePath: "index.ts", text: "" };
 
 		const result = await formatTextDprint(options);
 
 		expect(result).toBe(formatted);
+		expect(mockSpawnOutput).toHaveBeenCalledWith(
+			{ args: ["editor-info"], command: "dprint" },
+			options.cwd,
+		);
 		expect(mockSpawn).not.toHaveBeenCalled();
 		expect(mockRunPackageFormatterTextCommand).toHaveBeenCalledWith(
 			expect.objectContaining({ command: "dprint" }),
 			options,
 		);
+	});
+
+	it("formats with the stdin command when dprint editor-info exits with an error code", async () => {
+		mockSpawnOutput.mockResolvedValueOnce({
+			code: 1,
+			signal: null,
+			stderr: "",
+			stdout: JSON.stringify({ schemaVersion: 5 }),
+		});
+		mockRunPackageFormatterTextCommand.mockResolvedValueOnce(formatted);
+
+		const result = await formatTextDprint({
+			cwd: "erroring",
+			filePath: "index.ts",
+			text: "",
+		});
+
+		expect(result).toBe(formatted);
+		expect(mockSpawn).not.toHaveBeenCalled();
+	});
+
+	it("formats with the stdin command when dprint editor-info prints invalid JSON", async () => {
+		mockSpawnOutput.mockResolvedValueOnce({
+			code: 0,
+			signal: null,
+			stderr: "",
+			stdout: "not json",
+		});
+		mockRunPackageFormatterTextCommand.mockResolvedValueOnce(formatted);
+
+		const result = await formatTextDprint({
+			cwd: "invalid",
+			filePath: "index.ts",
+			text: "",
+		});
+
+		expect(result).toBe(formatted);
+		expect(mockSpawn).not.toHaveBeenCalled();
 	});
 
 	it("formats with the stdin command when the editor service schema version is unsupported", async () => {

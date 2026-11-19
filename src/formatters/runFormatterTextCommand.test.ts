@@ -386,6 +386,8 @@ describe("formatters formatText commands", () => {
 			args: ["dprint", "fmt", "--stdin", options.filePath],
 			command: "npx",
 			formatter: dprint,
+			// dprint first tries its editor service, falling back to stdin when that fails.
+			preceding: [{ code: 1 }],
 		},
 		{
 			args: ["oxfmt", "--stdin-filepath", options.filePath],
@@ -394,8 +396,11 @@ describe("formatters formatText commands", () => {
 		},
 	])(
 		"$formatter.name spawns $command with stdin arguments",
-		async ({ args, command, formatter }) => {
+		async ({ args, command, formatter, preceding = [] }) => {
 			mockDetect.mockResolvedValueOnce(null);
+			for (const child of preceding) {
+				mockSpawn.mockReturnValueOnce(createMockChild(child));
+			}
 			mockSpawn.mockReturnValueOnce(createMockChild({ stdout: formatted }));
 
 			const result = await formatter.formatText(options);

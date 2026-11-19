@@ -1,4 +1,3 @@
-import { spawn } from "child_process";
 import * as fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -19,6 +18,7 @@ import {
 	FormatTextResult,
 } from "../types.js";
 import { limitConcurrency } from "./limitConcurrency.js";
+import { spawnCommand } from "./spawnCommand.js";
 
 /**
  * A command that lists which of the given files aren't formatted.
@@ -301,7 +301,7 @@ async function spawnFormatterCommand(
 	}
 
 	return await new Promise((resolve, reject) => {
-		const child = spawn(command, args, {
+		const child = spawnCommand(command, args, {
 			cwd,
 			stdio: ["ignore", "ignore", "inherit"],
 		});
@@ -326,31 +326,13 @@ const spawnFormatterTextCommand = limitConcurrency(
 	os.availableParallelism(),
 );
 
-async function spawnFormatterTextProcess(
-	resolved: ResolvedCommand,
-	cwd: string,
-	text: string,
-): Promise<FormatTextResult> {
-	const output = await spawnOutput(resolved, cwd, text);
-
-	if (output.error) {
-		return { error: output.error };
-	}
-
-	if (output.code === 0) {
-		return { formatted: output.stdout };
-	}
-
-	return { error: createOutputError(resolved.command, output) };
-}
-
-async function spawnOutput(
+export async function spawnOutput(
 	{ args, command }: ResolvedCommand,
 	cwd: string,
 	text = "",
 ): Promise<SpawnedOutput | { error: Error }> {
 	return await new Promise((resolve) => {
-		const child = spawn(command, args, { cwd, stdio: "pipe" });
+		const child = spawnCommand(command, args, { cwd, stdio: "pipe" });
 		const stderr: Buffer[] = [];
 		const stdout: Buffer[] = [];
 
@@ -374,4 +356,22 @@ async function spawnOutput(
 		child.stdin.on("error", () => undefined);
 		child.stdin.end(text);
 	});
+}
+
+async function spawnFormatterTextProcess(
+	resolved: ResolvedCommand,
+	cwd: string,
+	text: string,
+): Promise<FormatTextResult> {
+	const output = await spawnOutput(resolved, cwd, text);
+
+	if (output.error) {
+		return { error: output.error };
+	}
+
+	if (output.code === 0) {
+		return { formatted: output.stdout };
+	}
+
+	return { error: createOutputError(resolved.command, output) };
 }
