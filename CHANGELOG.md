@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.1](https://github.com/JoshuaKGoldberg/formatly/compare/0.12.0...0.12.1) (2026-11-19)
+
+### Bug Fixes
+
+- pass Biome forward-slash relative paths on Windows ([#755](https://github.com/JoshuaKGoldberg/formatly/issues/755)) ([1ee0612](https://github.com/JoshuaKGoldberg/formatly/commit/1ee06126a0a742d753f57a01d54b9958aa79ba1d)), closes [#754](https://github.com/JoshuaKGoldberg/formatly/issues/754), references [#753](https://github.com/JoshuaKGoldberg/formatly/issues/753) [#753](https://github.com/JoshuaKGoldberg/formatly/issues/753)
+- spawn Windows .cmd shims through tinyexec's normalizeSpawnCommand ([#751](https://github.com/JoshuaKGoldberg/formatly/issues/751)) ([6fa4832](https://github.com/JoshuaKGoldberg/formatly/commit/6fa48328081d6fed7532e9de4610ff43b67f2794)), closes [#675](https://github.com/JoshuaKGoldberg/formatly/issues/675), references [#753](https://github.com/JoshuaKGoldberg/formatly/issues/753)
+
 ## [0.12.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.11.4...0.12.0) (2026-11-19)
 
 ### Features
