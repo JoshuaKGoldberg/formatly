@@ -31,7 +31,17 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-	await fs.rm(directory, { force: true, recursive: true });
+	await fs
+		.rm(directory, { force: true, recursive: true })
+		.catch((error: unknown) => {
+			// On Windows, dprint's editor service keeps its cwd busy until this process exits.
+			if (
+				process.platform !== "win32" ||
+				(error as NodeJS.ErrnoException).code !== "EBUSY"
+			) {
+				throw error;
+			}
+		});
 });
 
 async function exists(filePath: string) {

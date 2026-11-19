@@ -20,6 +20,19 @@ vi.mock("node:child_process", () => ({
 	},
 }));
 
+// On Windows, tinyexec wraps .cmd shims and unresolved commands in cmd.exe; these tests check the commands themselves.
+vi.mock("tinyexec", () => ({
+	normalizeSpawnCommand: (
+		command: string,
+		args: string[],
+		options: object,
+	) => ({
+		args,
+		command,
+		options,
+	}),
+}));
+
 const mockReaddir = vi.fn();
 
 vi.mock("node:fs/promises", () => ({
