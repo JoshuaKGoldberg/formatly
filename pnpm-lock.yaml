@@ -29,10 +29,10 @@ importers:
         version: 2.5.14
       '@biomejs/js-api':
         specifier: 6.1.0
-        version: 6.1.0(@biomejs/wasm-nodejs@2.5.14)
+        version: 6.1.0(@biomejs/wasm-nodejs@2.6.8)
       '@biomejs/wasm-nodejs':
-        specifier: 2.5.14
-        version: 2.5.14
+        specifier: 2.6.8
+        version: 2.6.8
       '@dprint/typescript':
         specifier: 0.101.0
         version: 0.101.0
@@ -246,8 +246,8 @@ packages:
       '@biomejs/wasm-web':
         optional: true
 
-  '@biomejs/wasm-nodejs@2.5.14':
-    resolution: {integrity: sha512-Iq/p5C8C/vl/cglAWYeSb3HZX9pKJAYQE8hgj3WJd25Ez3AFEiAHZtJMUJ5uKsZzRM9xnQllcOoHMjrPEHxYZg==}
+  '@biomejs/wasm-nodejs@2.6.8':
+    resolution: {integrity: sha512-wb7ox/FIg7Wlb6yFYVG1rLkw0uxQi7P5pfWDAy+jVRABZuuUTznxBkn7U2LF64HvRAQf3F3/xTJ7+DCysvbfsw==}
 
   '@cacheable/memory@2.2.0':
     resolution: {integrity: sha512-CTLKqLItRCEixEAewD3/j9DB3/o96gpTPD4eJ1v+DGOlxZRZncRQkGYqqnAGCscYd6RNeXfGeiuCphsPtqyIfQ==}
@@ -4668,11 +4668,11 @@ snapshots:
   '@biomejs/cli-win32-x64@2.5.14':
     optional: true
 
-  '@biomejs/js-api@6.1.0(@biomejs/wasm-nodejs@2.5.14)':
+  '@biomejs/js-api@6.1.0(@biomejs/wasm-nodejs@2.6.8)':
     optionalDependencies:
-      '@biomejs/wasm-nodejs': 2.5.14
+      '@biomejs/wasm-nodejs': 2.6.8
 
-  '@biomejs/wasm-nodejs@2.5.14': {}
+  '@biomejs/wasm-nodejs@2.6.8': {}
 
   '@cacheable/memory@2.2.0':
     dependencies:
