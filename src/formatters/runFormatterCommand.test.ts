@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
 	runFormatterCommand,
 	runPackageFormatterCommand,
-} from "./runFormatterCommand.js";
+} from "./runFormatterCommand.ts";
 
 const mockSpawn = vi.fn(() => ({
 	on: (
@@ -86,7 +86,7 @@ async function withPlatform<T>(
 	}
 }
 
-describe("runFormatterCommand", () => {
+describe(runFormatterCommand, () => {
 	it("uses the detected package manager to execute local packages", async () => {
 		mockDetect.mockResolvedValueOnce({
 			agent: "pnpm",

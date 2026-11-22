@@ -2,13 +2,13 @@ import { findPackage } from "fd-package-json";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import { formatters } from "./formatters/all.js";
+import { formatters } from "./formatters/all.ts";
 import {
 	Formatter,
 	FormatterName,
 	ResolveFormatterOptions,
 	StopDirectory,
-} from "./types.js";
+} from "./types.ts";
 
 export async function resolveFormatter(
 	cwd = ".",

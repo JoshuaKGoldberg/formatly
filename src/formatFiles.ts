@@ -1,14 +1,14 @@
 import * as fs from "node:fs/promises";
 import path from "node:path";
 
-import { createOutputError } from "./formatters/runFormatterCommand.js";
-import { selectFormatter } from "./selectFormatter.js";
+import { createOutputError } from "./formatters/runFormatterCommand.ts";
+import { selectFormatter } from "./selectFormatter.ts";
 import {
 	FormatFilesOptions,
 	FormatFilesReport,
 	FormatFilesResult,
 	Formatter,
-} from "./types.js";
+} from "./types.ts";
 
 export async function formatFiles(
 	filePaths: string[],

@@ -5,7 +5,7 @@ import path from "node:path";
 import { promisify } from "node:util";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { formatTextDeno } from "./formatTextDeno.js";
+import { formatTextDeno } from "./formatTextDeno.ts";
 
 const denoAvailable = await promisify(execFile)("deno", ["--version"]).then(
 	() => true,

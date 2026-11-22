@@ -1,6 +1,6 @@
-import { formatters } from "./formatters/all.js";
-import { resolveFormatter } from "./resolveFormatter.js";
-import { FormatlyOptions } from "./types.js";
+import { formatters } from "./formatters/all.ts";
+import { resolveFormatter } from "./resolveFormatter.ts";
+import { FormatlyOptions } from "./types.ts";
 
 export async function selectFormatter(
 	cwd: string,

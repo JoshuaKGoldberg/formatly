@@ -1,7 +1,7 @@
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
-import { formatTextDeno } from "./formatTextDeno.js";
+import { formatTextDeno } from "./formatTextDeno.ts";
 
 const mockAccess = vi.fn();
 
@@ -13,7 +13,7 @@ vi.mock("node:fs/promises", () => ({
 
 const mockRunFormatterTextCommand = vi.fn();
 
-vi.mock("./runFormatterCommand.js", () => ({
+vi.mock("./runFormatterCommand.ts", () => ({
 	get runFormatterTextCommand() {
 		return mockRunFormatterTextCommand;
 	},
@@ -47,7 +47,7 @@ function mockCheckError(stderr: string) {
 	);
 }
 
-describe("formatTextDeno", () => {
+describe(formatTextDeno, () => {
 	it("formats stdin without checking exclusion when the file doesn't exist", async () => {
 		mockAccess.mockRejectedValueOnce(new Error("ENOENT"));
 		mockRunFormatterTextCommand.mockResolvedValueOnce(formatted);

@@ -1,7 +1,7 @@
 import { EventEmitter } from "node:events";
 import { describe, expect, it, vi } from "vitest";
 
-import { formatTextDprint } from "./formatTextDprint.js";
+import { formatTextDprint } from "./formatTextDprint.ts";
 
 const mockSpawn = vi.fn();
 
@@ -14,7 +14,7 @@ vi.mock("node:child_process", () => ({
 const mockRunPackageFormatterTextCommand = vi.fn();
 const mockSpawnOutput = vi.fn();
 
-vi.mock("./runFormatterCommand.js", () => ({
+vi.mock("./runFormatterCommand.ts", () => ({
 	resolvePackageCommand: (_: unknown, args: string[]) => ({
 		args,
 		command: "dprint",
@@ -58,7 +58,7 @@ function mockEditorInfo(schemaVersion: number) {
 	});
 }
 
-describe("formatTextDprint", () => {
+describe(formatTextDprint, () => {
 	it("formats with the stdin command when dprint editor-info fails", async () => {
 		mockSpawnOutput.mockResolvedValueOnce({
 			error: new Error("spawn dprint ENOENT"),

@@ -1,13 +1,13 @@
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
-import { format } from "./format.js";
-import { formatters } from "./formatters/all.js";
-import { FormatterName } from "./types.js";
+import { format } from "./format.ts";
+import { formatters } from "./formatters/all.ts";
+import { FormatterName } from "./types.ts";
 
 const mockResolveFormatter = vi.fn();
 
-vi.mock("./resolveFormatter.js", () => ({
+vi.mock("./resolveFormatter.ts", () => ({
 	get resolveFormatter() {
 		return mockResolveFormatter;
 	},
@@ -16,7 +16,7 @@ vi.mock("./resolveFormatter.js", () => ({
 // all.ts reads formatTextPrettier as it's imported, so the mock is hoisted
 const mockFormatTextPrettier = vi.hoisted(() => vi.fn());
 
-vi.mock("./formatters/formatTextPrettier.js", () => ({
+vi.mock("./formatters/formatTextPrettier.ts", () => ({
 	formatTextPrettier: mockFormatTextPrettier,
 }));
 
@@ -25,7 +25,7 @@ const text = "const a   =  1";
 
 const [, , , , prettier] = formatters;
 
-describe("format", () => {
+describe(format, () => {
 	it("resolves with a report error when no file path is provided", async () => {
 		const report = await format(text, { filePath: " " });
 

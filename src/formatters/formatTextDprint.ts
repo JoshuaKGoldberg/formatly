@@ -7,13 +7,13 @@ import {
 	FormatterTextRunner,
 	FormatterTextRunnerOptions,
 	FormatTextResult,
-} from "../types.js";
+} from "../types.ts";
 import {
 	resolvePackageCommand,
 	runPackageFormatterTextCommand,
 	spawnOutput,
-} from "./runFormatterCommand.js";
-import { spawnCommand } from "./spawnCommand.js";
+} from "./runFormatterCommand.ts";
+import { spawnCommand } from "./spawnCommand.ts";
 
 /**
  * @see https://github.com/dprint/dprint/blob/main/docs/editor-extension-development.md

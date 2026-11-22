@@ -1,5 +1,5 @@
-import { selectFormatter } from "./selectFormatter.js";
-import { FormatlyOptions, FormatlyReport } from "./types.js";
+import { selectFormatter } from "./selectFormatter.ts";
+import { FormatlyOptions, FormatlyReport } from "./types.ts";
 
 export async function formatly(
 	patterns: string[],

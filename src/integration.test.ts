@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { formatly } from "./formatly.js";
-import { formatters } from "./formatters/all.js";
+import { formatly } from "./formatly.ts";
+import { formatters } from "./formatters/all.ts";
 
 const mockSpawn = vi.fn(() => ({
 	on: (

@@ -131,7 +131,7 @@
 
 - add oxfmt support ([#544](https://github.com/JoshuaKGoldberg/formatly/issues/544)) ([69cc5f2](https://github.com/JoshuaKGoldberg/formatly/commit/69cc5f2d940158ad3d810808cd4ebba15f4e1298)), closes [#546](https://github.com/JoshuaKGoldberg/formatly/issues/546)
 
-# [0.3.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.2.4...0.3.0) (2025-06-12)
+## [0.3.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.2.4...0.3.0) (2025-06-12)
 
 ### Features
 
@@ -161,7 +161,7 @@
 
 - switch from read-package-up to fd-package-json ([#99](https://github.com/JoshuaKGoldberg/formatly/issues/99)) ([7b8cddb](https://github.com/JoshuaKGoldberg/formatly/commit/7b8cddbadc78b9fb1c6c0b353bac6679f95c1b98)), closes [#98](https://github.com/JoshuaKGoldberg/formatly/issues/98)
 
-# [0.2.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.1.0...0.2.0) (2025-03-31)
+## [0.2.0](https://github.com/JoshuaKGoldberg/formatly/compare/0.1.0...0.2.0) (2025-03-31)
 
 ### Bug Fixes
 
@@ -173,7 +173,7 @@
 - remove execa dependency ([#69](https://github.com/JoshuaKGoldberg/formatly/issues/69)) ([664b6d4](https://github.com/JoshuaKGoldberg/formatly/commit/664b6d499031769f0abf6f93d3a5fdd564f8c379)), closes [#55](https://github.com/JoshuaKGoldberg/formatly/issues/55)
 - support explicit formatter ([#71](https://github.com/JoshuaKGoldberg/formatly/issues/71)) ([c96058b](https://github.com/JoshuaKGoldberg/formatly/commit/c96058bff91e47e39e851451f23905c2d116d20d)), closes [#73](https://github.com/JoshuaKGoldberg/formatly/issues/73)
 
-# 0.1.0 (2025-01-08)
+## 0.1.0 (2025-01-08)
 
 ### Features
 

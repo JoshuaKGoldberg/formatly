@@ -4,11 +4,11 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { formatTextBiome } from "./formatTextBiome.js";
+import { formatTextBiome } from "./formatTextBiome.ts";
 
 const mockRunPackageFormatterTextCommand = vi.fn();
 
-vi.mock("./runFormatterCommand.js", () => ({
+vi.mock("./runFormatterCommand.ts", () => ({
 	get runPackageFormatterTextCommand() {
 		return mockRunPackageFormatterTextCommand;
 	},

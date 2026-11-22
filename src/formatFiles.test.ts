@@ -1,7 +1,7 @@
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
-import { formatFiles } from "./formatFiles.js";
+import { formatFiles } from "./formatFiles.ts";
 
 const mockReadFile = vi.fn();
 
@@ -13,7 +13,7 @@ vi.mock("node:fs/promises", () => ({
 
 const mockSelectFormatter = vi.fn();
 
-vi.mock("./selectFormatter.js", () => ({
+vi.mock("./selectFormatter.ts", () => ({
 	get selectFormatter() {
 		return mockSelectFormatter;
 	},
@@ -31,7 +31,7 @@ function createMockFormatter() {
 	};
 }
 
-describe("formatFiles", () => {
+describe(formatFiles, () => {
 	it("resolves with a report error when no file paths are provided", async () => {
 		const report = await formatFiles([]);
 

@@ -1,7 +1,7 @@
 import path from "node:path";
 
-import { selectFormatter } from "./selectFormatter.js";
-import { FormatOptions, FormatReport } from "./types.js";
+import { selectFormatter } from "./selectFormatter.ts";
+import { FormatOptions, FormatReport } from "./types.ts";
 
 export async function format(
 	text: string,

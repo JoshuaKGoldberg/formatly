@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { runPrettier } from "./runPrettier.js";
+import { runPrettier } from "./runPrettier.ts";
 
 // This test intentionally doesn't mock anything: it uses the Prettier
 // installed in this repository to make sure its internal CLI module loads.

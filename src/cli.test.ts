@@ -2,7 +2,7 @@ import { createRequire } from "node:module";
 import { beforeEach } from "vitest";
 import { describe, expect, it, vi } from "vitest";
 
-import { cli } from "./cli.js";
+import { cli } from "./cli.ts";
 
 const { version } = createRequire(import.meta.url)("../package.json") as {
 	version: string;
@@ -10,7 +10,7 @@ const { version } = createRequire(import.meta.url)("../package.json") as {
 
 const mockFormatly = vi.fn();
 
-vi.mock("./formatly.js", () => ({
+vi.mock("./formatly.ts", () => ({
 	get formatly() {
 		return mockFormatly;
 	},
@@ -21,7 +21,7 @@ const mockLog = vi.fn();
 
 const patterns = ["*"];
 
-describe("cli", () => {
+describe(cli, () => {
 	beforeEach(() => {
 		console.error = mockError;
 		console.log = mockLog;
