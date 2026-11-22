@@ -1,5 +1,3 @@
-import type { Socket } from "node:net";
-
 import * as fs from "node:fs/promises";
 import path from "node:path";
 
@@ -38,6 +36,12 @@ const successBytes = Buffer.from([255, 255, 255, 255]);
 type EditorService = (
 	options: FormatterTextRunnerOptions,
 ) => Promise<FormatTextResult>;
+
+// Child processes and their piped stdio streams can each be ref'd and unref'd.
+interface RefHandle {
+	ref(): unknown;
+	unref(): unknown;
+}
 
 const editorServices = new Map<string, Promise<EditorService | undefined>>();
 
@@ -120,7 +124,7 @@ async function startEditorService(
 	let nextId = 0;
 
 	function updateRef() {
-		for (const handle of [child, child.stdin, child.stdout] as Socket[]) {
+		for (const handle of [child, child.stdin, child.stdout] as RefHandle[]) {
 			if (pending.size) {
 				handle.ref();
 			} else {
