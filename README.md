@@ -329,7 +329,7 @@ Config files are only searched for in the working directory unless a [`stopDirec
 
 > Want support for a formatter not mentioned here?
 > Great!
-> Please [file a feature request GitHub issue](https://github.com/JoshuaKGoldberg/formatly/issues/new?assignees=&labels=type%3A+feature&projects=&template=03-feature.yml&title=%F0%9F%9A%80+Feature%3A+%3Cshort+description+of+the+feature%3E).
+> Please [file a feature request GitHub issue](https://github.com/JoshuaKGoldberg/formatly/issues/new?assignees=&labels=type%3A+feature&projects=&template=03-feature.yaml&title=%F0%9F%9A%80+Feature%3A+%3Cshort+description+of+the+feature%3E).
 > 🙏
 
 ## Why?
