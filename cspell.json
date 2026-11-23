@@ -6,7 +6,6 @@
 		"CHANGELOG.md",
 		"coverage",
 		"dist",
-		"lib",
 		"node_modules",
 		"pnpm-lock.yaml"
 	],
@@ -24,8 +23,6 @@
 		"dprint",
 		"dryrun",
 		"formatly",
-		"joshuakgoldberg",
-		"markdownlintignore",
 		"mshick",
 		"octoguide",
 		"oxfmtrc",
