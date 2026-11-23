@@ -11,7 +11,7 @@ import { formatTextDprint } from "./formatters/formatTextDprint.ts";
 
 const require = createRequire(import.meta.url);
 const bin = path.join(import.meta.dirname, "..", "bin", "index.mjs");
-const lib = path.join(import.meta.dirname, "..", "dist", "cli.js");
+const cli = path.join(import.meta.dirname, "..", "dist", "cli.js");
 
 const unformatted = "const value   =   1\n";
 const formatted = "const value = 1;\n";
@@ -19,9 +19,9 @@ const formatted = "const value = 1;\n";
 let directory: string;
 
 beforeAll(async () => {
-	if (!(await exists(lib))) {
+	if (!(await exists(cli))) {
 		throw new Error(
-			`${lib} does not exist: run \`pnpm build\` before testing.`,
+			`${cli} does not exist: run \`pnpm build\` before testing.`,
 		);
 	}
 });
