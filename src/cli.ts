@@ -2,7 +2,7 @@ import { createRequire } from "node:module";
 import { parseStandardArgv } from "parse-standard-args";
 import { z } from "zod";
 
-import { formatly } from "./formatly.js";
+import { formatly } from "./formatly.ts";
 
 const { version } = createRequire(import.meta.url)("../package.json") as {
 	version: string;

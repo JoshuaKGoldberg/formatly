@@ -6,12 +6,12 @@ import path from "node:path";
 import { promisify } from "node:util";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-import { formatFiles } from "./formatFiles.js";
-import { formatTextDprint } from "./formatters/formatTextDprint.js";
+import { formatFiles } from "./formatFiles.ts";
+import { formatTextDprint } from "./formatters/formatTextDprint.ts";
 
 const require = createRequire(import.meta.url);
 const bin = path.join(import.meta.dirname, "..", "bin", "index.mjs");
-const lib = path.join(import.meta.dirname, "..", "lib", "cli.js");
+const cli = path.join(import.meta.dirname, "..", "dist", "cli.js");
 
 const unformatted = "const value   =   1\n";
 const formatted = "const value = 1;\n";
@@ -19,9 +19,9 @@ const formatted = "const value = 1;\n";
 let directory: string;
 
 beforeAll(async () => {
-	if (!(await exists(lib))) {
+	if (!(await exists(cli))) {
 		throw new Error(
-			`${lib} does not exist: run \`pnpm build\` before testing.`,
+			`${cli} does not exist: run \`pnpm build\` before testing.`,
 		);
 	}
 });

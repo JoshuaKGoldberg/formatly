@@ -4,7 +4,7 @@ import {
 	FormatterChecker,
 	FormatterRunner,
 	FormatterTextRunner,
-} from "../types.js";
+} from "../types.ts";
 import {
 	FormatCheckCommand,
 	FormatCheckPackageCommand,
@@ -15,7 +15,7 @@ import {
 	runPackageFormatterCheckCommand,
 	runPackageFormatterCommand,
 	runPackageFormatterTextCommand,
-} from "./runFormatterCommand.js";
+} from "./runFormatterCommand.ts";
 
 export function createCheckCommand(
 	command: FormatCheckCommand,

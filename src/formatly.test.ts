@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { formatly } from "./formatly.js";
-import { formatters } from "./formatters/all.js";
-import { FormatterName } from "./types.js";
+import { formatly } from "./formatly.ts";
+import { formatters } from "./formatters/all.ts";
+import { FormatterName } from "./types.ts";
 
 const mockSpawn = vi.fn(() => ({
 	on: (
@@ -44,7 +44,7 @@ vi.mock("node:fs/promises", () => ({
 
 const mockResolveFormatter = vi.fn();
 
-vi.mock("./resolveFormatter.js", () => ({
+vi.mock("./resolveFormatter.ts", () => ({
 	get resolveFormatter() {
 		return mockResolveFormatter;
 	},
@@ -52,7 +52,7 @@ vi.mock("./resolveFormatter.js", () => ({
 
 const patterns = ["*"];
 
-describe("formatly", () => {
+describe(formatly, () => {
 	it("resolves with a report error when no patterns are provided", async () => {
 		const report = await formatly([" "]);
 

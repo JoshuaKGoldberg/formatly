@@ -1,9 +1,9 @@
 import * as path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
-import { formatters } from "./formatters/all.js";
-import { resolveFormatter } from "./resolveFormatter.js";
-import { FormatterName } from "./types.js";
+import { formatters } from "./formatters/all.ts";
+import { resolveFormatter } from "./resolveFormatter.ts";
+import { FormatterName } from "./types.ts";
 
 const mockReaddir = vi.fn();
 
@@ -21,7 +21,7 @@ vi.mock("fd-package-json", () => ({
 	},
 }));
 
-describe("resolveFormatter", () => {
+describe(resolveFormatter, () => {
 	describe("cwd", () => {
 		it("defaults cwd to . when not provided", async () => {
 			mockReaddir.mockResolvedValueOnce(["totally", "unrelated"]);

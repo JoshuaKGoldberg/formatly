@@ -1,7 +1,7 @@
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
-import { formatTextPrettier } from "./formatTextPrettier.js";
+import { formatTextPrettier } from "./formatTextPrettier.ts";
 
 const mockRequire = vi.fn();
 
@@ -11,7 +11,7 @@ vi.mock("node:module", () => ({
 
 const mockRunPackageFormatterTextCommand = vi.fn();
 
-vi.mock("./runFormatterCommand.js", () => ({
+vi.mock("./runFormatterCommand.ts", () => ({
 	get runPackageFormatterTextCommand() {
 		return mockRunPackageFormatterTextCommand;
 	},
@@ -36,7 +36,7 @@ function createMockPrettier(
 	};
 }
 
-describe("formatTextPrettier", () => {
+describe(formatTextPrettier, () => {
 	it("formats with the command when requiring prettier fails", async () => {
 		const result = { formatted: "const a = 1;\n" };
 		mockRequire.mockImplementation(() => {

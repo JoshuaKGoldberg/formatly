@@ -1,9 +1,9 @@
 import { createRequire } from "node:module";
 import path from "node:path";
 
-import { FormatterTextRunner } from "../types.js";
-import { runPackageFormatterTextCommand } from "./runFormatterCommand.js";
-import { wrapSafe } from "./wrapSafe.js";
+import { FormatterTextRunner } from "../types.ts";
+import { runPackageFormatterTextCommand } from "./runFormatterCommand.ts";
+import { wrapSafe } from "./wrapSafe.ts";
 
 /**
  * The subset of Prettier's public API used to format text in-memory.

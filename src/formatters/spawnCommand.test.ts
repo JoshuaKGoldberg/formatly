@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { spawnCommand } from "./spawnCommand.js";
+import { spawnCommand } from "./spawnCommand.ts";
 
 const mockSpawn = vi.fn();
 
@@ -18,7 +18,7 @@ vi.mock("tinyexec", () => ({
 	},
 }));
 
-describe("spawnCommand", () => {
+describe(spawnCommand, () => {
 	it("spawns the command as normalized for the platform", () => {
 		const child = {};
 		const normalized = {

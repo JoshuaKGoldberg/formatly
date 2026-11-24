@@ -16,9 +16,9 @@ import {
 	FormatterRunnerOptions,
 	FormatterTextRunnerOptions,
 	FormatTextResult,
-} from "../types.js";
-import { limitConcurrency } from "./limitConcurrency.js";
-import { spawnCommand } from "./spawnCommand.js";
+} from "../types.ts";
+import { limitConcurrency } from "./limitConcurrency.ts";
+import { spawnCommand } from "./spawnCommand.ts";
 
 /**
  * A command that lists which of the given files aren't formatted.

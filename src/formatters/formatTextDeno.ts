@@ -1,8 +1,8 @@
 import * as fs from "node:fs/promises";
 import path from "node:path";
 
-import { FormatterTextRunner, FormatterTextRunnerOptions } from "../types.js";
-import { runFormatterTextCommand } from "./runFormatterCommand.js";
+import { FormatterTextRunner, FormatterTextRunnerOptions } from "../types.ts";
+import { runFormatterTextCommand } from "./runFormatterCommand.ts";
 
 /**
  * Deno formats stdin knowing only the file's extension, not its path, so it

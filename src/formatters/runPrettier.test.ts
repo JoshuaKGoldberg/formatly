@@ -1,7 +1,7 @@
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
-import { runPrettier } from "./runPrettier.js";
+import { runPrettier } from "./runPrettier.ts";
 
 const mockRequire = vi.fn();
 
@@ -11,7 +11,7 @@ vi.mock("node:module", () => ({
 
 const mockRunPackageFormatterCommand = vi.fn();
 
-vi.mock("./runFormatterCommand.js", () => ({
+vi.mock("./runFormatterCommand.ts", () => ({
 	get runPackageFormatterCommand() {
 		return mockRunPackageFormatterCommand;
 	},
@@ -22,7 +22,7 @@ const options = {
 	patterns: ["."],
 };
 
-describe("runPrettier", () => {
+describe(runPrettier, () => {
 	it("formats with the command when requiring the internal CLI modules fails", async () => {
 		mockRequire.mockImplementation(() => {
 			throw new Error("Module not found");

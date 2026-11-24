@@ -1,10 +1,10 @@
 import { createRequire } from "node:module";
 import path from "node:path";
 
-import { FormatterRunner } from "../types.js";
-import { limitConcurrency } from "./limitConcurrency.js";
-import { runPackageFormatterCommand } from "./runFormatterCommand.js";
-import { wrapSafe } from "./wrapSafe.js";
+import { FormatterRunner } from "../types.ts";
+import { limitConcurrency } from "./limitConcurrency.ts";
+import { runPackageFormatterCommand } from "./runFormatterCommand.ts";
+import { wrapSafe } from "./wrapSafe.ts";
 
 /**
  * @see https://github.com/prettier/prettier/issues/17422

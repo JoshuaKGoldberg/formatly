@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { formatTextPrettier } from "./formatTextPrettier.js";
+import { formatTextPrettier } from "./formatTextPrettier.ts";
 
 // This test intentionally doesn't mock anything: it links the Prettier
 // installed in this repository into a temporary project to make sure text is

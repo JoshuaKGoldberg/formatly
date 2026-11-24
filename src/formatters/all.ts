@@ -1,19 +1,19 @@
 import { stripVTControlCharacters } from "node:util";
 
-import { Formatter } from "../types.js";
+import { Formatter } from "../types.ts";
 import {
 	createCheckCommand,
 	createCheckPackageCommand,
 	createFormatTextPackageCommand,
 	createRunCommand,
 	createRunPackageCommand,
-} from "./createRunCommand.js";
-import { formatTextBiome } from "./formatTextBiome.js";
-import { formatTextDeno } from "./formatTextDeno.js";
-import { formatTextDprint } from "./formatTextDprint.js";
-import { formatTextPrettier } from "./formatTextPrettier.js";
-import { SpawnedOutput } from "./runFormatterCommand.js";
-import { runPrettier } from "./runPrettier.js";
+} from "./createRunCommand.ts";
+import { formatTextBiome } from "./formatTextBiome.ts";
+import { formatTextDeno } from "./formatTextDeno.ts";
+import { formatTextDprint } from "./formatTextDprint.ts";
+import { formatTextPrettier } from "./formatTextPrettier.ts";
+import { SpawnedOutput } from "./runFormatterCommand.ts";
+import { runPrettier } from "./runPrettier.ts";
 
 function parseLines({ stdout }: SpawnedOutput) {
 	return stdout
