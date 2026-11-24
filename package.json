@@ -1,6 +1,6 @@
 {
 	"name": "formatly",
-	"version": "0.12.2",
+	"version": "0.12.3",
 	"description": "Formats your code with whatever formatter your project is already using. 🧼",
 	"repository": {
 		"type": "git",

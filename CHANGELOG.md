@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.12.3](https://github.com/JoshuaKGoldberg/formatly/compare/0.12.2...0.12.3) (2026-11-24)
+
+### Bug Fixes
+
+- bump to create-typescript-app@2.87.18 ([#763](https://github.com/JoshuaKGoldberg/formatly/issues/763)) ([b30906a](https://github.com/JoshuaKGoldberg/formatly/commit/b30906aa5d279a5edd010a7f0c68031d8afdad36)), closes [#762](https://github.com/JoshuaKGoldberg/formatly/issues/762)
+
 ## [0.12.2](https://github.com/JoshuaKGoldberg/formatly/compare/0.12.1...0.12.2) (2026-11-19)
 
 ### Performance Improvements
